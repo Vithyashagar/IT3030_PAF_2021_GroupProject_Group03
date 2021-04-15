@@ -146,5 +146,40 @@ public class ManufacturerService {
 		return output;
 	}
 
+	public String deleteService(String SID) {
+		
+		String output = "";
+		
+		try {
+			
+			Connection con = connect();
+			
+			//Checking Connection
+			if(con == null) {
+				return "Error while connecting to Database";
+			}
+			
+			//create prepared statement
+			String query = "delete from services where SID = ? ";
+			
+			PreparedStatement preparedStmt  = con.prepareStatement(query);
+			
+			preparedStmt.setInt(1, Integer.valueOf(SID));
+			
+			preparedStmt.execute();
+			con.close();
+			
+			output = "Service Deleted";
+			
+			
+		}catch(Exception e) {
+			output = "Error while Deleting Service";
+			System.err.println(e.getMessage());
+			
+		}
+		
+		return output;
+	}
+
 	
 }
