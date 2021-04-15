@@ -65,4 +65,22 @@ public class ManuService {
 		return output;
 	}
 	
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_HTML)
+	public String deleteService(String serviceData) {
+		
+		//Convert Input String to a JSON Object
+		JsonObject MSObj = new JsonParser().parse(serviceData).getAsJsonObject();
+		
+		//Read values from the JSON Object
+		String SID = MSObj.get("SID").getAsString();
+		
+		//Deleting the Service
+		String output = MS.deleteService(SID);
+		
+		return output;
+	}
+	
 }
