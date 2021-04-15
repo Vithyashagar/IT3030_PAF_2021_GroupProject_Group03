@@ -29,4 +29,19 @@ public class ManuService {
 		return MS.readServices();
 	}
 	
+	@POST
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_HTML)
+	public String insertService(@FormParam("ServiceID") String ServiceID,
+								@FormParam("Name") String Name,
+								@FormParam("Speciality") String Speciality,
+								@FormParam("Description") String Description,
+								@FormParam("MFRID") String MFRID) {
+		
+		String output = MS.insertService(ServiceID, Name, Speciality, Description, MFRID);
+		
+		return output;
+	}
+	
 }
