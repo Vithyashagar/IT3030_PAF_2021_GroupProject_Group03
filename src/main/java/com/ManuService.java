@@ -44,4 +44,25 @@ public class ManuService {
 		return output;
 	}
 	
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String updateService(String serviceData){
+		
+		//Convert Input String to a JSON Object
+		JsonObject MSObj = new JsonParser().parse(serviceData).getAsJsonObject();
+		
+		//Read values from the JSON Object
+		String SID = MSObj.get("SID").getAsString();
+		String ServiceID = MSObj.get("ServiceID").getAsString();
+		String Name = MSObj.get("Name").getAsString();
+		String Speciality = MSObj.get("Speciality").getAsString();
+		String Description = MSObj.get("Description").getAsString();
+		
+		//Updating the Service
+		String output = MS.updateService(SID, ServiceID, Name, Speciality, Description);
+		
+		return output;
+	}
+	
 }
