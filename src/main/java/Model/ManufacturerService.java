@@ -181,5 +181,40 @@ public class ManufacturerService {
 		return output;
 	}
 
-	
+	public String updateService( String SID, String ServiceID, String Name, String Speciality, String Description )  
+	{
+		String output = "";
+		
+		try{
+			Connection con = connect();
+			
+			//Checking Connection
+			if (con == null){
+				return "Error while connecting to the database for updating.";
+			}
+			
+			// create a prepared statement
+			String query = "UPDATE services SET ServiceID=?,Name=?,Speciality=?,Description=?WHERE SID=?";
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			// binding values
+			preparedStmt.setString(1, ServiceID);
+			preparedStmt.setString(2, Name);
+			preparedStmt.setString(3, Speciality);
+			preparedStmt.setString(4, Description);
+			preparedStmt.setInt(5, Integer.parseInt(SID));
+			
+			// execute the statement
+			preparedStmt.execute();
+			con.close();
+			output = "Updated successfully";
+		}
+		
+		catch (Exception e){		
+			output = "Error while updating the Service";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
+	}
 }
