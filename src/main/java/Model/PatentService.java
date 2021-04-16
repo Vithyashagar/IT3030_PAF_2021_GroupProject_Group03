@@ -60,7 +60,7 @@ public class PatentService {
 			
 			
 		}catch(Exception e) {
-			output = "Error while Inserting Service";
+			output = "Error while Inserting Patent";
 			System.err.println(e.getMessage());
 		}
 		

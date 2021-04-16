@@ -15,15 +15,32 @@ public class Patent {
 	//Creation of Service Object 
 	PatentService PS = new PatentService();
 			
-	//Method to Read the services
+	//Method to Read the Patent Applications
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
-	public String readServices() {
+	public String readPatents() {
 		
 		return PS.readPatent();
 	}
 		
+	//Method to Insert the Patent Application Info
+	@POST
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_HTML)
+	public String insertPatent(@FormParam("PatentID") String PatentID,
+								@FormParam("Title") String Title,
+								@FormParam("appDate") String appDate,
+								@FormParam("ResearcherID") String ResearcherID,
+								@FormParam("ConceptID") String ConceptID) {
+		
+		String output = PS.insertPatent(PatentID, Title, appDate, ResearcherID, ConceptID);
+		
+		return output;
+	}
 	
 	
+		
+		
 }
