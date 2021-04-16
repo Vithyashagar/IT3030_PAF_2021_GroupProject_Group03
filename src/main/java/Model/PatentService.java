@@ -100,8 +100,6 @@ public class PatentService {
 				String Title = rs.getString("Title");
 				String appDate = rs.getString("appDate");
 				String ConceptID = rs.getString("ConceptID");
-				String Description = rs.getString("Description");
-				String MFRID = rs.getString("MFRID");
 				
 				// Add a row into the HTML table
 				output += "<tr><td>" + Title + "</td>";
@@ -138,5 +136,41 @@ public class PatentService {
 		
 		return output;
 	}
-	
+
+	public String deletePatent(String PID) {
+		
+		String output = "";
+		
+		try {
+			
+			Connection con = connect();
+			
+			//Checking Connection
+			if(con == null) {
+				return "Error while connecting to Database";
+			}
+			
+			//create prepared statement
+			String query = "delete from patentapplication where PID = ? ";
+			
+			PreparedStatement preparedStmt  = con.prepareStatement(query);
+			
+			preparedStmt.setInt(1, Integer.valueOf(PID));
+			
+			preparedStmt.execute();
+			con.close();
+			
+			output = "Patent Application Deleted";
+			
+			
+		}catch(Exception e) {
+			output = "Error while Deleting Patent";
+			System.err.println(e.getMessage());
+			
+		}
+		
+		return output;
+	}
+
+
 }
