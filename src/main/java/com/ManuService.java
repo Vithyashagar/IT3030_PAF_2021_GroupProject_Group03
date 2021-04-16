@@ -9,11 +9,6 @@ import javax.ws.rs.core.MediaType;
 //For JSON
 import com.google.gson.*;
 
-//For XML
-import org.jsoup.*;
-import org.jsoup.parser.*;
-import org.jsoup.nodes.Document;
-
 @Path("/Service")
 public class ManuService {
 	
@@ -29,6 +24,7 @@ public class ManuService {
 		return MS.readServices();
 	}
 	
+	//Method to Insert the services
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -44,6 +40,7 @@ public class ManuService {
 		return output;
 	}
 	
+	//Method to update the services
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -65,6 +62,7 @@ public class ManuService {
 		return output;
 	}
 	
+	//Method to Delete the services
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
