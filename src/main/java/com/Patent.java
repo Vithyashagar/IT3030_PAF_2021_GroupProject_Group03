@@ -40,7 +40,24 @@ public class Patent {
 		return output;
 	}
 	
-	
+	//Method to Delete the services
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_HTML)
+	public String deleteService(String patentData) {
+		
+		//Convert Input String to a JSON Object
+		JsonObject MSObj = new JsonParser().parse(patentData).getAsJsonObject();
+		
+		//Read values from the JSON Object
+		String PID = MSObj.get("PID").getAsString();
+		
+		//Deleting the Service
+		String output = PS.deletePatent(PID);
+		
+		return output;
+	}
 		
 		
 }
