@@ -20,40 +20,6 @@ public class User {
 	 }
 	
 	
-	public String insertUser(String username, String password, String email, String address,String dob ,String phone)
-	 {
-	 String output = "";
-	 try
-	 {
-	 Connection con = connect();
-	 if (con == null)
-	 {return "Error while connecting to the database for inserting."; }
-	 // create a prepared statement
-	 String query = " insert into gatget_badget_userservice.consumer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
-	 + " values (?, ?, ?, ?, ?, ?, ?)";
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setInt(1, 0);
-	 preparedStmt.setString(2, username);
-	 preparedStmt.setString(3, password);
-	 preparedStmt.setString(4, email);
-	 preparedStmt.setString(5, address);
-	 preparedStmt.setString(6, dob);
-	 preparedStmt.setString(7, phone);
-	// execute the statement
-	
-	 preparedStmt.execute();
-	 con.close();
-	 output = "Inserted successfully";
-	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while inserting the user.";
-	 System.err.println(e.getMessage());
-	 }
-	 return output;
-	 }
-	
 	public String readUsers()
 	 {
 	 String output = "";
@@ -106,61 +72,6 @@ public class User {
 	 }
 	
 	
-	public String updateItem(String ID, String code, String name, String price, String desc)
-	
-	 {
-	 String output = "";
-	 try
-	 {
-	 Connection con = connect();
-	 if (con == null)
-	 {return "Error while connecting to the database for updating."; }
-	 // create a prepared statement
-	 String query = "UPDATE items SET itemCode=?,itemName=?,itemPrice=?,itemDesc=?WHERE itemID=?";
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setString(1, code);
-	 preparedStmt.setString(2, name);
-	 preparedStmt.setDouble(3, Double.parseDouble(price));
-	 preparedStmt.setString(4, desc);
-	 preparedStmt.setInt(5, Integer.parseInt(ID));
-	 // execute the statement
-	 preparedStmt.execute();
-	 con.close();
-	 output = "Updated successfully";
-	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while updating the item.";
-	 System.err.println(e.getMessage());
-	 }
-	 return output;
-	 }
-	public String deleteItem(String itemID)
-	 {
-	 String output = "";
-	 try
-	 {
-	 Connection con = connect();
-	 if (con == null)
-	 {return "Error while connecting to the database for deleting."; }
-	 // create a prepared statement
-	 String query = "delete from items where itemID=?";
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setInt(1, Integer.parseInt(itemID));
-	 // execute the statement
-	 preparedStmt.execute();
-	 con.close();
-	 output = "Deleted successfully";
-	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while deleting the item.";
-	 System.err.println(e.getMessage());
-	 }
-	 return output;
-	 } 
 	
 	
 
