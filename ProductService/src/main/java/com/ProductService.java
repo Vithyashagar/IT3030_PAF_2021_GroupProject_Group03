@@ -23,10 +23,10 @@ public class ProductService {
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
-	public String readItems()
+	public String readProduct()
 	 {
-	 return "Hello";
-	 } 
+	 return ProductObj.readProduct();
+	 }
 	
 	
 
