@@ -49,6 +49,25 @@ public class ProductService {
 	
 	
 	
+	//PUT method of ProductService	
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateProduct(String productData)
+	{
+	//Convert the input string to a JSON object
+	 JsonObject ProductObject = new JsonParser().parse(productData).getAsJsonObject();
+	//Read the values from the JSON object
+	 String productId = ProductObject.get("productId").getAsString();
+	 String productCode = ProductObject.get("productCode").getAsString();
+	 String productName = ProductObject.get("productName").getAsString();
+	 String productPrice = ProductObject.get("productPrice").getAsString();
+	 String productDesc = ProductObject.get("productDesc").getAsString();
+	 String productCat = ProductObject.get("productCat").getAsString();
+	 String output = ProductObj.updateProduct(productId, productCode, productName, productPrice, productDesc,productCat);
+	return output;
+	}
 	
 	
 
