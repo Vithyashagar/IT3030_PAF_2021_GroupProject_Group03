@@ -14,6 +14,20 @@ import org.jsoup.*;
 import org.jsoup.parser.*;
 import org.jsoup.nodes.Document;
 
+
+@Path("/Product") 
 public class ProductService {
+	
+	
+	Product ProductObj = new Product();
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_HTML)
+	public String readItems()
+	 {
+	 return "Hello";
+	 } 
+	
+	
 
 }
