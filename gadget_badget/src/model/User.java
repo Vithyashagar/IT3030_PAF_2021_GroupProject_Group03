@@ -72,7 +72,7 @@ public class User {
 	 }
 	
 	
-	public String insertUserCon(String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
+	public String insertUser(String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
 	 {
 	 String output = "";
 	 try
@@ -82,7 +82,7 @@ public class User {
 	 {return "Error while connecting to the database for inserting."; }
 	
 	 // create a prepared statement
-	 if (type == "consumer" || type == "Consumer") {
+	 if (type.equals("consumer") || type.equals("Consumer")) {
 	 String query = " insert into gatget_badget_userservice.consumer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
 	 + " values (?, ?, ?, ?, ?, ?, ?)";
 	 
@@ -103,9 +103,9 @@ public class User {
 	
 	 }
 	 
-	 if (type == "manufacturer" || type == "Manufacturer") {
+	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
-		 String query = " insert into gatget_badget_userservice.manufacturer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
+		 String query = " insert into gatget_badget_userservice.manufacturer(`manufacturerID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
 				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 				 
 				 PreparedStatement preparedStmt = con.prepareStatement(query);
@@ -125,9 +125,9 @@ public class User {
 				 output = "Inserted successfully";
 	 }
 	 
-if (type == "researcher" || type == "Researcher") {
+if (type.equals("researcher") || type.equals("Researcher")) {
 		 
-		 String query = " insert into gatget_badget_userservice.researcher(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
+		 String query = " insert into gatget_badget_userservice.researcher(`researcherID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
 				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 				 
 				 PreparedStatement preparedStmt = con.prepareStatement(query);

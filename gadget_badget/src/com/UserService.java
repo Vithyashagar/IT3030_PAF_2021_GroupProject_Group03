@@ -32,10 +32,10 @@ public class UserService {
 	
 	
 	@POST
-	@Path("/{name}")
+	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertUser(@PathParam("type") String type,
+	public String insertUser(@FormParam("type") String type,
 	 @FormParam("userName") String userName,
 	 @FormParam("password") String password,
 	 @FormParam("email") String email,
@@ -47,7 +47,7 @@ public class UserService {
 	 )
 	{
 		
-		  output = userObj.insertUserCon(userName, password, email, address,dob,phone,type,desc,profileInfo);
+		  output = userObj.insertUser(userName, password, email, address,dob,phone,type,desc,profileInfo);
 		  return output;
 	}
 	
