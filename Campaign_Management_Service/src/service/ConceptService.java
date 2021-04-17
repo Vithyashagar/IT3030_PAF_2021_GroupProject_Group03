@@ -53,5 +53,30 @@ public class ConceptService {
 		String output = conceptObj.insertConcept(conceptName, conceptDesc, startDate, deadline, pledgeGoal, reward, workUpdt, researcherID,manufactID );
 		return output;
 	}
+	
+	
+	//Update Service
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateConcept(String conceptData)
+	{
+		//Convert the input string to a JSON object
+		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
+		
+		//Read the values from the JSON object
+		String conceptID = conceptObject.get("conceptID").getAsString();
+		String conceptName = conceptObject.get("conceptName").getAsString();
+		String conceptDesc = conceptObject.get("conceptDesc").getAsString();
+		String pledgeGoal = conceptObject.get("pledgeGoal").getAsString();
+		String reward = conceptObject.get("reward").getAsString();
+		String workUpdt = conceptObject.get("workUpdt").getAsString();
+		
+		String output = conceptObj.updateConcept(conceptID, conceptName, conceptDesc, pledgeGoal, reward, workUpdt);
+		
+		return output;
+	}
+	
 
 }

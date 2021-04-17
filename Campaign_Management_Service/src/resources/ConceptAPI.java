@@ -141,7 +141,7 @@ public class ConceptAPI {
 			}
 			catch (Exception e)
 			{
-				output = "Error while retrieving the concepts.";
+				output = "Error while retrieving your concept details!!";
 				System.err.println(e.getMessage());
 			}
 			return output;
@@ -204,6 +204,45 @@ public class ConceptAPI {
 			System.err.println(e.getMessage());
 		}
 		
+		return output;
+	}
+	
+	
+	/****************************************** Updating a concept detail *****************************************/
+	public String updateConcept(String conceptID, String conceptName, String conceptDesc, String pledgeGoal, String reward, String workUpdt)
+	{
+		String output = "";
+		
+		try
+		{
+			Connection con = connect();
+			
+			if (con == null){
+				return "Database Connection failed!!"; 
+			}
+			
+			// create a prepared statement
+			String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			// binding values
+			preparedStmt.setString(1, conceptName);
+			preparedStmt.setString(2, conceptDesc);
+			preparedStmt.setDouble(3, Double.parseDouble(pledgeGoal));
+			preparedStmt.setString(4, reward);
+			preparedStmt.setString(5, workUpdt);
+			preparedStmt.setInt(6, Integer.parseInt(conceptID));
+			
+			// execute the statement
+			preparedStmt.execute();
+			con.close();
+			output = "Concept Details Updated Successfully!!";
+		}
+		catch (Exception e)
+		{
+			output = "Error while updating the concept details!!";
+			System.err.println(e.getMessage());
+		}
 		return output;
 	}
 	
