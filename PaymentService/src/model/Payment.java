@@ -5,7 +5,7 @@ public class Payment {
 	//private attribute declaration
 	
 	private int PaymentID;
-	private String paymentNo;
+	private String paymentCode;
 	private String paymentType;
 	private String bank;
 	private String paymentDate;
@@ -31,8 +31,8 @@ public class Payment {
 		return PaymentID;
 	}
 
-	public String getPaymentNo() {
-		return paymentNo;
+	public String getPaymentCode() {
+		return paymentCode;
 	}
 
 	public String getPaymentType() {
@@ -98,8 +98,8 @@ public class Payment {
 		PaymentID = paymentID;
 	}
 
-	public void setPaymentNo(String paymentNo) {
-		this.paymentNo = paymentNo;
+	public void setPaymentNo(String paymentCode) {
+		this.paymentCode = paymentCode;
 	}
 
 	public void setPaymentType(String paymentType) {
