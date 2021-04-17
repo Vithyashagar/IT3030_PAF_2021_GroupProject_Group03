@@ -148,5 +148,46 @@ public class Product {
 
 	
 	
+	/**********************Update Product*****************************/
+	public String updateProduct(String productId, String productCode, String productName, String productPrice, String productDesc,String productCat)
+	{
+		 String output = "";
+		 
+		 try
+		 {
+			 Connection con = connect();
+		 
+			 if (con == null)
+			 {
+				 return "Error while connecting to the database for updating."; 
+			 }
+			 
+			 	// create a prepared statement
+			 	String query = "UPDATE product SET productCode=?,productName=?,productPrice=?,productDesc=?,productCat=? WHERE productId=?";
+			 	PreparedStatement preparedStmt = con.prepareStatement(query);
+		 
+			 	// binding values
+				 preparedStmt.setString(1, productCode);
+				 preparedStmt.setString(2, productName);
+				 preparedStmt.setDouble(3, Double.parseDouble(productPrice));
+				 preparedStmt.setString(4, productDesc);
+				 preparedStmt.setString(5, productCat);
+				 preparedStmt.setInt(6, Integer.parseInt(productId));
+				 
+				 // execute the statement
+				 preparedStmt.execute();
+				 con.close();
+				 output = "Updated successfully";
+		 
+		 }catch (Exception e){
+			 
+			 output = "Error while updating the item.";
+			 System.err.println(e.getMessage());
+		 
+		 }
+		 	return output;
+		 } 
+
+	
 
 }
