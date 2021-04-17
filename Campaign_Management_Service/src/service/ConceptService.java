@@ -21,6 +21,20 @@ public class ConceptService {
 	//concept API type object
 	ConceptAPI conceptObj = new ConceptAPI();
 	
+	//Viewing As a researcher
+	@GET
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_HTML)
+	public String readMyConcepts(String conceptData)
+	{
+		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
+		//Read the values from the JSON object
+		String reseracherID = conceptObject.get("researcherID").getAsString();
+		return conceptObj.readMyConcepts(reseracherID);
+		
+	}
+	
 	//Insert Function
 	@POST
 	@Path("/")
