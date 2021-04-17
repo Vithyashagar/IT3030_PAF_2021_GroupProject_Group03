@@ -32,7 +32,7 @@ public class Product {
 	
 	
 	/**********************Insert Product*****************************/
-	public String insertProduct(String productCode, String productName, String productPrice, String productDesc,String productCat){
+	public String insertProduct(String productCode, String productName, String productPrice, String productDesc,String productCat, String productQty){
 		String output = "";
 		
 	 try{
@@ -44,8 +44,8 @@ public class Product {
 		 }
 	 
 		 	// create a prepared statement
-		 	String query = " insert into product (`productId`,`productCode`,`productName`,`productPrice`,`productDesc`,`productCat`)"
-		 			+ " values (?, ?, ?, ?, ?, ?)";
+		 	String query = "insert into product (`productId`,`productCode`,`productName`,`productPrice`,`productDesc`,`productCat`,`productQty`)"
+		 			+ " values (?, ?, ?, ?, ?, ?, ?)";
 	
 		 	PreparedStatement preparedStmt = con.prepareStatement(query);
 		
@@ -56,6 +56,7 @@ public class Product {
 		 	preparedStmt.setDouble(4, Double.parseDouble(productPrice));
 		 	preparedStmt.setString(5, productDesc);
 		 	preparedStmt.setString(6, productCat);
+		 	preparedStmt.setInt(7, Integer.parseInt(productQty));
 		 	
 		 	// execute the statement
 		 	preparedStmt.execute();
@@ -64,7 +65,7 @@ public class Product {
 		 	 
 	 }catch (Exception e){
 		 
-		 	 output = "Error while inserting the item.";
+		 	 output = "Error while inserting the product";
 		 	 System.err.println(e.getMessage());
 		 	}
 		 	
@@ -98,6 +99,7 @@ public class Product {
 						"<th>Product Price</th>" +
 						"<th>Product Description</th>" +
 						"<th>Product Category</th>" +
+						"<th>Product Quantity</th>" +
 						"<th>Update</th><th>Remove</th></tr>";
 
 					 String query = "select * from product";
@@ -115,6 +117,7 @@ public class Product {
 						 String productPrice = Double.toString(rs.getDouble("productPrice"));
 						 String productDesc = rs.getString("productDesc");
 						 String productCat = rs.getString("productCat");
+						 String productQty = Integer.toString(rs.getInt("productQty"));
 						 
 						 // Add into the html table
 						 output += "<tr><td>" + productCode + "</td>";
@@ -122,6 +125,8 @@ public class Product {
 						 output += "<td>" + productPrice + "</td>";
 						 output += "<td>" + productDesc + "</td>";
 						 output += "<td>" + productCat + "</td>";
+						 output += "<td>" + productQty + "</td>";
+						 
 						 
 						 // buttons
 						 output += "<td><input name='btnUpdate' type='button' value='Update' class='btn btn-secondary'></td>"
@@ -149,7 +154,7 @@ public class Product {
 	
 	
 	/**********************Update Product*****************************/
-	public String updateProduct(String productId, String productCode, String productName, String productPrice, String productDesc,String productCat)
+	public String updateProduct(String productId, String productCode, String productName, String productPrice, String productDesc,String productCat,String productQty)
 	{
 		 String output = "";
 		 
@@ -163,7 +168,7 @@ public class Product {
 			 }
 			 
 			 	// create a prepared statement
-			 	String query = "UPDATE product SET productCode=?,productName=?,productPrice=?,productDesc=?,productCat=? WHERE productId=?";
+			 	String query = "UPDATE product SET productCode=?,productName=?,productPrice=?,productDesc=?,productCat=?,productQty=? WHERE productId=?";
 			 	PreparedStatement preparedStmt = con.prepareStatement(query);
 		 
 			 	// binding values
@@ -172,7 +177,8 @@ public class Product {
 				 preparedStmt.setDouble(3, Double.parseDouble(productPrice));
 				 preparedStmt.setString(4, productDesc);
 				 preparedStmt.setString(5, productCat);
-				 preparedStmt.setInt(6, Integer.parseInt(productId));
+				 preparedStmt.setInt(6, Integer.parseInt(productQty));
+				 preparedStmt.setInt(7, Integer.parseInt(productId));
 				 
 				 // execute the statement
 				 preparedStmt.execute();

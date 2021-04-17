@@ -40,9 +40,11 @@ public class ProductService {
 	 @FormParam("productName") String productName,
 	 @FormParam("productPrice") String productPrice,
 	 @FormParam("productDesc") String productDesc,
-	 @FormParam("productCat") String productCat)
+	 @FormParam("productCat") String productCat,
+	 @FormParam("productQty") String productQty)
+	
 	{
-	 String output = ProductObj.insertProduct(productCode, productName, productPrice, productDesc,productCat);
+		String output = ProductObj.insertProduct(productCode, productName, productPrice, productDesc,productCat,productQty);
 	 
 	 	return output;
 	}
@@ -65,10 +67,27 @@ public class ProductService {
 	 String productPrice = ProductObject.get("productPrice").getAsString();
 	 String productDesc = ProductObject.get("productDesc").getAsString();
 	 String productCat = ProductObject.get("productCat").getAsString();
-	 String output = ProductObj.updateProduct(productId, productCode, productName, productPrice, productDesc,productCat);
+	 String productQty = ProductObject.get("productQty").getAsString();
+	 String output = ProductObj.updateProduct(productId, productCode, productName, productPrice, productDesc,productCat,productQty);
 	return output;
 	}
 	
 	
+	
+	
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deleteProduct(String productData)
+	{
+	//Convert the input string to an XML document
+	 Document doc = Jsoup.parse(productData, "", Parser.xmlParser());
+
+	//Read the value from the element <itemID>
+	 String productId = doc.select("productId").text();
+	 String output = ProductObj.deleteProduct(productId);
+	return output;
+	}
 
 }
