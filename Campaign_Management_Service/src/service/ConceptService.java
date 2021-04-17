@@ -55,7 +55,7 @@ public class ConceptService {
 	}
 	
 	
-	//Update Service
+	//Update Function
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -74,6 +74,24 @@ public class ConceptService {
 		String workUpdt = conceptObject.get("workUpdt").getAsString();
 		
 		String output = conceptObj.updateConcept(conceptID, conceptName, conceptDesc, pledgeGoal, reward, workUpdt);
+		
+		return output;
+	}
+	
+	
+	//Delete Function
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deleteConcept(String conceptData)
+	{
+		//Convert the input string to an XML document
+		Document doc = Jsoup.parse(conceptData, "", Parser.xmlParser());
+		
+		//Read the value from the element <itemID>
+		String conceptID = doc.select("conceptID").text();
+		String output = conceptObj.deleteConcept(conceptID);
 		
 		return output;
 	}

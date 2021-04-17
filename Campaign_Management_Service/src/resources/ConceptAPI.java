@@ -246,5 +246,38 @@ public class ConceptAPI {
 		return output;
 	}
 	
+	
+	/************************************* DELETE CONCEPT DETAILS ***********************************************/
+	public String deleteConcept(String conceptID)
+	{
+		String output = "";
+		
+		try
+		{
+			Connection con = connect();
+			if (con == null) {
+				return "Database Connection failed!!"; 
+			}
+			
+			// create a prepared statement
+			String query = "delete from concept where conceptID=?";
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			// binding values
+			preparedStmt.setInt(1, Integer.parseInt(conceptID));
+			
+			// execute the statement
+			preparedStmt.execute();
+			con.close();
+			output = "Concept deleted successfully";
+		}
+		catch (Exception e)
+		{
+			output = "Error while deleting the concept";
+			System.err.println(e.getMessage());
+		}
+		return output;
+	}
+	
 
 }
