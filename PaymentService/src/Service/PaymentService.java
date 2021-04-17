@@ -243,4 +243,30 @@ public class PaymentService {
 		return output;
 		}
 	
+	
+	public String deletePayment(String status) {
+		
+		String output = "";
+		 
+		
+		Connection con = connect();
+		
+		String sql = "delete from gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptID from concept c where c.status = '"+status+"')" ;
+		
+		try{
+			
+			PreparedStatement preparedStmt = con.prepareStatement(sql);
+
+			preparedStmt.executeUpdate();
+			
+			output = "Payment Deleted Successfully!!";
+		}
+		catch (Exception e) {
+			output = "Error while deleting";
+			e.printStackTrace();
+		}
+		
+		return output;
+	}
+	
 }

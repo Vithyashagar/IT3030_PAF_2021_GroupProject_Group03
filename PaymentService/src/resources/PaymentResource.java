@@ -1,6 +1,7 @@
 package resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -8,6 +9,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 
 import Service.PaymentService;
 
@@ -59,6 +64,26 @@ public class PaymentResource {
 	{
 	
 	String output = payObj.updatePaymentStatus(ConceptID);
+	return output;
+	}
+	
+	
+	/*Delete backer payments related to incomplete projects*/
+	/*Input is given as an xml format providing a plain text message as output*/
+	
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deletePayment(String itemData)
+	{
+	//Convert the input string to an XML document
+	Document doc = Jsoup.parse(itemData, "", Parser.xmlParser());
+	
+	//Read the value from the element <status>
+	
+	String status = doc.select("status").text();
+	String output = payObj.deletePayment(status);
 	return output;
 	}
 }
