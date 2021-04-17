@@ -209,4 +209,38 @@ public class PaymentService {
 		return output;
 	}
 	
+	
+	public String updatePaymentStatus(int ConceptID)
+	{
+		String output = "";
+		
+		try
+		{
+			Connection con = connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for updating."; 
+			}
+			
+			CallableStatement  cs = con.prepareCall("{call updateStatus(?)}");	
+			
+			cs.setInt(1, ConceptID);/*pass this name to postman*/
+			
+			cs.execute();
+			cs.close();
+			
+			System.out.println("Stored procedure called successfully!");
+		
+			output = "Concept status Updated successfully";
+		}
+		catch (Exception e)
+		{
+			output = "Error while updating the campaign status.";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
+		}
+	
 }
