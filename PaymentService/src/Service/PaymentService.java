@@ -103,6 +103,7 @@ public class PaymentService {
 			//execute the statement
 			preparedStmt.execute();
 			
+			//closing connection object
 			con.close();
 			
 			output = "Inserted successfully";
@@ -117,6 +118,7 @@ public class PaymentService {
 	}
 	
 	
+	/*Method to read relevant payment details*/
 	public String readPayments()
 	{
 		String output = "";
@@ -209,7 +211,7 @@ public class PaymentService {
 		return output;
 	}
 	
-	
+	/*Method to handle payment status depending on pledegAmount summation*/
 	public String updatePaymentStatus(int ConceptID)
 	{
 		String output = "";
@@ -223,13 +225,20 @@ public class PaymentService {
 				return "Error while connecting to the database for updating."; 
 			}
 			
+			//Preparing a CallableStatement to call a stored procedure
+			
+			//contains implemented business logic
 			CallableStatement  cs = con.prepareCall("{call updateStatus(?)}");	
 			
+			//setting parameter to procedure
 			cs.setInt(1, ConceptID);/*pass this name to postman*/
 			
+			//call procedure
 			cs.execute();
+			
 			cs.close();
 			
+			//verify execution success
 			System.out.println("Stored procedure called successfully!");
 		
 			output = "Concept status Updated successfully";
@@ -244,6 +253,7 @@ public class PaymentService {
 		}
 	
 	
+	/*Method to delete incomplete project backed funds*/
 	public String deletePayment(String status) {
 		
 		String output = "";
