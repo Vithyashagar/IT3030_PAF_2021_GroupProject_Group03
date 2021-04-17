@@ -15,6 +15,7 @@ import org.jsoup.*;
 import org.jsoup.parser.*;
 import org.jsoup.nodes.Document;
 
+@Path("/Concepts")
 public class ConceptService {
 
 }
