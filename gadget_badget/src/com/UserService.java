@@ -20,6 +20,7 @@ public class UserService {
 	
 	
 	User userObj = new User();
+	String output;
 	
 	@GET
 	@Path("/")
@@ -28,6 +29,27 @@ public class UserService {
 	 {
 	 return  userObj.readUsers();
 	 } 
+	
+	
+	@POST
+	@Path("/{name}")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String insertUser(@PathParam("type") String type,
+	 @FormParam("userName") String userName,
+	 @FormParam("password") String password,
+	 @FormParam("email") String email,
+	 @FormParam("address") String address,
+	 @FormParam("dob") String dob,
+	 @FormParam("phone") String phone,
+	 @FormParam("desc") String desc,
+	 @FormParam("profileInfo") String profileInfo
+	 )
+	{
+		
+		  output = userObj.insertUserCon(userName, password, email, address,dob,phone,type,desc,profileInfo);
+		  return output;
+	}
 	
 
 }

@@ -72,6 +72,164 @@ public class User {
 	 }
 	
 	
+	public String insertUserCon(String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
+	 {
+	 String output = "";
+	 try
+	 {
+	 Connection con = connect();
+	 if (con == null)
+	 {return "Error while connecting to the database for inserting."; }
+	
+	 // create a prepared statement
+	 if (type == "consumer" || type == "Consumer") {
+	 String query = " insert into gatget_badget_userservice.consumer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
+	 + " values (?, ?, ?, ?, ?, ?, ?)";
+	 
+	 PreparedStatement preparedStmt = con.prepareStatement(query);
+	 // binding values
+	 preparedStmt.setInt(1, 0);
+	 preparedStmt.setString(2, username);
+	 preparedStmt.setString(3, password);
+	 preparedStmt.setString(4, email);
+	 preparedStmt.setString(5, address);
+	 preparedStmt.setString(6, dob);
+	 preparedStmt.setString(7, phone);
+	// execute the statement
+	
+	 preparedStmt.execute();
+	 con.close();
+	 output = "Inserted successfully";
+	
+	 }
+	 
+	 if (type == "manufacturer" || type == "Manufacturer") {
+		 
+		 String query = " insert into gatget_badget_userservice.manufacturer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
+				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+				 
+				 PreparedStatement preparedStmt = con.prepareStatement(query);
+				 // binding values
+				 preparedStmt.setInt(1, 0);
+				 preparedStmt.setString(2, username);
+				 preparedStmt.setString(3, password);
+				 preparedStmt.setString(4, email);
+				 preparedStmt.setString(5, address);
+				 preparedStmt.setString(6, dob);
+				 preparedStmt.setString(7, phone);
+				 preparedStmt.setString(8, desc);
+				// execute the statement
+				
+				 preparedStmt.execute();
+				 con.close();
+				 output = "Inserted successfully";
+	 }
+	 
+if (type == "researcher" || type == "Researcher") {
+		 
+		 String query = " insert into gatget_badget_userservice.researcher(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
+				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+				 
+				 PreparedStatement preparedStmt = con.prepareStatement(query);
+				 // binding values
+				 preparedStmt.setInt(1, 0);
+				 preparedStmt.setString(2, username);
+				 preparedStmt.setString(3, password);
+				 preparedStmt.setString(4, email);
+				 preparedStmt.setString(5, address);
+				 preparedStmt.setString(6, dob);
+				 preparedStmt.setString(7, phone);
+				 preparedStmt.setString(8, profileInfo);
+				// execute the statement
+				
+				 preparedStmt.execute();
+				 con.close();
+				 output = "Inserted successfully";
+	 }
+	 
+	
+	 }
+	
+	 catch (Exception e)
+	 {
+	 output = "Error while inserting the user.";
+	 System.err.println(e.getMessage());
+	 }
+	
+	 return output;
+	 
+	 }
+	
+	/*public String insertUserManu(String username, String password, String email, String address,String dob ,String phone, String description)
+	 {
+	 String output = "";
+	 try
+	 {
+	 Connection con = connect();
+	 if (con == null)
+	 {return "Error while connecting to the database for inserting."; }
+	 // create a prepared statement
+	 String query = " insert into gatget_badget_userservice.manufacturer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
+	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+	 PreparedStatement preparedStmt = con.prepareStatement(query);
+	 // binding values
+	 preparedStmt.setInt(1, 0);
+	 preparedStmt.setString(2, username);
+	 preparedStmt.setString(3, password);
+	 preparedStmt.setString(4, email);
+	 preparedStmt.setString(5, address);
+	 preparedStmt.setString(6, dob);
+	 preparedStmt.setString(7, phone);
+	 preparedStmt.setString(8, description);
+	// execute the statement
+	
+	 preparedStmt.execute();
+	 con.close();
+	 output = "Inserted successfully";
+	 }
+	 catch (Exception e)
+	 {
+	 output = "Error while inserting the user.";
+	 System.err.println(e.getMessage());
+	 }
+	 return output;
+	 }
+	
+	
+	public String insertUserResearch(String username, String password, String email, String address,String dob ,String phone, String profileInfo)
+	 {
+	 String output = "";
+	 try
+	 {
+	 Connection con = connect();
+	 if (con == null)
+	 {return "Error while connecting to the database for inserting."; }
+	 // create a prepared statement
+	 String query = " insert into gatget_badget_userservice.researcher(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
+	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+	 PreparedStatement preparedStmt = con.prepareStatement(query);
+	 // binding values
+	 preparedStmt.setInt(1, 0);
+	 preparedStmt.setString(2, username);
+	 preparedStmt.setString(3, password);
+	 preparedStmt.setString(4, email);
+	 preparedStmt.setString(5, address);
+	 preparedStmt.setString(6, dob);
+	 preparedStmt.setString(7, phone);
+	 preparedStmt.setString(8, profileInfo);
+	// execute the statement
+	
+	 preparedStmt.execute();
+	 con.close();
+	 output = "Inserted successfully";
+	 }
+	 catch (Exception e)
+	 {
+	 output = "Error while inserting the user.";
+	 System.err.println(e.getMessage());
+	 }
+	 return output;
+	 }*/
 	
 	
 
