@@ -81,5 +81,6 @@ public class ManuService {
 		return output;
 	}
 	
+	//create specific methods
 	
 }
