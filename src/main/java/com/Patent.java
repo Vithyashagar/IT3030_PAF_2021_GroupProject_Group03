@@ -58,6 +58,6 @@ public class Patent {
 		
 		return output;
 	}
-		
+	//create methods for specific requirements	
 		
 }
