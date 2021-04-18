@@ -2,6 +2,8 @@ package Model;
 
 import java.sql.*;
 
+import Security.Sample;
+
 public class PatentService {
 	
 	public Connection connect(){
@@ -42,18 +44,26 @@ public class PatentService {
 			//Create Prepared Statement
 			String query = "INSERT INTO patentapplication(`PID`,`PatentID`,`Title`,`appDate`,`ResearcherID`, `ConceptID`) VALUES(?,?,?,?,?,?)";
 			
+			Sample hs = new Sample();
+			
+			String hTitle = hs.hashPassword(Title);
+			
 			PreparedStatement preparedStmt  = con.prepareStatement(query);
 			
 			//Binding values
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, PatentID);
-			preparedStmt.setString(3, Title);
+			preparedStmt.setString(3, hTitle);
 			preparedStmt.setString(4, appDate);
 			preparedStmt.setString(5, ResearcherID);
 			preparedStmt.setString(6, ConceptID);
 			
 			//Execute the statement
 			preparedStmt.execute();
+			
+			//Values for Hash Table
+			insertTitleforkey(Title, hTitle);
+						
 			con.close();
 			
 			output = "Patent Form Created Succesfully";
@@ -85,11 +95,10 @@ public class PatentService {
 							+ "<th>Title</th>"
 							+ "<th>AppliedDate</th>"
 							+ "<th>Concept</th>"
-							+ "<th>Update</th>"
 							+ "<th>Remove</th>"
 						+ "</tr>";
 			
-			String query = "select * from patentapplication";
+			String query = "SELECT p.PID, h.Key as Title, p.appDate, p.ConceptID FROM hpatent h, patentapplication p WHERE h.Value = p.Title";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			
@@ -107,15 +116,7 @@ public class PatentService {
 				output += "<td>" + ConceptID + "</td>";
 								
 				// buttons
-				output += "<td>"
-							+ "<form method='post' action='updateService.jsp'>"
-								+ "<input name='btnUpdate' type='submit' value='Update' class='btn btn-warning'>"
-								+ "<input name='SID' type='hidden' value=' " + PID + "'>"
-								+ "<input name='ServiceID' type='hidden' value=' " + Title + "'>"
-								+ "<input name='Name' type='hidden' value=' " + appDate + "'>"
-								+ "<input name='Speciality' type='hidden' value=' " + ConceptID + "'>"
-							+ "</form></td>"
-						+ "<td>"
+				output +=  "<td>"
 							+ "<form method='post' action='Service.jsp'>"
 								+ "<input name='btnRemove' type='submit' value='Delete' class='btn btn-danger'>"
 								+ "<input name='itemID' type='hidden' value='" + PID + "'>"
@@ -172,5 +173,23 @@ public class PatentService {
 		return output;
 	}
 
-
+	public int insertTitleforkey(String Title, String hTitle) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query2 = "INSERT INTO hpatent(`id`, `Key`, `Value`) VALUES(?,?,?)" ;
+		PreparedStatement nameT  = con.prepareStatement(query2);
+		//Binding values
+		nameT.setInt(1, 0);
+		nameT.setString(2, Title);
+		nameT.setString(3, hTitle);
+		
+		//Execute the statement
+		nameT.execute();
+		
+		return 0;
+	}
+	
 }
