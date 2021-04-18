@@ -12,6 +12,7 @@ import org.jsoup.parser.*;
 import org.jsoup.nodes.Document;
 
 import model.User;
+import authentication.userLogin;
 
 
 
@@ -20,6 +21,7 @@ public class UserService {
 	
 	
 	User userObj = new User();
+	userLogin loginObj = new userLogin();
 	String output;
 	
 	@GET
@@ -92,5 +94,19 @@ public class UserService {
 	 String output = userObj.deleteUser(type,userID);
 	return output;
 	}
+	
+	
+
+	@GET
+	@Path("/{username}/{password}/{type}")
+	@Produces(MediaType.TEXT_HTML)
+	public String userLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
+		
+		String output = loginObj.userLoginview(username,password,type);
+		return output;
+		
+		//user details for selected user
+	}
+
 
 }
