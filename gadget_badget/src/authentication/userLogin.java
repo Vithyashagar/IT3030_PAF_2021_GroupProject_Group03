@@ -27,9 +27,7 @@ public class userLogin {
 			if (con == null) {
 				return "Error while connecting to the database for reading.";
 			}
-			
-			// output = "<table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>description</th>" + "<th>profile Information</th></tr>";
-			
+		
 			if (type.equals("consumer") || type.equals("Consumer")) {
 				
 				String query ="select userID,userName,password,email,address,dob,phone from consumer where userName= '"+username+"'AND password= '"+password+"' ";
@@ -45,28 +43,18 @@ public class userLogin {
 				        String Address = rs.getString("address");
 				        String Dob =rs.getString("dob");
 				        String phone =rs.getString("phone");
-				        
-				       /* output += "<tr><td>" + userID + "</td>";
-				   	 	output += "<td>" + UserName + "</td>";
-				   	 	output += "<td>" + password + "</td>";
-				   	 	output += "<td>" + Email + "</td>";
-				   	 	output += "<td>" + Address + "</td>";
-				   	 	output += "<td>" + Dob + "</td>";
-				   	 	output += "<td>" + phone + "</td>";*/
-				         
-				        
 				  
 				        if((username.equals(UserName)) && (password.equals(Password))) {
-				        	//output ="     Login Failed  !!";
+				        	
 				        	output ="     Login Successful  !!           You're logged as "   +username;
-				        	/*output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th></tr>";
+				        	output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th></tr>";
 				        	output += "<tr><td>" + userID + "</td>";
 						   	output += "<td>" + UserName + "</td>";
 						   	output += "<td>" + password + "</td>";
 						   	output += "<td>" + Email + "</td>";
 						   	output += "<td>" + Address + "</td>";
 							output += "<td>" + Dob + "</td>";
-						   	output += "<td>" + phone + "</td>";	*/
+						   	output += "<td>" + phone + "</td>";	
 				        
 				        }
 			              else {
@@ -96,9 +84,9 @@ public class userLogin {
 				        
 				  
 				        if((username.equals(UserName)) && (password.equals(Password))) {
-				        	//output ="     Login Failed  !!";
+				        	
 				        	output ="     Login Successful  !!           You're logged as "   +username;
-				        	/*output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" + "<th>description</th></tr>";
+				        	output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" + "<th>description</th></tr>";
 				        	output += "<tr><td>" + userID + "</td>";
 						   	output += "<td>" + UserName + "</td>";
 						   	output += "<td>" + password + "</td>";
@@ -106,7 +94,7 @@ public class userLogin {
 						   	output += "<td>" + Address + "</td>";
 							output += "<td>" + Dob + "</td>";
 						   	output += "<td>" + phone + "</td>";	
-							output += "<td>" + desc + "</td>";	*/
+							output += "<td>" + desc + "</td>";	
 				        	}
 			              else {
 			                output ="      Login Failed...!!";
@@ -135,9 +123,9 @@ public class userLogin {
 				        
 				  
 				        if((username.equals(UserName)) && (password.equals(Password))) {
-				        	//output ="     Login Failed  !!";
+				        	
 				        	output ="     Login Successful  !!           You're logged as "   +username;
-				        /*	output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" + "<th>profile Information</th></tr>";
+				        	output += "<br><br><table border='1'><tr><th>User ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" + "<th>profile Information</th></tr>";
 				        	output += "<tr><td>" + userID + "</td>";
 						   	output += "<td>" + UserName + "</td>";
 						   	output += "<td>" + password + "</td>";
@@ -145,11 +133,11 @@ public class userLogin {
 						   	output += "<td>" + Address + "</td>";
 							output += "<td>" + Dob + "</td>";
 						   	output += "<td>" + phone + "</td>";	
-							output += "<td>" + profileInfo + "</td>";	*/
+							output += "<td>" + profileInfo + "</td>";	
 				        	}
 			              else {
 			                output ="      Login Failed...!!";
-			            	 //output ="     Login Successful  !!           You're logged as"   +username;
+			            	 
 			              	} 
 				  	}
 				
