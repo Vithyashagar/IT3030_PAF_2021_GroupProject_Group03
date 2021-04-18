@@ -240,5 +240,62 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 } 
 	 return output; 
 	 }
+	
+	
+	/*method to delete the user*/
+	public String deleteUser(String type,String userID)
+	 {
+	 String output = "";
+	 try
+	 {
+	 Connection con = connect();
+	 if (con == null)
+	 {return "Error while connecting to the database for deleting."; }
+	 
+	 if (type.equals("consumer") || type.equals("Consumer")) {
+		 
+		 // create a prepared statement
+		 String query = "delete from consumer where userID=?";
+		 PreparedStatement preparedStmt = con.prepareStatement(query);
+		 // binding values
+		 preparedStmt.setInt(1, Integer.parseInt(userID));
+		 // execute the statement
+		 preparedStmt.execute();
+		 con.close();
+		 output = "Consumer deleted successfully";
+	 }
+	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
+		 
+		 // create a prepared statement
+		 String query = "delete from manufacturer where manufacturerID=?";
+		 PreparedStatement preparedStmt = con.prepareStatement(query);
+		 // binding values
+		 preparedStmt.setInt(1, Integer.parseInt(userID));
+		 // execute the statement
+		 preparedStmt.execute();
+		 con.close();
+		 output = "Manufacturer deleted successfully";
+	 }
+	 if (type.equals("researcher") || type.equals("Researcher")) {
+		 
+		 // create a prepared statement
+		 String query = "delete from researcher where researcherID=?";
+		 PreparedStatement preparedStmt = con.prepareStatement(query);
+		 // binding values
+		 preparedStmt.setInt(1, Integer.parseInt(userID));
+		 // execute the statement
+		 preparedStmt.execute();
+		 con.close();
+		 output = "Researcher deleted successfully";
+	 }
+	 }
+	 catch (Exception e)
+	 {
+	 output = "Error while deleting the item.";
+	 System.err.println(e.getMessage());
+	 }
+	 return output;
+	 }
+	 
 
 }
