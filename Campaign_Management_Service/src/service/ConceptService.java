@@ -96,5 +96,16 @@ public class ConceptService {
 		return output;
 	}
 	
+	
+	
+	//View All concepts As a Consumer
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_HTML)
+	public String readAllConcepts()
+	{
+		return conceptObj.readAllConcepts();
+	}
+	
 
 }
