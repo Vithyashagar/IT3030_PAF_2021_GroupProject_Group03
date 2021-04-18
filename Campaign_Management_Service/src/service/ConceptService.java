@@ -1,5 +1,6 @@
 package service;
 
+//For API
 import resources.ConceptAPI;
 
 //For REST Service
@@ -15,27 +16,35 @@ import org.jsoup.*;
 import org.jsoup.parser.*;
 import org.jsoup.nodes.Document;
 
+
+//Start of service
 @Path("/Concepts")
 public class ConceptService {
 	
 	//concept API type object
 	ConceptAPI conceptObj = new ConceptAPI();
 	
-	//Viewing As a researcher
+	
+	/*** Viewing Concept details as a researcher(HTTP Verb : GET) by accepting researcher ID as input and produces an HTML Table ***/
 	@GET
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
 	public String readMyConcepts(String conceptData)
 	{
+		//Conversion of the input string to a JSON object
 		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
-		//Read the values from the JSON object
+		
+		//Reading the values from the JSON object
 		String reseracherID = conceptObject.get("researcherID").getAsString();
+		
+		//Read the concept details and return them
 		return conceptObj.readMyConcepts(reseracherID);
 		
 	}
 	
-	//Insert Function
+	
+	/*** Insert Function(HTTP Verb : POST) by getting the input values through forms and produces a plain text as output ***/
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -55,7 +64,8 @@ public class ConceptService {
 	}
 	
 	
-	//Update Function
+	
+	/*** Update Function(HTTP Verb : PUT) Using JSON and produces a plain text as output result***/
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -79,7 +89,7 @@ public class ConceptService {
 	}
 	
 	
-	//Delete Function
+	/*** DELETE FUNCTION (HTTP Verb : DELETE) using XML and produces plain text as output results ***/
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -98,7 +108,7 @@ public class ConceptService {
 	
 	
 	
-	//View All concepts As a Consumer
+	/*** Viewing Concept details as a consumer(HTTP Verb : GET) by an HTML table ***/
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
