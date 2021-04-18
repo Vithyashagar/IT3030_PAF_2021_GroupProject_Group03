@@ -71,7 +71,7 @@ public class User {
 	 return output;
 	 }
 	
-	
+	/*method to inert the user*/
 	public String insertUser(String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
 	 {
 	 String output = "";
@@ -160,77 +160,85 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 
 	 }
 	
-	/*public String insertUserManu(String username, String password, String email, String address,String dob ,String phone, String description)
-	 {
-	 String output = "";
+
+    /*method to update the user*/
+	public String updateUser(String type , String userID, String userName, String password, String email, String address,String dob,String phone,String desc,String profileInfo)
+	 { 
+	 String output = ""; 
 	 try
-	 {
-	 Connection con = connect();
-	 if (con == null)
-	 {return "Error while connecting to the database for inserting."; }
+	 { 
+	 Connection con = connect(); 
+	 if (con == null) 
+	 {return "Error while connecting to the database for updating."; } 
+	
 	 // create a prepared statement
-	 String query = " insert into gatget_badget_userservice.manufacturer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
-	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setInt(1, 0);
-	 preparedStmt.setString(2, username);
-	 preparedStmt.setString(3, password);
-	 preparedStmt.setString(4, email);
-	 preparedStmt.setString(5, address);
-	 preparedStmt.setString(6, dob);
-	 preparedStmt.setString(7, phone);
-	 preparedStmt.setString(8, description);
-	// execute the statement
+	 
+	 if (type.equals("consumer") || type.equals("Consumer")) {
+	 String query = "UPDATE gatget_badget_userservice.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
+	 PreparedStatement preparedStmt = con.prepareStatement(query); 
 	
-	 preparedStmt.execute();
-	 con.close();
-	 output = "Inserted successfully";
+	 preparedStmt.setString(1, userName); 
+	 preparedStmt.setString(2, password); 
+	 preparedStmt.setString(3, email); 
+	 preparedStmt.setString(4, address); 
+	 preparedStmt.setString(5, dob); 
+	 preparedStmt.setString(6, phone); 
+	 preparedStmt.setInt(7, Integer.parseInt(userID));
+	 // execute the statement
+	 preparedStmt.execute(); 
+	 con.close(); 
+	 output = "Updated successfully"; 
+	 } 
+	 
+	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
+		 
+		 String query = "UPDATE manufacturer SET userName=?,password=?,email=?,address=?,dob=?,phone=?,manufacturer.desc=? WHERE manufacturerID=?"; 
+		 PreparedStatement preparedStmt = con.prepareStatement(query); 
+		
+		 preparedStmt.setString(1, userName); 
+		 preparedStmt.setString(2, password); 
+		 preparedStmt.setString(3, email); 
+		 preparedStmt.setString(4, address); 
+		 preparedStmt.setString(5, dob); 
+		 preparedStmt.setString(6, phone); 
+		 preparedStmt.setString(7, desc);
+		 preparedStmt.setInt(8, Integer.parseInt(userID));
+		 // execute the statement
+		 preparedStmt.execute(); 
+		 con.close(); 
+		 output = "Updated successfully"; 
+		 
+	}
+	if (type.equals("researcher") || type.equals("Researcher")) {
+		 
+		 String query = "UPDATE gatget_badget_userservice.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
+		 PreparedStatement preparedStmt = con.prepareStatement(query); 
+		
+		 preparedStmt.setString(1, userName); 
+		 preparedStmt.setString(2, password); 
+		 preparedStmt.setString(3, email); 
+		 preparedStmt.setString(4, address); 
+		 preparedStmt.setString(5, dob); 
+		 preparedStmt.setString(6, phone); 
+		 preparedStmt.setString(7, profileInfo);
+		 preparedStmt.setInt(8, Integer.parseInt(userID));
+		 // execute the statement
+		 preparedStmt.execute(); 
+		 con.close(); 
+		 output = "Updated successfully"; 
+		 
 	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while inserting the user.";
-	 System.err.println(e.getMessage());
+	 
+	 
+	 
+	 
 	 }
-	 return output;
+	 catch (Exception e) 
+	 { 
+	 output = "Error while updating the user."; 
+	 System.err.println(e.getMessage()); 
+	 } 
+	 return output; 
 	 }
-	
-	
-	public String insertUserResearch(String username, String password, String email, String address,String dob ,String phone, String profileInfo)
-	 {
-	 String output = "";
-	 try
-	 {
-	 Connection con = connect();
-	 if (con == null)
-	 {return "Error while connecting to the database for inserting."; }
-	 // create a prepared statement
-	 String query = " insert into gatget_badget_userservice.researcher(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
-	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setInt(1, 0);
-	 preparedStmt.setString(2, username);
-	 preparedStmt.setString(3, password);
-	 preparedStmt.setString(4, email);
-	 preparedStmt.setString(5, address);
-	 preparedStmt.setString(6, dob);
-	 preparedStmt.setString(7, phone);
-	 preparedStmt.setString(8, profileInfo);
-	// execute the statement
-	
-	 preparedStmt.execute();
-	 con.close();
-	 output = "Inserted successfully";
-	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while inserting the user.";
-	 System.err.println(e.getMessage());
-	 }
-	 return output;
-	 }*/
-	
-	
 
 }

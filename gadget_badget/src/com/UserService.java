@@ -51,5 +51,31 @@ public class UserService {
 		  return output;
 	}
 	
+	
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateUser(String userData)
+	{
+	//Convert the input string to a JSON object
+	 JsonObject userObject = new JsonParser().parse(userData).getAsJsonObject();
+	
+	 //Read the values from the JSON object
+	 String type = userObject.get("type").getAsString();
+	 String userID = userObject.get("userID").getAsString();
+	 String userName = userObject.get("userName").getAsString();
+	 String password = userObject.get("password").getAsString();
+	 String email = userObject.get("email").getAsString();
+	 String address =userObject.get("address").getAsString();
+	 String dob = userObject.get("dob").getAsString();
+	 String phone = userObject.get("phone").getAsString();
+	 String desc = userObject.get("desc").getAsString();
+	 String profileInfo = userObject.get("profileInfo").getAsString();
+	
+	 String output = userObj.updateUser(type,userID, userName, password, email,address,dob,phone,desc,profileInfo);
+	return output;
+	}
+	
 
 }
