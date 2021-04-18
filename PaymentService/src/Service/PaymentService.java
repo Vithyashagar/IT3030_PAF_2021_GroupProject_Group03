@@ -37,7 +37,7 @@ public class PaymentService {
 	/*Inserting backer or buyer details to the database*/
 	
 	public String insertPayment(String paymentType, String bank, String paymentDate, String cardNo , 
-			String nameOnCard, String cvv ,double buyerPayment  ,int productID ,int consumerID , int conceptID, 
+			String nameOnCard, String cvv  ,int productID ,int consumerID , int conceptID, 
 			String cardExpMonth , String cardExpYear 
 			)
 	{
@@ -52,12 +52,26 @@ public class PaymentService {
 				return "Error while connecting to the database";
 			}
 			
-			if(buyerPayment == -1 && productID == -1) {
-				buyerPayment = -1;
+			
+			
+			if( productID == -1) {
 				productID = -1;
 			}
 			else if(conceptID == -1) {
 				conceptID = -1;
+				
+				//contains implemented business logic
+				CallableStatement  cs = con.prepareCall("{call insertProductAmount(?,?)}");	
+				
+				//setting parameter to procedure
+				cs.setInt(1, productID);
+				cs.setInt(2, consumerID);
+				
+				//call procedure
+				cs.execute();
+				
+				System.out.println("Product procedure called succesfuly");
+				
 			}
 			
 			//Preparing a CallableStatement to call a function
@@ -75,8 +89,8 @@ public class PaymentService {
             
 			// create a prepared statement
 			
-			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
-			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
+			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -92,12 +106,12 @@ public class PaymentService {
 			preparedStmt.setString(6, cardNo);
 			preparedStmt.setString(7, nameOnCard);
 			preparedStmt.setString(8, cvv);
-			preparedStmt.setDouble(9,buyerPayment);
-			preparedStmt.setInt(10, productID);
-			preparedStmt.setInt(11, consumerID);
-			preparedStmt.setInt(12, conceptID);
-			preparedStmt.setString(13, cardExpMonth);
-			preparedStmt.setString(14, cardExpYear);
+			//preparedStmt.setDouble(9,buyerPayment);
+			preparedStmt.setInt(9, productID);
+			preparedStmt.setInt(10, consumerID);
+			preparedStmt.setInt(11, conceptID);
+			preparedStmt.setString(12, cardExpMonth);
+			preparedStmt.setString(13, cardExpYear);
 			
 			
 			//execute the statement

@@ -41,14 +41,14 @@ public class PaymentResource {
 	@FormParam("bank") String bank,
 	@FormParam("paymentDate") String paymentDate,
 	@FormParam("cardNo") String cardNo,@FormParam("NameOnCard") String NameOnCard,
-	@FormParam("cvv") String cvv,@FormParam("Buyerpayment") double Buyerpayment,
+	@FormParam("cvv") String cvv,
 	@FormParam("ProductID") int ProductID,@FormParam("ConsumerID") int ConsumerID,
 	@FormParam("ConceptID") int ConceptID,@FormParam("cardExpMonth") String cardExpMonth,
 	@FormParam("cardExpYear") String cardExpYear
 	)
 	{
 		
-		String output = payObj.insertPayment(PaymentType, bank, paymentDate, cardNo,NameOnCard,cvv,Buyerpayment,ProductID,ConsumerID,ConceptID,cardExpMonth,cardExpYear);
+		String output = payObj.insertPayment(PaymentType, bank, paymentDate, cardNo,NameOnCard,cvv,ProductID,ConsumerID,ConceptID,cardExpMonth,cardExpYear);
 		return output;
 	}
 	
