@@ -42,7 +42,7 @@ public class PaymentService {
 			)
 	{
 		String output = "";
-		
+		double totalBuyingAmt = 0.00;
 		
 		try
 		{
@@ -53,24 +53,31 @@ public class PaymentService {
 			}
 			
 			
-			
+		/*Validate payment as backer or buyer payment*/	
 			if( productID == -1) {
 				productID = -1;
 			}
-			else if(conceptID == -1) {
+			else if(conceptID == -1) { /*Logic to handle if its a buyer payment */
 				conceptID = -1;
 				
 				//contains implemented business logic
-				CallableStatement  cs = con.prepareCall("{call insertProductAmount(?,?)}");	
+				CallableStatement  cs = con.prepareCall("{? = call insertProductAmount(?,?)}");	
 				
-				//setting parameter to procedure
-				cs.setInt(1, productID);
-				cs.setInt(2, consumerID);
+				//setting parameter to function
 				
-				//call procedure
+				 cs.registerOutParameter(1, Types.DOUBLE);
+				 cs.setInt(2,productID);
+				 cs.setInt(3, consumerID);
+			
+				
+				//call function
 				cs.execute();
 				
-				System.out.println("Product procedure called succesfuly");
+				//obtained returned value of function(insertProductAmount())
+			    totalBuyingAmt = cs.getDouble(1);
+				
+			    //checking for function execution
+				System.out.println("Product function called succesfully");
 				
 			}
 			
@@ -83,14 +90,18 @@ public class PaymentService {
             //Executing the statement
             cstmt.execute();
             
+            //obtaining returned value of function(getPaymentID())
             String PaymentCode = cstmt.getString(1);
             
+            if(totalBuyingAmt == 0) {
+            	totalBuyingAmt = 0;
+            }
             
             
 			// create a prepared statement
 			
-			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
-			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
+			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -106,12 +117,12 @@ public class PaymentService {
 			preparedStmt.setString(6, cardNo);
 			preparedStmt.setString(7, nameOnCard);
 			preparedStmt.setString(8, cvv);
-			//preparedStmt.setDouble(9,buyerPayment);
-			preparedStmt.setInt(9, productID);
-			preparedStmt.setInt(10, consumerID);
-			preparedStmt.setInt(11, conceptID);
-			preparedStmt.setString(12, cardExpMonth);
-			preparedStmt.setString(13, cardExpYear);
+			preparedStmt.setDouble(9,totalBuyingAmt);
+			preparedStmt.setInt(10, productID);
+			preparedStmt.setInt(11, consumerID);
+			preparedStmt.setInt(12, conceptID);
+			preparedStmt.setString(13, cardExpMonth);
+			preparedStmt.setString(14, cardExpYear);
 			
 			
 			//execute the statement
