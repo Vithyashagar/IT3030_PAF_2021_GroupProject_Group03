@@ -2,6 +2,8 @@ package Model;
 
 import java.sql.*;
 
+import Security.Sample;
+
 public class ManufacturerService {
 
 	
@@ -40,6 +42,13 @@ public class ManufacturerService {
 				return "Error while connecting to Database";		
 			}
 			
+			//Hashing
+			Sample mh = new Sample();
+			
+			String hName = mh.hashPassword(Name);
+			String hSpeciality = mh.hashPassword(Speciality);
+			
+			
 			//Create Prepared Statement
 			String query = "INSERT INTO services(`SID`,`ServiceID`,`Name`,`Speciality`,`Description`, `MFRID`) VALUES(?,?,?,?,?,?)" ;
 			
@@ -48,15 +57,21 @@ public class ManufacturerService {
 			//Binding values
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, ServiceID);
-			preparedStmt.setString(3, Name);
-			preparedStmt.setString(4, Speciality);
+			preparedStmt.setString(3, hName);
+			preparedStmt.setString(4, hSpeciality);
 			preparedStmt.setString(5, Description);
 			preparedStmt.setString(6, MFRID);
 			
 			//Execute the statement
-			preparedStmt.execute();
-			con.close();
+			preparedStmt.execute();			
 			
+			//Table for Hash values 
+			insertNameforkey(Name, hName);
+			insertSpecforkey(Speciality, hSpeciality);
+			
+			//close connection
+			con.close();
+	
 			output = "Service Created Succesfully";
 			
 			
@@ -92,9 +107,11 @@ public class ManufacturerService {
 							+ "<th>Remove</th>"
 						+ "</tr>";
 			
-			String query = "select * from services";
+			String query = "select s.SID, s.ServiceID, t.nKey as Name, p.sKey as Speciality, s.Description, s.MFRID from services s, sname t, sspec p where s.Name = t.value and s.Speciality = p.Value";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
+			 
+			
 			
 			// iterate through the rows in the result set
 			while (rs.next()){
@@ -105,7 +122,7 @@ public class ManufacturerService {
 				String Speciality = rs.getString("Speciality");
 				String Description = rs.getString("Description");
 				String MFRID = rs.getString("MFRID");
-				
+								
 				// Add a row into the HTML table
 				output += "<tr><td>" + ServiceID + "</td>";
 				output += "<td>" + Name + "</td>";
@@ -194,15 +211,25 @@ public class ManufacturerService {
 			}
 			
 			// create a prepared statement
-			String query = "UPDATE services SET ServiceID=?,Name=?,Speciality=?,Description=?WHERE SID=?";
+			String query = "UPDATE services SET ServiceID=?,Name=?,Speciality=?,Description=? WHERE SID=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			//Hashing
+			Sample mh = new Sample();
+			
+			String hName = mh.hashPassword(Name);
+			String hSpeciality = mh.hashPassword(Speciality);
 			
 			// binding values
 			preparedStmt.setString(1, ServiceID);
-			preparedStmt.setString(2, Name);
-			preparedStmt.setString(3, Speciality);
+			preparedStmt.setString(2, hName);
+			preparedStmt.setString(3, hSpeciality);
 			preparedStmt.setString(4, Description);
 			preparedStmt.setInt(5, Integer.parseInt(SID));
+			
+			////Table for Hash values 
+			insertNameforkey(Name,  hName);
+			insertSpecforkey(Speciality, hSpeciality);
 			
 			// execute the statement
 			preparedStmt.execute();
@@ -216,5 +243,42 @@ public class ManufacturerService {
 		}
 		
 		return output;
+	}
+
+	public int insertNameforkey(String Name, String hName) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query2 = "INSERT INTO sname(`id`, `nKey`, `Value`) VALUES(?,?,?)" ;
+		PreparedStatement nameT  = con.prepareStatement(query2);
+		//Binding values
+		nameT.setInt(1, 0);
+		nameT.setString(2, Name);
+		nameT.setString(3, hName);
+		
+		//Execute the statement
+		nameT.execute();
+		
+		return 0;
+	}
+
+	public int insertSpecforkey(String Speciality, String hSpeciality) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Specialty
+		String query3 = "INSERT INTO sspec(`id`, `sKey`, `Value`) VALUES(?,?,?)" ;
+		PreparedStatement specT  = con.prepareStatement(query3);
+		//Binding values
+		specT.setInt(1, 0);
+		specT.setString(2, Speciality);
+		specT.setString(3, hSpeciality);
+		
+		//Execute the statement
+		specT.execute();
+		
+		return 0;
 	}
 }
