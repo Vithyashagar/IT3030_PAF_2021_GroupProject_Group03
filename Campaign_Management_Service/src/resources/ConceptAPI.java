@@ -194,7 +194,7 @@ public class ConceptAPI {
 			preparedStmt.execute();
 			con.close();
 			
-			output = "Concept Deatils Inserted Successfully";
+			output = "Concept Details Inserted Successfully";
 		}
 		catch (Exception e)
 		{
