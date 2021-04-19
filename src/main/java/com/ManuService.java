@@ -9,8 +9,6 @@ import javax.ws.rs.core.MediaType;
 //For JSON
 import com.google.gson.*;
 
-
-
 @Path("/Service")
 public class ManuService {
 	
