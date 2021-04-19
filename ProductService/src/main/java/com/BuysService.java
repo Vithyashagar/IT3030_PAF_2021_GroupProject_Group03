@@ -1,7 +1,7 @@
 package com;
 
 import model.Buys;
-import model.Product;
+
 
 //For REST Service
 import javax.ws.rs.*;
@@ -18,15 +18,15 @@ import org.jsoup.nodes.Document;
 @Path("/Buying") 
 public class BuysService {
 
-Product ProductObj = new Product();
+	Buys BuysObj = new Buys();
 	
 	//GET method of ProductService	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
-	public String readProduct()
+	public String readProductConsumer()
 	 {
-	 return ProductObj.readProduct();
+	 return BuysObj.readProductConsumer();
 	 }
 	
 	

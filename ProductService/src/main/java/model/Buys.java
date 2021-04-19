@@ -29,45 +29,62 @@ public class Buys {
 	 } 
 	
 	
-	/**********************Insert Buying*****************************/
-	public String insertProductConsumer(int consumerID,int productID, int qty ){
-		String output = "";
-		
-	 try{
-		 Connection con = connect();
-	
-		 if (con == null)
-		 {
-			 return "Error while connecting to the database for inserting."; 
-		 }
-	 
-		 	// create a prepared statement
-		 	String query = "insert into buying (`consumerID`,`productID`,`qty`)"
-		 			+ " values (?, ?, ?)";
-	
-		 	PreparedStatement preparedStmt = con.prepareStatement(query);
-		
-		 	// binding values
-		 	preparedStmt.setInt(1, consumerID);
-		 	preparedStmt.setInt(2, productID);
-		 	preparedStmt.setInt(3, qty);
-		 	
-		 	// execute the statement
-		 	preparedStmt.execute();
-		 	con.close();
-		 	output = "Inserted successfully";
-		 	 
-	 }catch (Exception e){
-		 
-		 	 output = "Error while inserting the Product bought by customer";
-		 	 System.err.println(e.getMessage());
-		 	}
-		 	
-	 	return output;
-	} 
-	
 
 	
+/**********************Retrieve Buying*****************************/
 	
+	public String readProductConsumer()
+	 {
+			String output = "";
+	 
+			try
+			{
+				Connection con = connect();
+				if (con == null)
+				{
+					return "Error while connecting to the database for reading."; 
+				}
+				
+				
+				// Prepare the html table to be displayed
+				
+				output = "<table border='1'><tr><th>Consumer ID</th>"+ 
+						"<th>Product ID</th>" +
+						"<th>Quantity</th></tr>";
+
+					 String query = "select * from buying";
+					 
+					 Statement stmt = con.createStatement();
+					 
+					 ResultSet rs = stmt.executeQuery(query);
+					 
+					 // iterate through the rows in the result set
+					 while (rs.next())
+					 {
+						 String consumerID = Integer.toString(rs.getInt("consumerID"));
+						 String productID = Integer.toString(rs.getInt("productID"));
+						 String qty = Integer.toString(rs.getInt("qty"));
+
+						 
+						 // Add into the html table
+						 output += "<tr><td>" + consumerID + "</td>";
+						 output += "<td>" + productID + "</td>";
+						 output += "<td>" + qty + "</td></tr>";
+						
+					 }
+					 con.close();
+					
+					// Complete the html table
+					output += "</table>";
+	 
+			}catch (Exception e){
+				
+				output = "Error while reading the buying table";
+				System.err.println(e.getMessage());
+				
+			}
+			
+			return output;
+	 }
 
 }
