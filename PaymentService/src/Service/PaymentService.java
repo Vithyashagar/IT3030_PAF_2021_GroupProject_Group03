@@ -10,7 +10,7 @@ import java.sql.Types;
 
 public class PaymentService {
 
-	/*Checking for database connectivity*/
+	/*****************************************Checking for database connectivity.***************************************/
 	
 	public Connection connect()
 	{
@@ -22,7 +22,7 @@ public class PaymentService {
 			
 			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentdb","root", "1234");
 			
-			//For testing
+			//Testing for connectivity
 			
 			System.out.print("Successfully connected");
 		}
@@ -34,13 +34,14 @@ public class PaymentService {
 		return con;
 	}
 	
-	/*Inserting backer or buyer details to the database*/
+	/********************************Inserting backer or buyer details to the database.*************************************/
 	
-	public String insertPayment(String paymentType, String bank, String paymentDate, String cardNo , 
+	public String insertPayment(String paymentType, String bank, String paymentDate, String cardNo, 
 			String nameOnCard, String cvv  ,int productID ,int consumerID , int conceptID, 
 			String cardExpMonth , String cardExpYear 
 			)
 	{
+		//variable declaration to capture output message and calculated product price
 		String output = "";
 		double totalBuyingAmt = 0.00;
 		
@@ -53,15 +54,17 @@ public class PaymentService {
 			}
 			
 			
-		/*Validate payment as backer or buyer payment*/	
+		/*******************Verify payment as backer or buyer payment.***********************/	
 			if( productID == -1) {
+				
 				productID = -1;
 			}
-			else if(conceptID == -1) { /*Logic to handle if its a buyer payment */
+			else if(conceptID == -1) { /****************Logic to handle if its a buyer payment.***************/
+				
 				conceptID = -1;
 				
-				//contains implemented business logic
-				CallableStatement  cs = con.prepareCall("{? = call insertProductAmount(?,?)}");	
+				//contains implemented business logic to calculate total buying amount of buyer
+				 CallableStatement  cs = con.prepareCall("{? = call insertProductAmount(?,?)}");	
 				
 				//setting parameter to function
 				
@@ -71,17 +74,22 @@ public class PaymentService {
 			
 				
 				//call function
-				cs.execute();
+				 cs.execute();
 				
 				//obtained returned value of function(insertProductAmount())
-			    totalBuyingAmt = cs.getDouble(1);
+			     totalBuyingAmt = cs.getDouble(1);
 				
-			    //checking for function execution
-				System.out.println("Product function called succesfully");
+			    //checking for successful function execution
+				 System.out.println("Product function called succesfully");
 				
 			}
 			
-			//Preparing a CallableStatement to call a function
+		/*******************End of buyer or backer verification.***********************************/
+			
+			
+		/*************Executing logic for Auto-generating payment id******************************************************/	
+			
+			//Preparing a CallableStatement to call the implemented function
             CallableStatement cstmt = con.prepareCall("{? = call getPaymentID()}");
             
             //Registering the out parameter of the function (return type)
@@ -93,6 +101,7 @@ public class PaymentService {
             //obtaining returned value of function(getPaymentID())
             String PaymentCode = cstmt.getString(1);
             
+            /*******Define total amount if payment is a backer payment(NOt a buyer payment)************************/
             if(totalBuyingAmt == 0) {
             	totalBuyingAmt = 0;
             }
@@ -131,11 +140,11 @@ public class PaymentService {
 			//closing connection object
 			con.close();
 			
-			output = "Inserted successfully";
+			output = " User payment Inserted successfully";
 	}
 	catch (Exception e)
 	{
-		output = "Error while inserting";
+		output = "Error while inserting user payment";
 		System.err.println(e.getMessage());
 	}
 		
@@ -143,7 +152,7 @@ public class PaymentService {
 	}
 	
 	
-	/*Method to read relevant payment details*/
+	/*****************************************Method to read relevant payment details********************************/
 	public String readPayments()
 	{
 		String output = "";
@@ -174,6 +183,7 @@ public class PaymentService {
 				String query = "select * from gb_payments";
 				
 				Statement stmt = con.createStatement();
+				
 				ResultSet rs = stmt.executeQuery(query);
 				
 				// iterate through the rows in the result set
@@ -230,13 +240,14 @@ public class PaymentService {
 		}
 		catch (Exception e)
 		{
-				output = "Error while reading the items.";
+				output = "Error while reading the payments.";
 				System.err.println(e.getMessage());
 		}
+	
 		return output;
 	}
 	
-	/*Method to handle payment status depending on pledegAmount summation*/
+	/**************************Method to handle payment status depending on pledegAmount summation**********************/
 	public String updatePaymentStatus(int ConceptID)
 	{
 		String output = "";
@@ -250,9 +261,9 @@ public class PaymentService {
 				return "Error while connecting to the database for updating."; 
 			}
 			
-			//Preparing a CallableStatement to call a stored procedure
+			//Preparing a CallableStatement to call a stored procedure containing business logic
 			
-			//contains implemented business logic
+			//contains  business logic implemented to update concept status as pledgeAmount sums up
 			CallableStatement  cs = con.prepareCall("{call updateStatus(?)}");	
 			
 			//setting parameter to procedure
@@ -263,21 +274,22 @@ public class PaymentService {
 			
 			cs.close();
 			
-			//verify execution success
+			//verify procedure execution success
 			System.out.println("Stored procedure called successfully!");
 		
-			output = "Concept status Updated successfully";
+			output = "Concept payment status Updated successfully";
 		}
 		catch (Exception e)
 		{
-			output = "Error while updating the campaign status.";
+			output = "Error while updating the concept payment status.";
 			System.err.println(e.getMessage());
 		}
 		
 		return output;
+		
 		}
 	
-	/*Method to update user payment details*/
+	/***************************Method to update user payment details****************************/
 	
 	public String updatePaymentDetails(String paymentID,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
 	{
@@ -317,11 +329,12 @@ public class PaymentService {
 		
 		con.close();
 		
-		output = "Payment Updated successfully";
+		output = "Payment details Updated successfully";
+		
 		}
 		catch (Exception e)
 		{
-			output = "Error while updating the payment.";
+			output = "Error while Updating the payment details.";
 		
 			System.err.println(e.getMessage());
 		}
@@ -351,7 +364,9 @@ public class PaymentService {
 			output = "Payment Deleted Successfully!!";
 		}
 		catch (Exception e) {
-			output = "Error while deleting";
+			
+			output = "Error while deleting payment";
+			
 			e.printStackTrace();
 		}
 		

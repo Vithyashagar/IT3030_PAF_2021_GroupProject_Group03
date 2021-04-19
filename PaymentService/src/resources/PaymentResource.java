@@ -24,7 +24,7 @@ public class PaymentResource {
 
 	PaymentService payObj = new PaymentService(); //PaymentService instantiation
 	
-	/*Reading user data representing it as an HTML table*/
+	/*****************Reading user data representing it as an HTML table************************/
 	
 	@GET
 	@Path("/")
@@ -35,7 +35,8 @@ public class PaymentResource {
 	}
 	
 	
-	/*Handling user insert via a form and producing final output as plain text message*/
+	/*************Handling user insert via a form and producing final output as plain text message***********************/
+	
 	@POST
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -50,15 +51,17 @@ public class PaymentResource {
 	@FormParam("cardExpYear") String cardExpYear
 	)
 	{
-		
+		/*Invoke insert method of paymentService class*/
 		String output = payObj.insertPayment(PaymentType, bank, paymentDate, cardNo,NameOnCard,cvv,ProductID,ConsumerID,ConceptID,cardExpMonth,cardExpYear);
 		return output;
 	}
 	
 	
-	/*Handling concept status by verifying total pledgeAmount of a concept*/
 	
-	/*Updating data via a form and representing success as a plain text message */
+	
+	/*************************Handling concept status by verifying total pledgeAmount of a concept************************/
+	
+	/******************Updating data via a form and representing success as a plain text message *************************/
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -66,32 +69,39 @@ public class PaymentResource {
 	public String updatePayment(@FormParam("ConceptID") int ConceptID)
 	{
 	
-	String output = payObj.updatePaymentStatus(ConceptID);
-	return output;
+		//invoke updateMethod from paymentService
+		String output = payObj.updatePaymentStatus(ConceptID);
+		
+		return output;
 	}
 	
 	
-	/*Delete backer payments related to incomplete projects*/
-	/*Input is given as an xml format providing a plain text message as output*/
+	/*******************************Delete backer payments related to incomplete projects******************************/
+	/***************************Input is given as an xml format providing a plain text message as output**************/
 	
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String deletePayment(String itemData)
+	public String deletePayment(String paymentData)
 	{
-	//Convert the input string to an XML document
-	Document doc = Jsoup.parse(itemData, "", Parser.xmlParser());
+		
+		//Convert the input string to an XML document
+		Document doc = Jsoup.parse(paymentData, "", Parser.xmlParser());
+		
+		//Read the value from the element <status>
 	
-	//Read the value from the element <status>
-	
-	String status = doc.select("status").text();
-	String output = payObj.deletePayment(status);
-	return output;
+			String status = doc.select("status").text();
+			
+		//invoke deletePayment method from service class.
+			String output = payObj.deletePayment(status);
+			
+			return output;
 	}
 	
 	
-	/*Updating data via JSON format and representing success as a plain text message */
+	/********************Updating data via JSON format and representing success as a plain text message****************/
+	
 	@PUT
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -111,6 +121,8 @@ public class PaymentResource {
 		String cvv = paymentObject.get("cvv").getAsString();
 		String cardExpMonth = paymentObject.get("cardExpMonth").getAsString();
 		String cardExpYear = paymentObject.get("cardExpYear").getAsString();
+		
+		//invoke deletePaymentMethod from service class
 		
 		String output = payObj.updatePaymentDetails(paymentID, paymentType, bank, cardNo, NameOnCard,cvv,cardExpMonth,cardExpYear);
 	
