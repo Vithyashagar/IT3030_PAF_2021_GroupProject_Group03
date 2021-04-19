@@ -187,8 +187,8 @@ public class ConceptAPI {
 			preparedStmt.setDouble(7, Double.parseDouble(pledgeGoal));
 			preparedStmt.setString(8, reward);
 			preparedStmt.setString(9, workUpdt);
-			preparedStmt.setString(10, researcherID);
-			preparedStmt.setString(11, manufactID);
+			preparedStmt.setInt(10, Integer.parseInt(researcherID));
+			preparedStmt.setInt(11, Integer.parseInt(manufactID));
 			
 			//execute the statement
 			preparedStmt.execute();
