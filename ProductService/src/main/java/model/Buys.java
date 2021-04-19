@@ -29,5 +29,45 @@ public class Buys {
 	 } 
 	
 	
+	/**********************Insert Buying*****************************/
+	public String insertProductConsumer(int consumerID,int productID, int qty ){
+		String output = "";
+		
+	 try{
+		 Connection con = connect();
+	
+		 if (con == null)
+		 {
+			 return "Error while connecting to the database for inserting."; 
+		 }
+	 
+		 	// create a prepared statement
+		 	String query = "insert into buying (`consumerID`,`productID`,`qty`)"
+		 			+ " values (?, ?, ?)";
+	
+		 	PreparedStatement preparedStmt = con.prepareStatement(query);
+		
+		 	// binding values
+		 	preparedStmt.setInt(1, consumerID);
+		 	preparedStmt.setInt(2, productID);
+		 	preparedStmt.setInt(3, qty);
+		 	
+		 	// execute the statement
+		 	preparedStmt.execute();
+		 	con.close();
+		 	output = "Inserted successfully";
+		 	 
+	 }catch (Exception e){
+		 
+		 	 output = "Error while inserting the Product bought by customer";
+		 	 System.err.println(e.getMessage());
+		 	}
+		 	
+	 	return output;
+	} 
+	
+
+	
+	
 
 }
