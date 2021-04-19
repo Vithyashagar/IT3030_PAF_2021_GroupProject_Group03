@@ -277,6 +277,60 @@ public class PaymentService {
 		return output;
 		}
 	
+	/*Method to update user payment details*/
+	
+	public String updatePaymentDetails(String paymentID,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
+	{
+		String output = "";
+		
+		try
+		{
+			
+			Connection con = connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for updating.";
+			}
+			
+			
+			// create a prepared statement
+			
+		String query = "UPDATE gb_payments SET PaymentType=?,bank=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=? WHERE PaymentID=?";
+		
+		PreparedStatement preparedStmt = con.prepareStatement(query);
+		
+		// binding values
+		
+		preparedStmt.setString(1, paymentType);
+		preparedStmt.setString(2, bank);
+		preparedStmt.setString(3, cardNo);
+		preparedStmt.setString(4, NameOnCard);
+		preparedStmt.setString(5, cvv);
+		preparedStmt.setString(6, cardExpMonth);
+		preparedStmt.setString(7, cardExpYear);
+		preparedStmt.setString(8, paymentID);
+		
+		// execute the statement
+		preparedStmt.execute();
+		
+		
+		con.close();
+		
+		output = "Payment Updated successfully";
+		}
+		catch (Exception e)
+		{
+			output = "Error while updating the payment.";
+		
+			System.err.println(e.getMessage());
+		}
+		
+			return output;
+		}
+		
+	
+	
 	
 	/*Method to delete incomplete project backed funds*/
 	public String deletePayment(String status) {

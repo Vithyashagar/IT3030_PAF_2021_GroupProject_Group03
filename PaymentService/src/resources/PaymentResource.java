@@ -14,6 +14,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import Service.PaymentService;
 
 @Path("/Payments") /*defining payment resource*/
@@ -85,5 +88,32 @@ public class PaymentResource {
 	String status = doc.select("status").text();
 	String output = payObj.deletePayment(status);
 	return output;
+	}
+	
+	
+	/*Updating data via JSON format and representing success as a plain text message */
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updatePaymentDetails(String paymentData)
+	{
+	
+		//Convert the input string to a JSON object
+		JsonObject paymentObject = new JsonParser().parse(paymentData).getAsJsonObject();
+		
+		//Read the values from the JSON object
+		String paymentID = paymentObject.get("paymentID").getAsString();
+		String paymentType = paymentObject.get("paymentType").getAsString();
+		String bank = paymentObject.get("bank").getAsString();
+		String cardNo = paymentObject.get("cardNo").getAsString();
+		String NameOnCard = paymentObject.get("NameOnCard").getAsString();
+		String cvv = paymentObject.get("cvv").getAsString();
+		String cardExpMonth = paymentObject.get("cardExpMonth").getAsString();
+		String cardExpYear = paymentObject.get("cardExpYear").getAsString();
+		
+		String output = payObj.updatePaymentDetails(paymentID, paymentType, bank, cardNo, NameOnCard,cvv,cardExpMonth,cardExpYear);
+	
+		return output;
 	}
 }
