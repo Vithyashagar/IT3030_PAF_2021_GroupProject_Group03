@@ -29,7 +29,7 @@ public class UserService {
 	@Produces(MediaType.TEXT_HTML)
 	public String readUsers()
 	 {
-	 return  userObj.readUsers();
+	 return  userObj.readConsumers();
 	 } 
 	
 	
@@ -38,6 +38,7 @@ public class UserService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String insertUser(@FormParam("type") String type,
+	 @FormParam("userCode") String userCode,
 	 @FormParam("userName") String userName,
 	 @FormParam("password") String password,
 	 @FormParam("email") String email,
@@ -49,7 +50,7 @@ public class UserService {
 	 )
 	{
 		
-		  output = userObj.insertUser(userName, password, email, address,dob,phone,type,desc,profileInfo);
+		  output = userObj.insertUser(userCode,userName, password, email, address,dob,phone,type,desc,profileInfo);
 		  return output;
 	}
 	

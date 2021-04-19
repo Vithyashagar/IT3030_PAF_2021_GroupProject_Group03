@@ -12,7 +12,7 @@ public class User {
 	 Class.forName("com.mysql.jdbc.Driver");
 
 	 //Provide the correct details: DBServer/DBName, username, password
-	 con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gatget_badget_userservice?useSSL=false", "root", "1234");
+	 con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user_service?useSSL=false", "root", "1234");
 	 }
 	 catch (Exception e)
 	 {e.printStackTrace();}
@@ -20,7 +20,7 @@ public class User {
 	 }
 	
 	
-	public String readUsers()
+	public String readConsumers()
 	 {
 	 String output = "";
 	 try
@@ -29,7 +29,7 @@ public class User {
 	 if (con == null)
 	 {return "Error while connecting to the database for reading."; }
 	 // Prepare the html table to be displayed
-	 output = "<table border='1'><tr><th>Consumer ID</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
+	 output = "<table border='1'><tr><th>Consumer ID</th><th>Consumer Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
 
 	 String query = "select * from consumer";
 	 Statement stmt = con.createStatement();
@@ -38,6 +38,7 @@ public class User {
 	 while (rs.next())
 	 {
 	 String consumerID = Integer.toString(rs.getInt("userID"));
+	 String consumerCode = Integer.toString(rs.getInt("userCode"));
 	 String userName = rs.getString("userName");
 	 String password = rs.getString("password");
 	 String email = rs.getString("email");
@@ -47,6 +48,7 @@ public class User {
 	 
 	 // Add into the html table
 	 output += "<tr><td>" + consumerID + "</td>";
+	 output += "<td>" + consumerCode + "</td>";
 	 output += "<td>" + userName + "</td>";
 	 output += "<td>" + password + "</td>";
 	 output += "<td>" + email + "</td>";
@@ -72,7 +74,7 @@ public class User {
 	 }
 	
 	/*method to inert the user*/
-	public String insertUser(String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
+	public String insertUser(String usercode ,String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
 	 {
 	 String output = "";
 	 try
@@ -80,21 +82,36 @@ public class User {
 	 Connection con = connect();
 	 if (con == null)
 	 {return "Error while connecting to the database for inserting."; }
-	
+	 
 	 // create a prepared statement
 	 if (type.equals("consumer") || type.equals("Consumer")) {
-	 String query = " insert into gatget_badget_userservice.consumer(`userID`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
-	 + " values (?, ?, ?, ?, ?, ?, ?)";
+		 
+		 //Preparing a CallableStatement to call a function
+		 CallableStatement cstmt = con.prepareCall("{? = call getConsumerID()}");
+		 
+		 //Registering the out parameter of the function (return type)
+		 cstmt.registerOutParameter(1, Types.CHAR);
+		
+		 //Executing the statement
+		 cstmt.execute();
+		 String conceptCode = cstmt.getString(1);
+		 
+		 
+		 
+		 
+	 String query = " insert into user_service.consumer(`userID`,`userCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
+	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 	 
 	 PreparedStatement preparedStmt = con.prepareStatement(query);
 	 // binding values
 	 preparedStmt.setInt(1, 0);
-	 preparedStmt.setString(2, username);
-	 preparedStmt.setString(3, password);
-	 preparedStmt.setString(4, email);
-	 preparedStmt.setString(5, address);
-	 preparedStmt.setString(6, dob);
-	 preparedStmt.setString(7, phone);
+	 preparedStmt.setString(2, conceptCode);
+	 preparedStmt.setString(3, username);
+	 preparedStmt.setString(4, password);
+	 preparedStmt.setString(5, email);
+	 preparedStmt.setString(6, address);
+	 preparedStmt.setString(7, dob);
+	 preparedStmt.setString(8, phone);
 	// execute the statement
 	
 	 preparedStmt.execute();
@@ -105,19 +122,31 @@ public class User {
 	 
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
-		 String query = " insert into gatget_badget_userservice.manufacturer(`manufacturerID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
-				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+		 
+		//Preparing a CallableStatement to call a function
+		 CallableStatement cstmt = con.prepareCall("{? = call getManufacturerID()}");
+		 
+		 //Registering the out parameter of the function (return type)
+		 cstmt.registerOutParameter(1, Types.CHAR);
+		
+		 //Executing the statement
+		 cstmt.execute();
+		 String conceptCode = cstmt.getString(1);
+		 
+		 String query = " insert into user_service.manufacturer(`manufacturerID`,`manufacturerCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
+				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
 				 PreparedStatement preparedStmt = con.prepareStatement(query);
 				 // binding values
 				 preparedStmt.setInt(1, 0);
-				 preparedStmt.setString(2, username);
-				 preparedStmt.setString(3, password);
-				 preparedStmt.setString(4, email);
-				 preparedStmt.setString(5, address);
-				 preparedStmt.setString(6, dob);
-				 preparedStmt.setString(7, phone);
-				 preparedStmt.setString(8, desc);
+				 preparedStmt.setString(2, conceptCode);
+				 preparedStmt.setString(3, username);
+				 preparedStmt.setString(4, password);
+				 preparedStmt.setString(5, email);
+				 preparedStmt.setString(6, address);
+				 preparedStmt.setString(7, dob);
+				 preparedStmt.setString(8, phone);
+				 preparedStmt.setString(9, desc);
 				// execute the statement
 				
 				 preparedStmt.execute();
@@ -126,20 +155,32 @@ public class User {
 	 }
 	 
 if (type.equals("researcher") || type.equals("Researcher")) {
+	
+	
+	//Preparing a CallableStatement to call a function
+	 CallableStatement cstmt = con.prepareCall("{? = call getResearcherID()}");
+	 
+	 //Registering the out parameter of the function (return type)
+	 cstmt.registerOutParameter(1, Types.CHAR);
+	
+	 //Executing the statement
+	 cstmt.execute();
+	 String conceptCode = cstmt.getString(1);
 		 
-		 String query = " insert into gatget_badget_userservice.researcher(`researcherID`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
-				 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+		 String query = " insert into user_service.researcher(`researcherID`,`researcherCode` ,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
+				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
 				 PreparedStatement preparedStmt = con.prepareStatement(query);
 				 // binding values
 				 preparedStmt.setInt(1, 0);
-				 preparedStmt.setString(2, username);
-				 preparedStmt.setString(3, password);
-				 preparedStmt.setString(4, email);
-				 preparedStmt.setString(5, address);
-				 preparedStmt.setString(6, dob);
-				 preparedStmt.setString(7, phone);
-				 preparedStmt.setString(8, profileInfo);
+				 preparedStmt.setString(2, conceptCode);
+				 preparedStmt.setString(3, username);
+				 preparedStmt.setString(4, password);
+				 preparedStmt.setString(5, email);
+				 preparedStmt.setString(6, address);
+				 preparedStmt.setString(7, dob);
+				 preparedStmt.setString(8, phone);
+				 preparedStmt.setString(9, profileInfo);
 				// execute the statement
 				
 				 preparedStmt.execute();
@@ -174,7 +215,7 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 // create a prepared statement
 	 
 	 if (type.equals("consumer") || type.equals("Consumer")) {
-	 String query = "UPDATE gatget_badget_userservice.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
+	 String query = "UPDATE user_service.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
 	 PreparedStatement preparedStmt = con.prepareStatement(query); 
 	
 	 preparedStmt.setString(1, userName); 
@@ -211,7 +252,7 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	}
 	if (type.equals("researcher") || type.equals("Researcher")) {
 		 
-		 String query = "UPDATE gatget_badget_userservice.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
+		 String query = "UPDATE user_service.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
 		 PreparedStatement preparedStmt = con.prepareStatement(query); 
 		
 		 preparedStmt.setString(1, userName); 
