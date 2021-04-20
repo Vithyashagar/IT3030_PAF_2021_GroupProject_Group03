@@ -29,13 +29,12 @@ public class Patent {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public String insertPatent(@FormParam("PatentID") String PatentID,
-								@FormParam("Title") String Title,
+	public String insertPatent( @FormParam("Title") String Title,
 								@FormParam("appDate") String appDate,
 								@FormParam("ResearcherID") String ResearcherID,
 								@FormParam("ConceptID") String ConceptID) {
 		
-		String output = PS.insertPatent(PatentID, Title, appDate, ResearcherID, ConceptID);
+		String output = PS.insertPatent(Title, appDate, ResearcherID, ConceptID);
 		
 		return output;
 	}
@@ -45,7 +44,7 @@ public class Patent {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_HTML)
-	public String deleteService(String patentData) {
+	public String deletePatent(String patentData) {
 		
 		//Convert Input String to a JSON Object
 		JsonObject MSObj = new JsonParser().parse(patentData).getAsJsonObject();

@@ -2,7 +2,7 @@ package Model;
 
 import java.sql.*;
 
-import Security.Sample;
+import Security.Hashing;
 
 public class PatentService {
 	
@@ -28,7 +28,7 @@ public class PatentService {
 		return con;
 	}
 	
-	public String insertPatent(String PatentID, String Title, String appDate, String ResearcherID, String ConceptID) {
+	public String insertPatent(String Title, String appDate, String ResearcherID, String ConceptID) {
 	
 		String output = "";
 		
@@ -44,15 +44,28 @@ public class PatentService {
 			//Create Prepared Statement
 			String query = "INSERT INTO patentapplication(`PID`,`PatentID`,`Title`,`appDate`,`ResearcherID`, `ConceptID`) VALUES(?,?,?,?,?,?)";
 			
-			Sample hs = new Sample();
+			Hashing hs = new Hashing();			
 			
 			String hTitle = hs.hashPassword(Title);
+			
+			//Preparing a CallableStatement to call a function
+            CallableStatement cstmt = con.prepareCall("{? = call getPatID()}");
+           
+            //Registering the out parameter of the function (return type)
+            cstmt.registerOutParameter(1, Types.CHAR);
+           
+            //Executing the statement
+            cstmt.execute();
+           
+            //obtaining returned value of function(getPaymentID())
+            String PatCode = cstmt.getString(1);
+            
 			
 			PreparedStatement preparedStmt  = con.prepareStatement(query);
 			
 			//Binding values
 			preparedStmt.setInt(1, 0);
-			preparedStmt.setString(2, PatentID);
+			preparedStmt.setString(2, PatCode);
 			preparedStmt.setString(3, hTitle);
 			preparedStmt.setString(4, appDate);
 			preparedStmt.setString(5, ResearcherID);
