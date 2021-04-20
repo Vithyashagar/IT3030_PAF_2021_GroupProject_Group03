@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -33,6 +34,16 @@ public class PaymentResource {
 	{
 		return payObj.readPayments();
 	}
+	
+	/*@GET
+	@Path("/concept/{name}")
+	@Produces(MediaType.APPLICATION_XML)
+	public String readItems(@PathParam("name") String name)
+	{
+		return payObj.readPaymentsPath(name);
+	}*/
+	
+	
 	
 	
 	/*************Handling user insert via a form and producing final output as plain text message***********************/

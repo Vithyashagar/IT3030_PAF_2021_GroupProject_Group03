@@ -247,6 +247,80 @@ public class PaymentService {
 		return output;
 	}
 	
+	
+	/*public String readPaymentsPath(String name)
+	{
+		String output = "";
+		
+	try
+		{
+			Connection con = connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for reading.";
+			}
+			
+			
+				
+				String query = "select * from gb_payments where NameOnCard = '"+name+"'";
+				
+				Statement stmt = con.createStatement();
+				
+				ResultSet rs = stmt.executeQuery(query);
+				
+				// iterate through the rows in the result set
+				
+				while (rs.next())
+				{
+					String PaymentID = Integer.toString(rs.getInt("PaymentID"));
+					String PaymentType = rs.getString("PaymentType");
+					String BankName = rs.getString("bank");
+					String paymentDate = rs.getString("paymentDate");
+					String cardNumber = rs.getNString("cardNo");
+					String CardName= rs.getString("NameOnCard");
+					String cvv = rs.getString("cvv");
+					double buyerAmt = rs.getDouble("Buyerpayment");
+					String productID =  Integer.toString(rs.getInt("ProductID"));
+					String consumerID =  Integer.toString(rs.getInt("ConsumerID"));
+					String conceptID =  Integer.toString(rs.getInt("ConceptID"));
+					String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
+					String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
+					
+					
+					// Add into the html table
+					
+					output += "<tr><td>" + PaymentType + "</td>"+
+					 "<td>" + BankName + "</td>"+
+					"<td>" + paymentDate + "</td>"+
+					 "<td>" + CardName + "</td>"+
+					 "<td>" + buyerAmt + "</td>"+
+					 "<td>" + consumerID + "</td>"+
+					 "<td>" + conceptID + "</td>"+
+					 "<td>" + productID + "</td>";
+					
+					
+					output = "<Payment><concept>"+conceptID+"</concept></Payment>";
+					
+					}
+				
+				
+				
+				con.close();
+				
+				
+				// Complete the html table
+					
+		}
+		catch (Exception e)
+		{
+				output = "Error while reading the payments.";
+				System.err.println(e.getMessage());
+		}
+	
+		return output;
+	}*/
+	
 	/**************************Method to handle payment status depending on pledegAmount summation**********************/
 	public String updatePaymentStatus(int ConceptID)
 	{
