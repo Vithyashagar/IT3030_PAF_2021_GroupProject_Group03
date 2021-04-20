@@ -20,7 +20,7 @@ public class User {
 	 }
 	
 	
-	public String readConsumers()
+	public String readUsers(String type)
 	 {
 	 String output = "";
 	 try
@@ -29,6 +29,9 @@ public class User {
 	 if (con == null)
 	 {return "Error while connecting to the database for reading."; }
 	 // Prepare the html table to be displayed
+	 
+	 if (type.equals("consumer") || type.equals("Consumer")) {
+	 
 	 output = "<table border='1'><tr><th>Consumer ID</th><th>Consumer Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
 
 	 String query = "select * from consumer";
@@ -38,7 +41,7 @@ public class User {
 	 while (rs.next())
 	 {
 	 String consumerID = Integer.toString(rs.getInt("userID"));
-	 String consumerCode = Integer.toString(rs.getInt("userCode"));
+	 String consumerCode = rs.getNString("userCode");
 	 String userName = rs.getString("userName");
 	 String password = rs.getString("password");
 	 String email = rs.getString("email");
@@ -64,6 +67,95 @@ public class User {
 	 con.close();
 	 // Complete the html table
 	 output += "</table>";
+	 }
+	 
+	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
+		 
+		 output = "<table border='1'><tr><th>Manufacture ID</th><th>Manufacture Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>Description</th>"+"<th>update</th>" + "<th>Delete</th></tr>";
+
+		 String query = "select * from manufacturer";
+		 Statement stmt = con.createStatement();
+		 ResultSet rs = stmt.executeQuery(query);
+		 // iterate through the rows in the result set
+		 while (rs.next())
+		 {
+		 String manufacturerID = Integer.toString(rs.getInt("manufacturerID"));
+		 String manufacturerCode = rs.getString("manufacturerCode");
+		 String userName = rs.getString("userName");
+		 String password = rs.getString("password");
+		 String email = rs.getString("email");
+		 String address = rs.getString("address");
+		 String dob = rs.getString("dob");
+		 String phone = rs.getString("phone");
+		 String desc = rs.getString("desc");
+		 
+		 // Add into the html table
+		 output += "<tr><td>" + manufacturerID + "</td>";
+		 output += "<td>" + manufacturerCode + "</td>";
+		 output += "<td>" + userName + "</td>";
+		 output += "<td>" + password + "</td>";
+		 output += "<td>" + email + "</td>";
+		 output += "<td>" + address + "</td>";
+		 output += "<td>" + dob + "</td>";
+		 output += "<td>" + phone + "</td>";
+		 output += "<td>" + desc + "</td>";
+		 // buttons
+		 output += "<td><input name='btnUpdate' type='button' value='Update'class='btn btn-secondary'></td>"
+		 + "<td><form method='post' action='items.jsp'>"+ "<input name='btnRemove' type='submit' value='Remove'class='btn btn-danger'>"
+		 + "<input name='itemID' type='hidden' value='" + manufacturerID
+		 + "'>" + "</form></td></tr>";
+		 }
+		 con.close();
+		 // Complete the html table
+		 output += "</table>";
+		 }
+	  
+	 
+ if (type.equals("researcher") || type.equals("Researcher")) {
+		 
+		 output = "<table border='1'><tr><th>Researcher ID</th><th>Researcher Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>profileInfo</th>"+"<th>update</th>" + "<th>Delete</th></tr>";
+
+		 String query = "select * from researcher";
+		 Statement stmt = con.createStatement();
+		 ResultSet rs = stmt.executeQuery(query);
+		 // iterate through the rows in the result set
+		 while (rs.next())
+		 {
+		 String researcherID = Integer.toString(rs.getInt("researcherID"));
+		 String researcherCode = rs.getString("researcherCode");
+		 String userName = rs.getString("userName");
+		 String password = rs.getString("password");
+		 String email = rs.getString("email");
+		 String address = rs.getString("address");
+		 String dob = rs.getString("dob");
+		 String phone = rs.getString("phone");
+		 String profile = rs.getString("profileInfo");
+		 
+		 // Add into the html table
+		 output += "<tr><td>" + researcherID + "</td>";
+		 output += "<td>" + researcherCode + "</td>";
+		 output += "<td>" + userName + "</td>";
+		 output += "<td>" + password + "</td>";
+		 output += "<td>" + email + "</td>";
+		 output += "<td>" + address + "</td>";
+		 output += "<td>" + dob + "</td>";
+		 output += "<td>" + phone + "</td>";
+		 output += "<td>" + profile + "</td>";
+		 // buttons
+		 output += "<td><input name='btnUpdate' type='button' value='Update'class='btn btn-secondary'></td>"
+		 + "<td><form method='post' action='items.jsp'>"+ "<input name='btnRemove' type='submit' value='Remove'class='btn btn-danger'>"
+		 + "<input name='itemID' type='hidden' value='" + researcherID
+		 + "'>" + "</form></td></tr>";
+		 }
+		 con.close();
+		 // Complete the html table
+		 output += "</table>";
+		 }
+	  
+	 
+	 
+	 
+	 
 	 }
 	 catch (Exception e)
 	 {
@@ -116,7 +208,7 @@ public class User {
 	
 	 preparedStmt.execute();
 	 con.close();
-	 output = "Inserted successfully";
+	 output = " User Inserted successfully";
 	
 	 }
 	 
@@ -151,7 +243,7 @@ public class User {
 				
 				 preparedStmt.execute();
 				 con.close();
-				 output = "Inserted successfully";
+				 output = "User Inserted successfully";
 	 }
 	 
 if (type.equals("researcher") || type.equals("Researcher")) {
@@ -185,7 +277,7 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 				
 				 preparedStmt.execute();
 				 con.close();
-				 output = "Inserted successfully";
+				 output = "User Inserted successfully";
 	 }
 	 
 	

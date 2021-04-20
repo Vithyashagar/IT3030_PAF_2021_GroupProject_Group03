@@ -20,7 +20,7 @@ public class userLogin {
 		return con;
 	}
 	
-	public String userLoginview(String username, String password,String type) {
+	public String userLogin(String username, String password,String type) {
 		String output = "";
 		try {
 			Connection con = connect();

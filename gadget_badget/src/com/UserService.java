@@ -25,11 +25,11 @@ public class UserService {
 	String output;
 	
 	@GET
-	@Path("/")
+	@Path("/{type}")
 	@Produces(MediaType.TEXT_HTML)
-	public String readUsers()
+	public String readUsers(@PathParam("type")String type)
 	 {
-	 return  userObj.readConsumers();
+	 return  userObj.readUsers(type);
 	 } 
 	
 	
@@ -103,7 +103,7 @@ public class UserService {
 	@Produces(MediaType.TEXT_HTML)
 	public String userLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
 		
-		String output = loginObj.userLoginview(username,password,type);
+		String output = loginObj.userLogin(username,password,type);
 		return output;
 		
 		//user details for selected user
