@@ -94,5 +94,55 @@ public class PledgeAPI {
 				}
 				return output;
 		}
+		
+		
+		//-- Method to read the consumer pledges
+		public String readConsumerPledges(String backerID)
+		{
+			String output = "";
+			try
+			{
+				Connection con = dbConnect.connect();
+				if (con == null)
+				{
+					return "Database Connection failed!!";
+				}
+				
+				// Displaying the read pledges
+				output = "<table border='1'><tr><th>Concept ID</th>"
+				+"<th>Pledged Amount</th></tr>";
+				
+				// Retrieving all the pledge details
+				String query = "select * from backs where backerID = "+backerID;
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				
+				
+				// iterate through the rows in the result set
+				while (rs.next())
+				{
+					String conceptID = Integer.toString(rs.getInt("conceptID"));
+					String pledgedAmnt = Double.toString(rs.getDouble("pledgedAmnt"));
+					
+					// Add a row into the HTML table
+					output += "<tr><td>" + conceptID + "</td>";
+					output += "<td>" + pledgedAmnt + "</td>";
+					
+				}
+				con.close();
+					
+				// Completion of the HTML table
+				output += "</table>";
+				}
+				catch (Exception e)
+				{
+					output = "Error while retrieving the pledged details!!";
+					System.err.println(e.getMessage());
+				}
+				return output;
+		}
+		
+		
+		
 
 }

@@ -108,7 +108,7 @@ public class ConceptService {
 	
 	
 	
-	/*** Viewing Concept details as a consumer(HTTP Verb : GET) by an HTML table ***/
+	/*** Viewing All Concept details as a consumer/Researcher(HTTP Verb : GET) by an HTML table ***/
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)

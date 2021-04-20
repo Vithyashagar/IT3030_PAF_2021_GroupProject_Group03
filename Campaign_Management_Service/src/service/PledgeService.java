@@ -45,5 +45,15 @@ public class PledgeService {
 	{
 		return pledgeObj.readPledges();
 	}
+	
+	
+	/** Viewing the pledges of a particular customer **/
+	@GET
+	@Path("/{backerID}")
+	@Produces(MediaType.TEXT_HTML)
+	public String helloName(@PathParam("backerID") String backerID)
+	{
+		return pledgeObj.readConsumerPledges(backerID);
+	}
 
 }
