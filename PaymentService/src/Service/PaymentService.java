@@ -2,37 +2,19 @@ package Service;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
 
+import util.DBConnection;
+
 public class PaymentService {
 
 	/*****************************************Checking for database connectivity.***************************************/
 	
-	public Connection connect()
-	{
-		Connection con = null;
-		
-		try
-		{
-			Class.forName("com.mysql.jdbc.Driver");
-			
-			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentdb","root", "1234");
-			
-			//Testing for connectivity
-			
-			System.out.print("Successfully connected");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		return con;
-	}
+	
+	DBConnection dbConnect = new DBConnection();
 	
 	/********************************Inserting backer or buyer details to the database.*************************************/
 	
@@ -47,7 +29,8 @@ public class PaymentService {
 		
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
+			
 			if (con == null)
 			{
 				return "Error while connecting to the database";
@@ -159,7 +142,7 @@ public class PaymentService {
 		
 	try
 		{
-			Connection con = connect();
+		Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
@@ -328,7 +311,7 @@ public class PaymentService {
 		
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
@@ -372,7 +355,7 @@ public class PaymentService {
 		try
 		{
 			
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
@@ -425,7 +408,7 @@ public class PaymentService {
 		String output = "";
 		 
 		
-		Connection con = connect();
+		Connection con = dbConnect.connect();
 		
 		String sql = "delete from gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptID from concept c where c.status = '"+status+"')" ;
 		

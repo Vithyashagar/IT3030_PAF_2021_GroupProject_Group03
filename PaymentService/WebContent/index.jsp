@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-     <%@page import = "Service.PaymentService" %>
+    
+     <%@page import = "util.DBConnection" %>
     <%@page import = "java.sql.*" %>
 <!DOCTYPE html>
 <html>
@@ -12,8 +13,9 @@
 
 
 <% 
-PaymentService payment = new PaymentService();
-Connection con = payment.connect();
+DBConnection dbConnect = new DBConnection();
+
+Connection con = dbConnect.connect();
 
 if(con == null){
 	out.println("Connection failed");

@@ -1,38 +1,21 @@
 package Service;
 
-import java.sql.CallableStatement;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Types;
+
+
+import util.DBConnection;
 
 public class TransactionService {
 
 /*****************************************Checking for database connectivity.***************************************/
 	
-	public Connection connect()
-	{
-		Connection con = null;
-		
-		try
-		{
-			Class.forName("com.mysql.jdbc.Driver");
-			
-			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentdb","root", "1234");
-			
-			//Testing for connectivity
-			
-			System.out.print("Successfully connected");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		return con;
-	}
+	
+	DBConnection dbConnect = new DBConnection();
 	
 /********************************Inserting backing transaction details.*************************************/
 	
@@ -43,7 +26,7 @@ public class TransactionService {
 		
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null)
 			{
 				return "Error while connecting to the database";
@@ -91,7 +74,7 @@ public class TransactionService {
 		
 	try
 		{
-			Connection con = connect();
+		Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
@@ -154,7 +137,7 @@ public class TransactionService {
 		
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null)
 			{
 				return "Error while connecting to the database";
@@ -202,7 +185,7 @@ public class TransactionService {
 		
 	try
 		{
-			Connection con = connect();
+		Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
