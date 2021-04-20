@@ -3,7 +3,7 @@ package Security;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Sample {
+public class Hashing {
 	
 	
 	// We need a bytesToHex method first. So, from -
