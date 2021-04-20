@@ -29,12 +29,21 @@ public class PledgeService {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertConcept(@FormParam("conceptID") String conceptID,
+	public String insertPledge(@FormParam("conceptID") String conceptID,
 							 @FormParam("backerID") String backerID,
 							 @FormParam("pledgedAmnt") String pledgedAmnt)
 	{
 		String output = pledgeObj.insertPledge(conceptID,backerID,pledgedAmnt);
 		return output;
+	}
+	
+	/** Viewing all pledged details **/
+	@GET
+	@Path("/")
+	@Produces(MediaType.TEXT_HTML)
+	public String readPledges()
+	{
+		return pledgeObj.readPledges();
 	}
 
 }
