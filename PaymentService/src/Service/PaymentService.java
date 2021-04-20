@@ -4,9 +4,11 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
+import Security.Hashing;
 import util.DBConnection;
 
 public class PaymentService {
@@ -35,6 +37,17 @@ public class PaymentService {
 			{
 				return "Error while connecting to the database";
 			}
+			
+			
+			/******************************datahashing process********************************************************************/
+			
+			Hashing hs = new Hashing();
+			
+			String hcardNumber = hs.hashPassword(cardNo);
+			String hCardHolderName = hs.hashPassword(nameOnCard);
+			String hcvvNo = hs.hashPassword(cvv);
+			
+			
 			
 			
 		/*******************Verify payment as backer or buyer payment.***********************/	
@@ -106,9 +119,9 @@ public class PaymentService {
 			preparedStmt.setString(3, paymentType);
 			preparedStmt.setString(4, bank);
 			preparedStmt.setString(5, paymentDate);
-			preparedStmt.setString(6, cardNo);
-			preparedStmt.setString(7, nameOnCard);
-			preparedStmt.setString(8, cvv);
+			preparedStmt.setString(6, hcardNumber);
+			preparedStmt.setString(7, hCardHolderName);
+			preparedStmt.setString(8, hcvvNo);
 			preparedStmt.setDouble(9,totalBuyingAmt);
 			preparedStmt.setInt(10, productID);
 			preparedStmt.setInt(11, consumerID);
@@ -119,6 +132,12 @@ public class PaymentService {
 			
 			//execute the statement
 			preparedStmt.execute();
+			
+			/***********Table for hash values*******************/
+			
+			insertcardNumberforkey(cardNo, hcardNumber);
+			insertcardholderNameforkey(nameOnCard, hCardHolderName);
+			insertCvvForKey(cvv,hcvvNo);
 			
 			//closing connection object
 			con.close();
@@ -158,12 +177,10 @@ public class PaymentService {
 				+ "<th>BuyerPayment</th>"
 				+ "<th>ConsumerID</th>"
 				+ "<th>ConceptID</th>"
-				+ "<th>ProductID</th>"
-				+ "<th>Update</th>"
-				+ "<th>Remove</th></tr>";
+				+ "<th>ProductID</th>";
 				
 				
-				String query = "select * from gb_payments";
+				String query = "select g.PaymentType, g.bank , g.paymentDate , hcn.nKey as NameOnCard, g.Buyerpayment, g.ConsumerID,g.ConceptID,g.ProductID from gb_payments g , hcardname hcn ";
 				
 				Statement stmt = con.createStatement();
 				
@@ -173,19 +190,19 @@ public class PaymentService {
 				
 				while (rs.next())
 				{
-					String PaymentID = Integer.toString(rs.getInt("PaymentID"));
+					//String PaymentID = Integer.toString(rs.getInt("PaymentID"));
 					String PaymentType = rs.getString("PaymentType");
 					String BankName = rs.getString("bank");
 					String paymentDate = rs.getString("paymentDate");
-					String cardNumber = rs.getNString("cardNo");
+					//String cardNumber = rs.getNString("cardNo");
 					String CardName= rs.getString("NameOnCard");
-					String cvv = rs.getString("cvv");
+					//String cvv = rs.getString("cvv");
 					double buyerAmt = rs.getDouble("Buyerpayment");
 					String productID =  Integer.toString(rs.getInt("ProductID"));
 					String consumerID =  Integer.toString(rs.getInt("ConsumerID"));
 					String conceptID =  Integer.toString(rs.getInt("ConceptID"));
-					String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
-					String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
+					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
+					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
 					
 					
 					// Add into the html table
@@ -199,19 +216,7 @@ public class PaymentService {
 					output += "<td>" + conceptID + "</td>";
 					output += "<td>" + productID + "</td>";
 					
-					output += "<td><form method='post' action='updatePayment.jsp'>"
-							+ "<input name='btnUpdate' "
-							+ " type='submit' value='Update' >"
-							+ "<input name='PaymentID' type='hidden' "
-							+ " value=' " + PaymentID + "'>"
-							+ "<input name='ConceptID' type='hidden' "
-							+ " value=' " + conceptID + "'>"
-							+ "</form></td>"
-							+ "<td><form method='post' action='insertpay.jsp'>"
-							+ "<input name='btnRemove' "
-							+ " type='submit' value='Delete' class='btn btn-danger'>"
-							+ "<input name='PaymentID' type='hidden' "
-							+ " value='" + PaymentID + "'>" + "</form></td></tr>";
+					
 						
 					}
 				
@@ -369,16 +374,29 @@ public class PaymentService {
 		
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		
+		//Hashing
+		Hashing hs = new Hashing();
+		
+		String hcardNumber = hs.hashPassword(cardNo);
+		String hCardHolderName = hs.hashPassword(NameOnCard);
+		String hcvvNo = hs.hashPassword(cvv);
+		
 		// binding values
 		
 		preparedStmt.setString(1, paymentType);
 		preparedStmt.setString(2, bank);
-		preparedStmt.setString(3, cardNo);
-		preparedStmt.setString(4, NameOnCard);
-		preparedStmt.setString(5, cvv);
+		preparedStmt.setString(3, hcardNumber);
+		preparedStmt.setString(4, hCardHolderName);
+		preparedStmt.setString(5, hcvvNo);
 		preparedStmt.setString(6, cardExpMonth);
 		preparedStmt.setString(7, cardExpYear);
 		preparedStmt.setString(8, paymentID);
+		
+		/***********Table for hash values*******************/
+		
+		insertcardNumberforkey(cardNo, hcardNumber);
+		insertcardholderNameforkey(NameOnCard, hCardHolderName);
+		insertCvvForKey(cvv,hcvvNo);
 		
 		// execute the statement
 		preparedStmt.execute();
@@ -429,5 +447,66 @@ public class PaymentService {
 		
 		return output;
 	}
+	
+	/********************methods to manage hashing tables**********************************************************/
+	
+	
+    public int insertcardNumberforkey(String cardNo, String hcardNumber) throws SQLException {
+		
+		Connection con = dbConnect.connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCardNo(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, cardNo);
+		preparedStmt.setString(3, hcardNumber);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}  
+    
+    public int insertcardholderNameforkey(String nameOnCard, String hCardHolderName) throws SQLException {
+		
+		Connection con = dbConnect.connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCardName(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, nameOnCard);
+		preparedStmt.setString(3, hCardHolderName);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}
+    
+   public int insertCvvForKey(String cvv,String hcvvNo) throws SQLException {
+		
+		Connection con = dbConnect.connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCVV(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, cvv);
+		preparedStmt.setString(3, hcvvNo);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}
+	
 	
 }
