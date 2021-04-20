@@ -1,30 +1,13 @@
 package resources;
 
 import java.sql.*;
+import util.DBConnection;
 
 
 public class ConceptAPI {
 	
-	
-	// ---Connecting to the Database---
-	public Connection connect()
-	{
-		Connection con = null;
-		try
-		{
-			Class.forName("com.mysql.jdbc.Driver");
-			con= DriverManager.getConnection("jdbc:mysql://localhost:3306/campaign_service","root", "Shahimaria@123");
-					
-			//Testing the connection
-			System.out.print("Successfully connected");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return con;
-	}
-	
+	//DBConnection object to connect to database
+	DBConnection dbConnect = new DBConnection();
 	
 	// ---Method to retrieve concept details of a researcher---
 	public String readMyConcepts(String researcherID)
@@ -32,7 +15,7 @@ public class ConceptAPI {
 		String output = "";
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null)
 			{
 				return "Database Connection failed!!";
@@ -153,7 +136,7 @@ public class ConceptAPI {
 		String output = "";
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null)
 			{
 				return "Database Connection failed!!";
@@ -211,7 +194,7 @@ public class ConceptAPI {
 		String output = "";
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null){
 				return "Database Connection failed!!"; 
 			}
@@ -248,7 +231,7 @@ public class ConceptAPI {
 		String output = "";
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null) {
 				return "Database Connection failed!!"; 
 			}
@@ -280,7 +263,7 @@ public class ConceptAPI {
 		String output = "";
 		try
 		{
-			Connection con = connect();
+			Connection con = dbConnect.connect();
 			if (con == null)
 			{
 				return "Database Connection failed!!";
