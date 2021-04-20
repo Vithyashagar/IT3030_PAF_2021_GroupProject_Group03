@@ -1,6 +1,8 @@
 package resources;
 
 import java.sql.*;
+
+import security.ConceptHashing;
 import util.DBConnection;
 
 
@@ -31,7 +33,7 @@ public class ConceptAPI {
 			+ "<th>Update</th><th>Remove</th></tr>";
 			
 			// Retrieving the concepts launched by a particular researcher
-			String query = "select * from concept where researcherID = "+researcherID;
+			String query = "select c.conceptID, c.conceptCode, hn.nKey as conceptName, hd.nKey as conceptDesc, c.startDate, c.deadline, c.pledgeGoal, c.reward, c.status, c.workUpdt from concept c, hconceptname hn, hconceptdesc hd where c.conceptName = hn.Value and c.conceptDesc = hd.Value and c.researcherID = "+researcherID;
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			
@@ -142,6 +144,10 @@ public class ConceptAPI {
 				return "Database Connection failed!!";
 			}
 			
+			ConceptHashing conceptHash = new ConceptHashing();
+			String hName = conceptHash.hashPassword(conceptName);
+			String hDesc = conceptHash.hashPassword(conceptDesc);
+			
 			// -- Calling a function in the database to auto generate a sequential concept ID --
 			//Preparing a CallableStatement to call a function
 		    CallableStatement cstmt = con.prepareCall("{? = call getCustomID()}");
@@ -163,8 +169,8 @@ public class ConceptAPI {
 			// binding values
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, conceptCode);
-			preparedStmt.setString(3, conceptName);
-			preparedStmt.setString(4, conceptDesc);
+			preparedStmt.setString(3, hName);
+			preparedStmt.setString(4, hDesc);
 			preparedStmt.setString(5, startDate);
 			preparedStmt.setString(6, deadline);
 			preparedStmt.setDouble(7, Double.parseDouble(pledgeGoal));
@@ -175,6 +181,11 @@ public class ConceptAPI {
 			
 			//execute the statement
 			preparedStmt.execute();
+			
+			//Table for Hash values 
+			insertNameForKey(conceptName, hName);
+			insertDescForKey(conceptDesc, hDesc);
+			
 			con.close();
 			
 			output = "Concept Details Inserted Successfully";
@@ -199,13 +210,17 @@ public class ConceptAPI {
 				return "Database Connection failed!!"; 
 			}
 			
+			ConceptHashing conceptHash = new ConceptHashing();
+			String hName = conceptHash.hashPassword(conceptName);
+			String hDesc = conceptHash.hashPassword(conceptDesc);
+			
 			// create a prepared statement
 			String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
 			// binding values
-			preparedStmt.setString(1, conceptName);
-			preparedStmt.setString(2, conceptDesc);
+			preparedStmt.setString(1, hName);
+			preparedStmt.setString(2, hDesc);
 			preparedStmt.setDouble(3, Double.parseDouble(pledgeGoal));
 			preparedStmt.setString(4, reward);
 			preparedStmt.setString(5, workUpdt);
@@ -213,6 +228,11 @@ public class ConceptAPI {
 			
 			// execute the statement
 			preparedStmt.execute();
+			
+			//Table for Hash values 
+			insertNameForKey(conceptName, hName);
+			insertDescForKey(conceptDesc, hDesc);
+			
 			con.close();
 			output = "Concept Details Updated Successfully!!";
 		}
@@ -353,6 +373,47 @@ public class ConceptAPI {
 				System.err.println(e.getMessage());
 			}
 			return output;
+	}
+	
+	
+	
+	public int insertDescForKey(String conceptDesc, String hDesc)throws SQLException {
+			
+			Connection con = dbConnect.connect();
+			
+			//Making Key Value pairs
+			//Name
+			String query2 = "INSERT INTO hConceptDesc(`id`, `nKey`, `Value`) VALUES(?,?,?)" ;
+			PreparedStatement nameT  = con.prepareStatement(query2);
+			//Binding values
+			nameT.setInt(1, 0);
+			nameT.setString(2, conceptDesc);
+			nameT.setString(3, hDesc);
+			
+			//Execute the statement
+			nameT.execute();
+			
+			return 0;
+		}
+	
+	
+	public int insertNameForKey(String conceptName, String hName) throws SQLException {
+		
+		Connection con = dbConnect.connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query2 = "INSERT INTO hConceptName(`id`, `nKey`, `Value`) VALUES(?,?,?)" ;
+		PreparedStatement nameT  = con.prepareStatement(query2);
+		//Binding values
+		nameT.setInt(1, 0);
+		nameT.setString(2, conceptName);
+		nameT.setString(3, hName);
+		
+		//Execute the statement
+		nameT.execute();
+		
+		return 0;
 	}
 	
 

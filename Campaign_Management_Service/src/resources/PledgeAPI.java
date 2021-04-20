@@ -64,7 +64,7 @@ public class PledgeAPI {
 				+"<th>BackerID</th><th>Pledged Amount</th></tr>";
 				
 				// Retrieving all the pledge details
-				String query = "select * from backs group by conceptID";
+				String query = "select * from backs";
 				Statement stmt = con.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				
