@@ -125,15 +125,10 @@ public class Product {
 						 output += "<td>" + productPrice + "</td>";
 						 output += "<td>" + productDesc + "</td>";
 						 output += "<td>" + productCat + "</td>";
-						 output += "<td>" + productQty + "</td>";
+						 output += "<td>" + productQty + "</td></tr>";
 						 
 						 
-						 // buttons
-						 output += "<td><input name='btnUpdate' type='button' value='Update' class='btn btn-secondary'></td>"
-						 + "<td><form method='post' action='product.jsp'>"
-						 + "<input name='btnRemove' type='submit' value='Remove' class='btn btn-danger'>"
-						 + "<input name='itemID' type='hidden' value='" + productId
-						 + "'>" + "</form></td></tr>";
+						 
 						
 					 }
 					 con.close();
