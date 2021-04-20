@@ -2,12 +2,18 @@ package com;
 
 import Model.ManufacturerService;
 
+import java.util.Map;
+
 //For Rest Services
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-
 //For JSON
 import com.google.gson.*;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 @Path("/Service")
 public class ManuService {
@@ -29,13 +35,12 @@ public class ManuService {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public String insertService(@FormParam("ServiceID") String ServiceID,
-								@FormParam("Name") String Name,
+	public String insertService(@FormParam("Name") String Name,
 								@FormParam("Speciality") String Speciality,
 								@FormParam("Description") String Description,
 								@FormParam("MFRID") String MFRID) {
 		
-		String output = MS.insertService(ServiceID, Name, Speciality, Description, MFRID);
+		String output = MS.insertService(Name, Speciality, Description, MFRID);
 		
 		return output;
 	}
@@ -81,6 +86,53 @@ public class ManuService {
 		return output;
 	}
 	
-
+	//Method to get a specific Manufacturer service
+	@GET
+	@Path("/Manufacturer/{ID}")
+	@Produces(MediaType.TEXT_HTML)
+	public String readSpecificManufacturerServices(@PathParam("ID") String ID) {
+		
+		String output= MS.readSpecificServices(ID);
+		
+		return output;
+	}
+	
+	
+	//Method to get details from other service 
+	@GET
+	@Path("/getDetails/{ID}")
+	@Produces(MediaType.TEXT_HTML)
+	public String getUserName(@PathParam("ID") String ID){
+		
+		//Path to get the Manufacturer Name
+		String path = "http://localhost:8080/gadget_badget/UserService/Users/";
+	       
+	    //Create a client in Server to act as a client to another Server
+        Client client = Client.create();
+        //Creating the web resource
+        WebResource target = client.resource(path);
+       
+        //To check the response if working
+        // ClientResponse response = target.queryParam("ID", ID).accept("application/xml").get(ClientResponse.class);
+       
+        //Get the response String and save to a String
+        String response = target.queryParam("ID", ID).accept("application/xml").get(String.class);
+        
+        //According to the user name get Manufacturer details
+    	return readSpecificManufacturerServices(response.toString());
+	
+	}
+	
+	
+	//returns cookie UName's value
+	@GET
+	@Path("/cookie")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String readCookie1(@CookieParam("UName") String UName) {
+				
+		return  UName;
+		
+	}
+	
 	
 }
