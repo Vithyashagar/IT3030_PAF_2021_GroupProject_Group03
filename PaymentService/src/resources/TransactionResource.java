@@ -15,12 +15,12 @@ public class TransactionResource {
 
 	TransactionService trans = new TransactionService();
 	
-/*****************Reading user data representing it as an HTML table************************/
+/*****************Reading backing data representing it as an HTML table************************/
 	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_HTML)
-	public String readItems()
+	public String readBacking()
 	{
 		return trans.readBackerTransactions();
 	}
@@ -33,13 +33,40 @@ public class TransactionResource {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertPayment(@FormParam("conceptID") int conceptID,
+	public String insertBackerTransaction(@FormParam("conceptID") int conceptID,
 	@FormParam("consumerID") int consumerID,
 	@FormParam("pledgeAmount") double pledgeAmount
 	)
 	{
-		/*Invoke insert method of transactionService class*/
+		/*Invoke backer insert method of transactionService class*/
 		String output = trans.insertBackingTransaction(conceptID, consumerID, pledgeAmount);
+		return output;
+	}
+	
+	
+/*****************Reading buyer transaction  data representing it as an HTML table************************/
+	
+	@GET
+	@Path("/buyer")
+	@Produces(MediaType.TEXT_HTML)
+	public String readBuying()
+	{
+		return trans.readBuyerTransactions();
+	}
+	
+/*************Handling buyer transaction insert via a form and producing final output as plain text message***********************/
+	
+	@POST
+	@Path("/buyer")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String insertBuyerTransaction(@FormParam("consumerID") int consumerID,
+	@FormParam("productID") int productID,
+	@FormParam("qty") int qty
+	)
+	{
+		/*Invoke buyer insert method of  transactionService class*/
+		String output = trans.insertBuyingTransaction(consumerID, productID, qty);
 		return output;
 	}
 	
