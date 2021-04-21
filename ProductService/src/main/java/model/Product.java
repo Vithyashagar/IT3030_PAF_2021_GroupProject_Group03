@@ -1,6 +1,7 @@
 package model;
 
-import java.sql.*; 
+import java.sql.*;
+import security.ProductSecurity;
 
 public class Product {
 	
@@ -46,6 +47,9 @@ public class Product {
 		 	// create a prepared statement
 		 	String query = "insert into product (`productId`,`productCode`,`productName`,`productPrice`,`productDesc`,`productCat`,`productQty`)"
 		 			+ " values (?, ?, ?, ?, ?, ?, ?)";
+		 	
+		 	//Creating new hashing security object
+		 	ProductSecurity ps = new ProductSecurity();
 	
 		 	PreparedStatement preparedStmt = con.prepareStatement(query);
 		
