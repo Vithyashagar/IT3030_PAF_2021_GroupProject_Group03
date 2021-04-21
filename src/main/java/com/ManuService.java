@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 //For JSON
 import com.google.gson.*;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 @Path("/Service")
@@ -39,7 +40,8 @@ public class ManuService {
 								@FormParam("Name") String Name,
 								@FormParam("Speciality") String Speciality,
 								@FormParam("Description") String Description) {
-				
+		
+		//Current Users uName to get the users ID
 		String MFRID = getManufacturerID(uname);
 		
 		String output = MS.insertService(Name, Speciality, Description, MFRID);
@@ -138,11 +140,12 @@ public class ManuService {
 	       
 	    //Create a client in Server to act as a client to another Server
         Client client = Client.create();
+        
         //Creating the web resource
         WebResource target = client.resource(path);
        
         //To check the response if working
-        // ClientResponse response = target.queryParam("ID", ID).accept("application/xml").get(ClientResponse.class);
+        //ClientResponse response = target.queryParam("ID", Uname).accept("application/xml").get(ClientResponse.class);
        
         //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("ID", Uname).accept("application/xml").get(String.class);
@@ -150,7 +153,7 @@ public class ManuService {
         //According to the userID get Manufacturer details
     	return response.toString();	
 	}
-	
+  	
 	/*
 	//returns cookie UName's value
 	@GET

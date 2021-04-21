@@ -84,7 +84,7 @@ public class ManufacturerService {
 			//close connection
 			con.close();
 	
-			output = "Service Created Succesfully";
+			output = "Service Created Successfully";
 			
 			
 		}catch(Exception e) {
