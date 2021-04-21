@@ -32,17 +32,19 @@ public class ManuService {
 	
 	//Method to Insert the services
 	@POST
-	@Path("/insert/{name}")
+	@Path("/insert/{uname}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
-	public String insertService(@FormParam("Name") String Name,
+	public String insertService(@PathParam("uname") String uname,
+								@FormParam("Name") String Name,
 								@FormParam("Speciality") String Speciality,
-								@FormParam("Description") String Description,
-								@PathParam("name") String uname) {
+								@FormParam("Description") String Description) {
 				
 		String MFRID = getManufacturerID(uname);
 		
 		String output = MS.insertService(Name, Speciality, Description, MFRID);
+		
+		//String output = MS.insertService(Name, Speciality, Description, null);
 		
 		return output;
 	}
@@ -127,9 +129,9 @@ public class ManuService {
 	
 	//Method to get Manufacturer ID from User service 
 	@GET
-	@Path("/getDetails/{ID}")
+	@Path("/ManufacturerID/{Uname}")
 	@Produces(MediaType.TEXT_HTML)
-	public String getManufacturerID(@PathParam("ID") String ID){
+	public String getManufacturerID(@PathParam("Uname") String Uname){
 		
 		//Path to get the Manufacturer Name
 		String path = "http://localhost:8080/gadget_badget/UserService/Users/";
@@ -143,13 +145,13 @@ public class ManuService {
         // ClientResponse response = target.queryParam("ID", ID).accept("application/xml").get(ClientResponse.class);
        
         //Get the response String and save to a String(Response is a userID)
-        String response = target.queryParam("ID", ID).accept("application/xml").get(String.class);
+        String response = target.queryParam("ID", Uname).accept("application/xml").get(String.class);
         
         //According to the userID get Manufacturer details
     	return response.toString();	
 	}
 	
-	
+	/*
 	//returns cookie UName's value
 	@GET
 	@Path("/cookie")
@@ -158,7 +160,7 @@ public class ManuService {
 				
 		return  UName;
 		
-	}
+	}*/
 	
 	
 }
