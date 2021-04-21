@@ -299,7 +299,7 @@ public class ConceptAPI {
 			+ "<th>Support</th></tr>";
 			
 			// retrieving all the concept details
-			String query = "select * from concept";
+			String query = "select c.conceptID, c.conceptCode, hn.nKey as conceptName, hd.nKey as conceptDesc, c.startDate, c.deadline, c.pledgeGoal, c.reward, c.status, c.workUpdt, c.researcherID from concept c, hconceptname hn, hconceptdesc hd where c.conceptName = hn.Value and c.conceptDesc = hd.Value ";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			
