@@ -214,7 +214,42 @@ public class ConceptAPI {
 			String hName = conceptHash.hashPassword(conceptName);
 			String hDesc = conceptHash.hashPassword(conceptDesc);
 			
-			// create a prepared statement
+			
+			String sqlQuery = "select status from concept where conceptID = "+conceptID;
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sqlQuery);
+			
+			if(rs.next()) {
+				String conceptStatus = rs.getString("status");
+				
+				if(conceptStatus.equals("Completed")) {
+					output = "Concept cannot be updated!!";
+				}else {
+					// create a prepared statement
+					String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
+					PreparedStatement preparedStmt = con.prepareStatement(query);
+					
+					// binding values
+					preparedStmt.setString(1, hName);
+					preparedStmt.setString(2, hDesc);
+					preparedStmt.setDouble(3, Double.parseDouble(pledgeGoal));
+					preparedStmt.setString(4, reward);
+					preparedStmt.setString(5, workUpdt);
+					preparedStmt.setInt(6, Integer.parseInt(conceptID));
+					
+					// execute the statement
+					preparedStmt.execute();
+					
+					//Table for Hash values 
+					insertNameForKey(conceptName, hName);
+					insertDescForKey(conceptDesc, hDesc);
+					
+					con.close();
+					output = "Concept Details Updated Successfully!!";
+				}
+			}
+			
+			/*// create a prepared statement
 			String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
@@ -234,7 +269,7 @@ public class ConceptAPI {
 			insertDescForKey(conceptDesc, hDesc);
 			
 			con.close();
-			output = "Concept Details Updated Successfully!!";
+			output = "Concept Details Updated Successfully!!";*/
 		}
 		catch (Exception e)
 		{
