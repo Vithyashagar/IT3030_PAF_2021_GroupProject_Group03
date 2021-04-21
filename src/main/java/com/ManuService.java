@@ -32,13 +32,15 @@ public class ManuService {
 	
 	//Method to Insert the services
 	@POST
-	@Path("/")
+	@Path("/insert/{name}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_HTML)
 	public String insertService(@FormParam("Name") String Name,
 								@FormParam("Speciality") String Speciality,
 								@FormParam("Description") String Description,
-								@FormParam("MFRID") String MFRID) {
+								@PathParam("name") String uname) {
+				
+		String MFRID = getManufacturerID(uname);
 		
 		String output = MS.insertService(Name, Speciality, Description, MFRID);
 		
@@ -102,7 +104,7 @@ public class ManuService {
 	@GET
 	@Path("/getDetails/{ID}")
 	@Produces(MediaType.TEXT_HTML)
-	public String getUserName(@PathParam("ID") String ID){
+	public String getSpecificManufacturerServices(@PathParam("ID") String ID){
 		
 		//Path to get the Manufacturer Name
 		String path = "http://localhost:8080/gadget_badget/UserService/Users/";
@@ -115,12 +117,36 @@ public class ManuService {
         //To check the response if working
         // ClientResponse response = target.queryParam("ID", ID).accept("application/xml").get(ClientResponse.class);
        
-        //Get the response String and save to a String
+        //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("ID", ID).accept("application/xml").get(String.class);
         
-        //According to the user name get Manufacturer details
-    	return readSpecificManufacturerServices(response.toString());
+        //According to the userID get Manufacturer details
+    	return readSpecificManufacturerServices(response.toString());	
+	}
 	
+	
+	//Method to get Manufacturer ID from User service 
+	@GET
+	@Path("/getDetails/{ID}")
+	@Produces(MediaType.TEXT_HTML)
+	public String getManufacturerID(@PathParam("ID") String ID){
+		
+		//Path to get the Manufacturer Name
+		String path = "http://localhost:8080/gadget_badget/UserService/Users/";
+	       
+	    //Create a client in Server to act as a client to another Server
+        Client client = Client.create();
+        //Creating the web resource
+        WebResource target = client.resource(path);
+       
+        //To check the response if working
+        // ClientResponse response = target.queryParam("ID", ID).accept("application/xml").get(ClientResponse.class);
+       
+        //Get the response String and save to a String(Response is a userID)
+        String response = target.queryParam("ID", ID).accept("application/xml").get(String.class);
+        
+        //According to the userID get Manufacturer details
+    	return response.toString();	
 	}
 	
 	
