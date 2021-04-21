@@ -249,27 +249,6 @@ public class ConceptAPI {
 				}
 			}
 			
-			/*// create a prepared statement
-			String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
-			PreparedStatement preparedStmt = con.prepareStatement(query);
-			
-			// binding values
-			preparedStmt.setString(1, hName);
-			preparedStmt.setString(2, hDesc);
-			preparedStmt.setDouble(3, Double.parseDouble(pledgeGoal));
-			preparedStmt.setString(4, reward);
-			preparedStmt.setString(5, workUpdt);
-			preparedStmt.setInt(6, Integer.parseInt(conceptID));
-			
-			// execute the statement
-			preparedStmt.execute();
-			
-			//Table for Hash values 
-			insertNameForKey(conceptName, hName);
-			insertDescForKey(conceptDesc, hDesc);
-			
-			con.close();
-			output = "Concept Details Updated Successfully!!";*/
 		}
 		catch (Exception e)
 		{
@@ -291,17 +270,34 @@ public class ConceptAPI {
 				return "Database Connection failed!!"; 
 			}
 			
-			// create a prepared statement
-			String query = "delete from concept where conceptID=?";
-			PreparedStatement preparedStmt = con.prepareStatement(query);
+			//Retrieving status to check if the pledge goal is reached
+			String sqlQuery = "select status from concept where conceptID = "+conceptID;
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(sqlQuery);
 			
-			// binding values
-			preparedStmt.setInt(1, Integer.parseInt(conceptID));
-			
-			// execute the statement
-			preparedStmt.execute();
-			con.close();
-			output = "Concept deleted successfully";
+			//validation
+			if(rs.next()) {
+				//get the status value
+				String conceptStatus = rs.getString("status");
+				
+				//if status completed do not delete
+				if(conceptStatus.equals("Completed")) {
+					output = "Concept cannot be deleted!!";
+				}else {
+					
+					// create a prepared statement
+					String query = "delete from concept where conceptID=?";
+					PreparedStatement preparedStmt = con.prepareStatement(query);
+					
+					// binding values
+					preparedStmt.setInt(1, Integer.parseInt(conceptID));
+					
+					// execute the statement
+					preparedStmt.execute();
+					con.close();
+					output = "Concept deleted successfully";
+				}
+			}
 		}
 		catch (Exception e)
 		{
