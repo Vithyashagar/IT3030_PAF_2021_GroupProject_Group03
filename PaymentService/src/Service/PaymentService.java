@@ -38,6 +38,11 @@ public class PaymentService {
 				return "Error while connecting to the database";
 			}
 			
+		
+			/********************************Detail validation************************************************************/
+			
+			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNo.length() == 16) )  {
+				
 			
 			/******************************datahashing process********************************************************************/
 			
@@ -143,6 +148,10 @@ public class PaymentService {
 			con.close();
 			
 			output = " User payment Inserted successfully";
+		}
+		else {
+		     output = "Please enter valid details";
+		}
 	}
 	catch (Exception e)
 	{
@@ -180,7 +189,7 @@ public class PaymentService {
 				+ "<th>ProductID</th>";
 				
 				
-				String query = "select g.PaymentType, g.bank , g.paymentDate , hcn.nKey as NameOnCard, g.Buyerpayment, g.ConsumerID,g.ConceptID,g.ProductID from gb_payments g , hcardname hcn ";
+				String query = "select g.PaymentType, g.bank , g.paymentDate , hcn.nKey as NameOnCard, g.Buyerpayment, g.ConsumerID,g.ConceptID,g.ProductID from gb_payments g , hcardname hcn ,hcardno hno ,hcvv hv where g.NameOnCard = hcn.nValue AND g.cardNo =hno.nValue AND g.cvv=hv.nValue ";
 				
 				Statement stmt = con.createStatement();
 				
