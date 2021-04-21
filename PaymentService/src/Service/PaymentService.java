@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Types;
 
 import Security.Hashing;
+import model.Payment;
 import util.DBConnection;
 
 public class PaymentService {
@@ -41,7 +42,14 @@ public class PaymentService {
 		
 			/********************************Detail validation************************************************************/
 			
-			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNo.length() == 16) )  {
+			/*********Invoke cardNumber validator from model class********************/
+			Payment p = new Payment();
+			
+			int cardNumberCount = p.validateCardNumber(cardNo);
+			
+			int cvvValidation = p.cvvValidator(cardNo, cvv);
+			
+			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) && (cvvValidation == 1) )  {
 				
 			
 			/******************************datahashing process********************************************************************/

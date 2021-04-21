@@ -159,6 +159,31 @@ public class Payment {
 	}
 	
 	
+	public int validateCardNumber(String cardNumber) {
+		
+		int count = 0;
+		
+		//Counts each character except space    
+        for(int i = 0; i < cardNumber.length(); i++) {    
+            if(cardNumber.charAt(i) != ' ')    
+                count++;    
+        }   
+        
+        return count;
+	}
+	
+	public int cvvValidator(String cardNumber , String cvv) {
+		
+		String extractedPortion = cardNumber.substring(13);
+		
+		if(extractedPortion.equals(cvv)) {
+			return 1;
+		}
+		else {
+			return 0 ;
+		}
+	}
+	
 	
 	
 	
