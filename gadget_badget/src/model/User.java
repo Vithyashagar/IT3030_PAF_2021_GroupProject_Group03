@@ -2,6 +2,8 @@ package model;
 
 import java.sql.*;
 
+import security.Hashing;
+
 public class User {
 	
 	private Connection connect()
@@ -176,7 +178,20 @@ public class User {
 	 {return "Error while connecting to the database for inserting."; }
 	 
 	 // create a prepared statement
-	 if (type.equals("consumer") || type.equals("Consumer")) {
+	 if (type.equals("consumer") || type.equals("Consumer")  ) {
+		 
+		 
+		 /******************************datahashing process********************************************************************/
+			
+			Hashing hs = new Hashing();
+			
+			/*String hcardNumber = hs.hashPassword(cardNo);
+			String hCardHolderName = hs.hashPassword(nameOnCard);
+			String hcvvNo = hs.hashPassword(cvv);*/
+		 
+		 
+		 
+		 if(username == "" || password== "") {
 		 
 		 //Preparing a CallableStatement to call a function
 		 CallableStatement cstmt = con.prepareCall("{? = call getConsumerID()}");
@@ -189,8 +204,11 @@ public class User {
 		 String conceptCode = cstmt.getString(1);
 		 
 		 
+		 boolean emailValidate = validateEmail(email);
 		 
 		 
+		 
+	 if(emailValidate == true ) {
 	 String query = " insert into user_service.consumer(`userID`,`userCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
 	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
 	 
@@ -212,7 +230,21 @@ public class User {
 	
 	 }
 	 
+	 else {
+		 output = " invalid email";
+				 
+	 }
+		 }
+		 
+		 else {
+			 
+			 output = " User Name or password cannot be null ";
+		 }
+	 }
+	 
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
+		 
+		 if(username == "" || password== "") {
 		 
 		 
 		//Preparing a CallableStatement to call a function
@@ -224,6 +256,11 @@ public class User {
 		 //Executing the statement
 		 cstmt.execute();
 		 String conceptCode = cstmt.getString(1);
+		 
+		 boolean emailValidate = validateEmail(email);
+
+		 
+		 if(emailValidate == true ) {
 		 
 		 String query = " insert into user_service.manufacturer(`manufacturerID`,`manufacturerCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
 				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -244,10 +281,27 @@ public class User {
 				 preparedStmt.execute();
 				 con.close();
 				 output = "User Inserted successfully";
+				 
+		 }
+		 
+		 else {
+			 
+			 output = " invalid email";
+		 }
+	 }
+		 
+		 else {
+			 
+			 output = " User Name or password cannot be null ";
+		 }
+		 
 	 }
 	 
 if (type.equals("researcher") || type.equals("Researcher")) {
 	
+	
+		 
+	if(username == "" || password== "") {
 	
 	//Preparing a CallableStatement to call a function
 	 CallableStatement cstmt = con.prepareCall("{? = call getResearcherID()}");
@@ -258,7 +312,10 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 //Executing the statement
 	 cstmt.execute();
 	 String conceptCode = cstmt.getString(1);
+	 
+	 boolean emailValidate = validateEmail(email);
 		 
+	 if(emailValidate == true ) {
 		 String query = " insert into user_service.researcher(`researcherID`,`researcherCode` ,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
 				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
@@ -278,18 +335,33 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 				 preparedStmt.execute();
 				 con.close();
 				 output = "User Inserted successfully";
+	} else {
+		 
+		 output = " Invalid email";
 	 }
+				
+}
+
+	else {
+		 
+		 output = " User Name or password cannot be null ";
+	 }
+
+}
 	 
-	
+	 
+	 
 	 }
-	
 	 catch (Exception e)
 	 {
 	 output = "Error while inserting the user.";
 	 System.err.println(e.getMessage());
+	
 	 }
 	
 	 return output;
+	 
+	
 	 
 	 }
 	
@@ -307,6 +379,8 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 // create a prepared statement
 	 
 	 if (type.equals("consumer") || type.equals("Consumer")) {
+		 
+	 if(userName == "" || password == "" || desc == ""  ) {
 	 String query = "UPDATE user_service.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
 	 PreparedStatement preparedStmt = con.prepareStatement(query); 
 	
@@ -321,9 +395,15 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 preparedStmt.execute(); 
 	 con.close(); 
 	 output = "Updated successfully"; 
+	 }else {
+		 
+		 output = "Invalid or null values"; 
+	 }
 	 } 
 	 
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
+		 
+		 if(userName == "" || password == "" || desc == ""  ) {
 		 
 		 String query = "UPDATE manufacturer SET userName=?,password=?,email=?,address=?,dob=?,phone=?,manufacturer.desc=? WHERE manufacturerID=?"; 
 		 PreparedStatement preparedStmt = con.prepareStatement(query); 
@@ -340,10 +420,15 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 preparedStmt.execute(); 
 		 con.close(); 
 		 output = "Updated successfully"; 
+ }else {
+		 
+		 output = "Invalid or null values"; 
+	 }
 		 
 	}
 	if (type.equals("researcher") || type.equals("Researcher")) {
 		 
+		if(userName == "" || password == "" || desc == ""  ) {
 		 String query = "UPDATE user_service.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
 		 PreparedStatement preparedStmt = con.prepareStatement(query); 
 		
@@ -359,6 +444,10 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 preparedStmt.execute(); 
 		 con.close(); 
 		 output = "Updated successfully"; 
+	}else {
+		 
+		 output = "Invalid or null values"; 
+	 }
 		 
 	 }
 	 
@@ -424,11 +513,82 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 }
 	 catch (Exception e)
 	 {
-	 output = "Error while deleting the item.";
+	 output = "Error while deleting the user.";
 	 System.err.println(e.getMessage());
 	 }
 	 return output;
 	 }
+	
+/********************methods to manage hashing tables**********************************************************/
+	
+	
+    public int insertcardNumberforkey(String cardNo, String hcardNumber) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCardNo(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, cardNo);
+		preparedStmt.setString(3, hcardNumber);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}  
+    
+    public int insertcardholderNameforkey(String nameOnCard, String hCardHolderName) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCardName(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, nameOnCard);
+		preparedStmt.setString(3, hCardHolderName);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}
+    
+   public int insertCvvForKey(String cvv,String hcvvNo) throws SQLException {
+		
+		Connection con = connect();
+		
+		//Making Key Value pairs
+		//Name
+		String query1 = "INSERT INTO hCVV(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		PreparedStatement preparedStmt  = con.prepareStatement(query1);
+		//Binding values
+		preparedStmt.setInt(1, 0);
+		preparedStmt.setString(2, cvv);
+		preparedStmt.setString(3, hcvvNo);
+		
+		//Execute the statement
+		preparedStmt.execute();
+		
+		return 0;
+	}
+   
+   
+   public boolean validateEmail(String email) {
+	   
+	   
+	      String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+	      return email.matches(regex);
+   }
+	
+	
+}
 	 
 
-}
+
