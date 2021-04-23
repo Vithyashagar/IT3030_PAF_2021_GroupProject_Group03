@@ -1,8 +1,8 @@
 package Model;
 
 import java.sql.*;
-
 import Security.Hashing;
+import com.Patent;
 
 public class PatentService {
 	
@@ -28,7 +28,7 @@ public class PatentService {
 		return con;
 	}
 	
-	public String insertPatent(String Title, String appDate, String ResearcherID, String ConceptID) {
+	public String insertPatent(String Title, String appDate, String uName) {
 	
 		String output = "";
 		
@@ -42,7 +42,7 @@ public class PatentService {
 			}
 			
 			//Create Prepared Statement
-			String query = "INSERT INTO patentapplication(`PID`,`PatentID`,`Title`,`appDate`,`ResearcherID`, `ConceptID`) VALUES(?,?,?,?,?,?)";
+			String query = "INSERT INTO patentapplication(`PID`,`PatentID`,`Title`,`appDate`,`Researcher`, `ConceptID`) VALUES(?,?,?,?,?,?)";
 			
 			Hashing hs = new Hashing();			
 			
@@ -59,7 +59,11 @@ public class PatentService {
            
             //obtaining returned value of function(getPaymentID())
             String PatCode = cstmt.getString(1);
+           
+            //Read conceptID from Campaign service
+            Patent p = new Patent();
             
+            String ConceptID = p.getConceptID(Title);
 			
 			PreparedStatement preparedStmt  = con.prepareStatement(query);
 			
@@ -68,7 +72,7 @@ public class PatentService {
 			preparedStmt.setString(2, PatCode);
 			preparedStmt.setString(3, hTitle);
 			preparedStmt.setString(4, appDate);
-			preparedStmt.setString(5, ResearcherID);
+			preparedStmt.setString(5, uName);
 			preparedStmt.setString(6, ConceptID);
 			
 			//Execute the statement
@@ -108,12 +112,15 @@ public class PatentService {
 							+ "<th>Title</th>"
 							+ "<th>AppliedDate</th>"
 							+ "<th>Concept</th>"
+							+ "<th>Concept Description</th>"
 							+ "<th>Remove</th>"
 						+ "</tr>";
 			
 			String query = "SELECT p.PID, h.Key as Title, p.appDate, p.ConceptID FROM hpatent h, patentapplication p WHERE h.Value = p.Title";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
+			
+			Patent p = new Patent();
 			
 			// iterate through the rows in the result set
 			while (rs.next()){
@@ -123,10 +130,13 @@ public class PatentService {
 				String appDate = rs.getString("appDate");
 				String ConceptID = rs.getString("ConceptID");
 				
+				String Description = p.getConceptDescription(Title);
+				
 				// Add a row into the HTML table
 				output += "<tr><td>" + Title + "</td>";
 				output += "<td>" + appDate + "</td>";
-				output += "<td>" + ConceptID + "</td>";
+				output += "<td>" + Title + "</td>";
+				output += "<td>" + Description + "</td>";
 								
 				// buttons
 				output +=  "<td>"
@@ -137,6 +147,9 @@ public class PatentService {
 						+ "</td></tr>";
 				
 			}
+			
+			
+			
 			
 			con.close();
 			// Complete the HTML table
@@ -206,4 +219,83 @@ public class PatentService {
 		
 	}
 	
+	//Read Specific Patent
+	public String readSPatent(String name)
+	{
+		String output = "";
+		try{
+			
+			Connection con = connect();
+			
+			//Checking Connection
+			if (con == null){
+				return "Error while Connecting to the Database for Reading.";
+			}
+			
+			// Prepare the HTML table to be displayed
+			output = "<table border='1'>"
+						+ "<tr>"
+							+ "<th>Title</th>"
+							+ "<th>AppliedDate</th>"
+							+ "<th>Concept Description</th>"
+							+ "<th>Inventor Name</th>"
+							+ "<th>Inventor Address</th>"
+							+ "<th>Remove</th>"
+						+ "</tr>";
+			
+			String query = "SELECT p.PID, h.Key as Title, p.appDate, p.ConceptID "
+					+ "FROM hpatent h, patentapplication p "
+					+ "WHERE h.Value = p.Title AND "
+					+ "Researcher = '"+name+"'";
+			
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			Patent p = new Patent();
+			
+			String address = p.getManufacturerAddress(name);
+			
+			// iterate through the rows in the result set
+			while (rs.next()){
+		
+				String PID = Integer.toString((rs.getInt("PID")));
+				String Title = rs.getString("Title");
+				String appDate = rs.getString("appDate");
+				String ConceptID = rs.getString("ConceptID");
+				
+				//Get Description from user service
+				String Description = p.getConceptDescription(Title);
+				
+				// Add a row into the HTML table
+				output += "<tr><td>" + Title + "</td>";
+				output += "<td>" + appDate + "</td>";
+				output += "<td>" + Description + "</td>";
+				output += "<td>" + name + "</td>";
+				output += "<td>" + address + "</td>";
+								
+				// buttons
+				output +=  "<td>"
+							+ "<form method='post' action='Service.jsp'>"
+								+ "<input name='btnRemove' type='submit' value='Delete' class='btn btn-danger'>"
+								+ "<input name='itemID' type='hidden' value='" + PID + "'>"
+							+ "</form>"
+						+ "</td></tr>";
+				
+			}
+			
+			
+			
+			
+			con.close();
+			// Complete the HTML table
+			output += "</table>";
+		}
+		catch (Exception e){
+			output = "Error while reading the Services.";
+			System.err.println(e.getMessage());
+			
+		}
+		
+		return output;
+	}
 }
