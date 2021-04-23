@@ -23,18 +23,19 @@ public class PledgeService {
 	
 	
 	PledgeAPI pledgeObj = new PledgeAPI();
-	
+
 	
 	/** Inserting Pledge Amount to Backs table **/
 	@POST
-	@Path("/insert/{consumername}/")
+	@Path("/insert/{consumername}/{conceptName}/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String insertPledge(@PathParam("consumername") String consumername,
-							 @FormParam("conceptID") String conceptID,
+			@PathParam("conceptName") String conceptName,
 							 @FormParam("pledgedAmnt") String pledgedAmnt)
 	{
 		String backerID = getConsumerID(consumername);
+		String conceptID = pledgeObj.getConceptID(conceptName);
 		String output = pledgeObj.insertPledge(conceptID,backerID,pledgedAmnt);
 		return output;
 	}

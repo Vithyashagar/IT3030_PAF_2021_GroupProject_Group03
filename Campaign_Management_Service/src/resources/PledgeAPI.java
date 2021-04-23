@@ -144,5 +144,39 @@ public class PledgeAPI {
 		
 		
 		
+		//-- Method to read the consumer pledges
+				public String getConceptID(String conceptName)
+				{
+					String conceptID = "";
+					try
+					{
+						Connection con = dbConnect.connect();
+						if (con == null)
+						{
+							return "Database Connection failed!!";
+						}
+						
+						// Retrieving all the pledge details
+						String query = "select c.conceptCode from concept c, hconceptname n where c.conceptName = n.Value and n.nKey = '"+conceptName+"' ";
+						Statement stmt = con.createStatement();
+						ResultSet rs = stmt.executeQuery(query);
+						
+						// iterate through the rows in the result set
+						while (rs.next())
+						{
+							 conceptID = rs.getString("conceptCode");	
+						}
+						con.close();
+						
+						}
+						catch (Exception e)
+						{
+							System.err.println(e.getMessage());
+						}
+						return conceptID;
+				}
+		
+		
+		
 
 }
