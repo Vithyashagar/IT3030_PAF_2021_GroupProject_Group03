@@ -167,6 +167,12 @@ public class User {
 	 return output;
 	 }
 	
+	
+	
+	
+	
+	
+	
 	/*method to inert the user*/
 	public String insertUser(String usercode ,String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
 	 {
@@ -185,13 +191,13 @@ public class User {
 			
 			Hashing hs = new Hashing();
 			
-			/*String hcardNumber = hs.hashPassword(cardNo);
-			String hCardHolderName = hs.hashPassword(nameOnCard);
-			String hcvvNo = hs.hashPassword(cvv);*/
+			String h_userName = hs.hashPassword(username);
+			String h_password = hs.hashPassword(password);
+			
 		 
 		 
 		 
-		 if(username == "" || password== "") {
+		 if(username != "" && password != "") {
 		 
 		 //Preparing a CallableStatement to call a function
 		 CallableStatement cstmt = con.prepareCall("{? = call getConsumerID()}");
@@ -216,8 +222,8 @@ public class User {
 	 // binding values
 	 preparedStmt.setInt(1, 0);
 	 preparedStmt.setString(2, conceptCode);
-	 preparedStmt.setString(3, username);
-	 preparedStmt.setString(4, password);
+	 preparedStmt.setString(3, h_userName);
+	 preparedStmt.setString(4, h_password);
 	 preparedStmt.setString(5, email);
 	 preparedStmt.setString(6, address);
 	 preparedStmt.setString(7, dob);
@@ -225,6 +231,11 @@ public class User {
 	// execute the statement
 	
 	 preparedStmt.execute();
+	 
+	 insertuserNameforkey(username, h_userName);
+	 insertPasswordforkey(password, h_password);
+	 
+	 
 	 con.close();
 	 output = " User Inserted successfully";
 	
@@ -244,7 +255,15 @@ public class User {
 	 
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
-		 if(username == "" || password== "") {
+		 
+		 /******************************data hashing process********************************************************************/
+			
+			Hashing hs = new Hashing();
+			
+			String h_userName = hs.hashPassword(username);
+			String h_password = hs.hashPassword(password);
+		 
+		 if(username != "" && password != "") {
 		 
 		 
 		//Preparing a CallableStatement to call a function
@@ -269,8 +288,8 @@ public class User {
 				 // binding values
 				 preparedStmt.setInt(1, 0);
 				 preparedStmt.setString(2, conceptCode);
-				 preparedStmt.setString(3, username);
-				 preparedStmt.setString(4, password);
+				 preparedStmt.setString(3, h_userName);
+				 preparedStmt.setString(4, h_password);
 				 preparedStmt.setString(5, email);
 				 preparedStmt.setString(6, address);
 				 preparedStmt.setString(7, dob);
@@ -279,6 +298,10 @@ public class User {
 				// execute the statement
 				
 				 preparedStmt.execute();
+				 
+				 insertuserNameforkey(username, h_userName);
+				 insertPasswordforkey(password, h_password);
+				 
 				 con.close();
 				 output = "User Inserted successfully";
 				 
@@ -299,9 +322,14 @@ public class User {
 	 
 if (type.equals("researcher") || type.equals("Researcher")) {
 	
+	 /******************************data hashing process********************************************************************/
 	
+	Hashing hs = new Hashing();
+	
+	String h_userName = hs.hashPassword(username);
+	String h_password = hs.hashPassword(password);
 		 
-	if(username == "" || password== "") {
+	if(username != "" && password != "") {
 	
 	//Preparing a CallableStatement to call a function
 	 CallableStatement cstmt = con.prepareCall("{? = call getResearcherID()}");
@@ -323,8 +351,8 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 				 // binding values
 				 preparedStmt.setInt(1, 0);
 				 preparedStmt.setString(2, conceptCode);
-				 preparedStmt.setString(3, username);
-				 preparedStmt.setString(4, password);
+				 preparedStmt.setString(3, h_userName);
+				 preparedStmt.setString(4, h_password);
 				 preparedStmt.setString(5, email);
 				 preparedStmt.setString(6, address);
 				 preparedStmt.setString(7, dob);
@@ -333,6 +361,10 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 				// execute the statement
 				
 				 preparedStmt.execute();
+				 
+				 insertuserNameforkey(username, h_userName);
+				 insertPasswordforkey(password, h_password);
+				 
 				 con.close();
 				 output = "User Inserted successfully";
 	} else {
@@ -380,12 +412,21 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 
 	 if (type.equals("consumer") || type.equals("Consumer")) {
 		 
-	 if(userName == "" || password == "" || desc == ""  ) {
+		 /******************************datahashing process********************************************************************/
+			
+			Hashing hs = new Hashing();
+			
+			String h_userName = hs.hashPassword(userName);
+			String h_password = hs.hashPassword(password);
+			
+		 
+		 
+	 if(userName != "" && password != ""  ) {
 	 String query = "UPDATE user_service.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
 	 PreparedStatement preparedStmt = con.prepareStatement(query); 
 	
-	 preparedStmt.setString(1, userName); 
-	 preparedStmt.setString(2, password); 
+	 preparedStmt.setString(1, h_userName); 
+	 preparedStmt.setString(2, h_password); 
 	 preparedStmt.setString(3, email); 
 	 preparedStmt.setString(4, address); 
 	 preparedStmt.setString(5, dob); 
@@ -393,23 +434,34 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 preparedStmt.setInt(7, Integer.parseInt(userID));
 	 // execute the statement
 	 preparedStmt.execute(); 
+	 
+	 insertuserNameforkey(userName, h_userName);
+	 insertPasswordforkey(password, h_password);
+	 
 	 con.close(); 
 	 output = "Updated successfully"; 
 	 }else {
 		 
-		 output = "Invalid or null values"; 
+		 output = "Error !! field should not be empty"; 
 	 }
 	 } 
 	 
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
-		 if(userName == "" || password == "" || desc == ""  ) {
+		 /******************************datahashing process********************************************************************/
+			
+			Hashing hs = new Hashing();
+			
+			String h_userName = hs.hashPassword(userName);
+			String h_password = hs.hashPassword(password);
+		 
+		 if(userName != "" && password != "" &&  desc != ""  ) {
 		 
 		 String query = "UPDATE manufacturer SET userName=?,password=?,email=?,address=?,dob=?,phone=?,manufacturer.desc=? WHERE manufacturerID=?"; 
 		 PreparedStatement preparedStmt = con.prepareStatement(query); 
 		
-		 preparedStmt.setString(1, userName); 
-		 preparedStmt.setString(2, password); 
+		 preparedStmt.setString(1, h_userName); 
+		 preparedStmt.setString(2, h_password); 
 		 preparedStmt.setString(3, email); 
 		 preparedStmt.setString(4, address); 
 		 preparedStmt.setString(5, dob); 
@@ -418,22 +470,33 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 preparedStmt.setInt(8, Integer.parseInt(userID));
 		 // execute the statement
 		 preparedStmt.execute(); 
+		 
+		 insertuserNameforkey(userName, h_userName);
+		 insertPasswordforkey(password, h_password);
+		 
 		 con.close(); 
 		 output = "Updated successfully"; 
  }else {
 		 
-		 output = "Invalid or null values"; 
+		 output = "Error !! field should not be empty"; 
 	 }
 		 
 	}
 	if (type.equals("researcher") || type.equals("Researcher")) {
+		
+		 /******************************datahashing process********************************************************************/
+		
+		Hashing hs = new Hashing();
+		
+		String h_userName = hs.hashPassword(userName);
+		String h_password = hs.hashPassword(password);
 		 
-		if(userName == "" || password == "" || desc == ""  ) {
+		if(userName != "" && password != "" &&  profileInfo != "" ) {
 		 String query = "UPDATE user_service.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
 		 PreparedStatement preparedStmt = con.prepareStatement(query); 
 		
-		 preparedStmt.setString(1, userName); 
-		 preparedStmt.setString(2, password); 
+		 preparedStmt.setString(1, h_userName); 
+		 preparedStmt.setString(2, h_password); 
 		 preparedStmt.setString(3, email); 
 		 preparedStmt.setString(4, address); 
 		 preparedStmt.setString(5, dob); 
@@ -442,11 +505,15 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 preparedStmt.setInt(8, Integer.parseInt(userID));
 		 // execute the statement
 		 preparedStmt.execute(); 
+		 
+		 insertuserNameforkey(userName, h_userName);
+		 insertPasswordforkey(password, h_password);
+		 
 		 con.close(); 
 		 output = "Updated successfully"; 
 	}else {
 		 
-		 output = "Invalid or null values"; 
+		 output = "Error !! field should not be empty"; 
 	 }
 		 
 	 }
@@ -522,18 +589,18 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 /********************methods to manage hashing tables**********************************************************/
 	
 	
-    public int insertcardNumberforkey(String cardNo, String hcardNumber) throws SQLException {
+    public int insertuserNameforkey(String userName, String h_userName) throws SQLException {
 		
 		Connection con = connect();
 		
 		//Making Key Value pairs
 		//Name
-		String query1 = "INSERT INTO hCardNo(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		String query1 = "INSERT INTO h_username(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
 		PreparedStatement preparedStmt  = con.prepareStatement(query1);
 		//Binding values
 		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, cardNo);
-		preparedStmt.setString(3, hcardNumber);
+		preparedStmt.setString(2, userName);
+		preparedStmt.setString(3, h_userName);
 		
 		//Execute the statement
 		preparedStmt.execute();
@@ -541,18 +608,18 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		return 0;
 	}  
     
-    public int insertcardholderNameforkey(String nameOnCard, String hCardHolderName) throws SQLException {
+    public int insertPasswordforkey(String pass, String h_password) throws SQLException {
 		
 		Connection con = connect();
 		
 		//Making Key Value pairs
 		//Name
-		String query1 = "INSERT INTO hCardName(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		String query1 = "INSERT INTO h_password(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
 		PreparedStatement preparedStmt  = con.prepareStatement(query1);
 		//Binding values
 		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, nameOnCard);
-		preparedStmt.setString(3, hCardHolderName);
+		preparedStmt.setString(2, pass);
+		preparedStmt.setString(3, h_password);
 		
 		//Execute the statement
 		preparedStmt.execute();
@@ -560,24 +627,6 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		return 0;
 	}
     
-   public int insertCvvForKey(String cvv,String hcvvNo) throws SQLException {
-		
-		Connection con = connect();
-		
-		//Making Key Value pairs
-		//Name
-		String query1 = "INSERT INTO hCVV(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
-		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		//Binding values
-		preparedStmt.setInt(1, 0);
-		preparedStmt.setString(2, cvv);
-		preparedStmt.setString(3, hcvvNo);
-		
-		//Execute the statement
-		preparedStmt.execute();
-		
-		return 0;
-	}
    
    
    public boolean validateEmail(String email) {

@@ -23,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 
 			// Change this to something else.
 			
-			private static String SALT = "$P@y2*4men&t";
+			private static String SALT = "$K@y2*T4men&t0A";
 
 			// A password hashing method.
 			public String hashPassword(String in) {

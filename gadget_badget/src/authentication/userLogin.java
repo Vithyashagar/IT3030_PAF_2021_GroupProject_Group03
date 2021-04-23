@@ -30,7 +30,7 @@ public class userLogin {
 		
 			if (type.equals("consumer") || type.equals("Consumer")) {
 				
-				String query ="select userID,userCode,userName,password,email,address,dob,phone from consumer where userName= '"+username+"'AND password= '"+password+"' ";
+				String query ="select c.userID,c.userCode,u.nKey as userName,p.nKey as password,email,address,dob,phone from consumer c,h_username u, h_password p where c.userName = u.nvalue and c.password = p.nvalue and u.nKey = '"+username+"'AND p.nKey = '"+password+"' ";
 				PreparedStatement preparedStmt = con.prepareStatement(query);
 				ResultSet rs = ((java.sql.Statement) preparedStmt).executeQuery(query);
 				
