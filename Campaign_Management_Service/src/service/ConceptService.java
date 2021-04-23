@@ -27,20 +27,11 @@ public class ConceptService {
 	
 	/*** Viewing Concept details as a researcher(HTTP Verb : GET) by accepting researcher ID as input and produces an HTML Table ***/
 	@GET
-	@Path("/")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/{researcherID}")
 	@Produces(MediaType.TEXT_HTML)
-	public String readMyConcepts(String conceptData)
+	public String helloName(@PathParam("researcherID") String researcherID)
 	{
-		//Conversion of the input string to a JSON object
-		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
-		
-		//Reading the values from the JSON object
-		String reseracherID = conceptObject.get("researcherID").getAsString();
-		
-		//Read the concept details and return them
-		return conceptObj.readMyConcepts(reseracherID);
-		
+		return conceptObj.readMyConcepts(researcherID);
 	}
 	
 	
