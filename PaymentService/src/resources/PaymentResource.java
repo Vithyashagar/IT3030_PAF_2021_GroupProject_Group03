@@ -58,8 +58,8 @@ public class PaymentResource {
 	)
 	{
 		
-		String ConceptID  = getBackerID(ConceptName);
-		String ConsumerID = getResearcherID(ConceptID);
+		String ConceptID  = getConceptID(ConceptName);
+		String ConsumerID = getbackerID(ConceptID);
 		
 		/*Invoke insert method of paymentService class*/
 		
@@ -71,10 +71,10 @@ public class PaymentResource {
 	/*************Handling buyer payment insert via a form and producing final output as plain text message***********************/
 	
 	@POST
-	@Path("/buyerinsert/test")
+	@Path("/buyerinsert/test/{ProductName}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertBuyerPayment(@FormParam("ConsumerID") String ConsumerID,@FormParam("ProductID") String ProductID,@FormParam("PaymentType") String PaymentType,
+	public String insertBuyerPayment(@PathParam("ProductName") String ProductName,@FormParam("PaymentType") String PaymentType,
 	@FormParam("bank") String bank,
 	@FormParam("paymentDate") String paymentDate,
 	@FormParam("cardNo") String cardNo,@FormParam("NameOnCard") String NameOnCard,
@@ -83,6 +83,9 @@ public class PaymentResource {
 	@FormParam("cardExpYear") String cardExpYear
 	)
 	{
+		  String ProductID = getProductID(ProductName);
+		  String ConsumerID = getConsumerID(ProductID);
+		 
 		/*Invoke buyer insert method of paymentService class*/
 		String output = payObj.insertBuyerPayment(ConsumerID,ProductID,PaymentType, bank, paymentDate, cardNo,NameOnCard,cvv,cardExpMonth,cardExpYear);
 		return output;
@@ -99,7 +102,7 @@ public class PaymentResource {
 	public String updatePayment(@PathParam("ConceptName") String ConceptName)
 	{
 		
-		String ConceptID  = getBackerID(ConceptName);
+		String ConceptID  = getConceptID(ConceptName);
 	
 		//invoke updateMethod from paymentService
 		String output = payObj.updatePaymentStatus(ConceptID);
@@ -161,58 +164,10 @@ public class PaymentResource {
 		return output;
 	}
 	
-	//method to get ConsumerID and conceptID from backing table
-	/*@GET
-	@Path("ConceptID/{ConceptName}")
-	public String getbackerDetails(@PathParam("ConceptID") String ConceptID , @PathParam("ConsumerID") String ConsumerID) {
-		
-		//Path defined to get ConsumerID and corresponding ConceptID
-		String path = "http://localhost:8083/Campaign_Management_Service/ConceptService/Concepts";
-		
-		//Create a client  to act as a client to another server
-		
-		Client client = Client.create();
-		
-		//Creating web resource
-		WebResource target = client.resource(path);
-		
-		//Should check if response is working
-		
-		String response = target.queryParam("ConceptID" , ConceptID).queryParam("ConsumerId" , ConsumerID).accept("application/xml").get(String.class);
-		
-	    //According to the ConsumerID and ConceptID get concept details
-		
-		return response.toString();
-		
-	}
+	
+	/*########################################CLIENT PAYMENT - SERVER CONCEPT SERVICE#####################*/
 	
 	
-	//method to get ConsumerID and productID from buying table
-		@GET
-		@Path("productID/{ProductName}")
-		public String getbuyerDetails(@PathParam("ProductID") String ProductID , @PathParam("ConsumerID") String ConsumerID) {
-			
-			//Path defined to get ConsumerID and corresponding ConceptID
-			String path = "";
-			
-			//Create a client  to act as a client to another server
-			
-			Client client = Client.create();
-			
-			//Creating web resource
-			WebResource target = client.resource(path);
-			
-			//Should check if response is working
-			
-			String response = target.queryParam("ProductID" , ProductID).queryParam("ConsumerId" , ConsumerID).accept("application/xml").get(String.class);
-			
-		    //According to the ConsumerID and ConceptID get concept details
-			
-			return response.toString();
-			
-		}
-	*/
-		
 		/**************************Client method to recieve concept id from capaign service*********************************************************/
 		
 		
@@ -220,7 +175,7 @@ public class PaymentResource {
 			@GET
 			@Path("/backer/{ConceptName}")
 			@Produces(MediaType.TEXT_HTML)
-			public String getBackerID(@PathParam("ConceptName") String ConceptName){
+			public String getConceptID(@PathParam("ConceptName") String ConceptName){
 				
 				//Path to get the Concept Name
 				String path = "http://localhost:8080/Campaign_Management_Service/ConceptService/Concepts/conceptCheck/";
@@ -234,7 +189,7 @@ public class PaymentResource {
 		        //To check the response if working
 		        //ClientResponse response = target.queryParam("ConceptName", ConceptName).accept("application/xml").get(ClientResponse.class);
 		       
-		        //Get the response String and save to a String(Response is a userID)
+		        //Get the response String and save to a String(Response is a ConceptID)
 		        String response = target.queryParam("ConceptName", ConceptName).accept("application/xml").get(String.class);
 		        
 		        //According to the conceptName get backer details
@@ -245,14 +200,14 @@ public class PaymentResource {
 			}
 			
 			
-			/**************************Client method to recieve researcherID  from capaign service*********************************************************/
+			/**************************Client method to recieve consumerID  from campaign service*********************************************************/
 			
 			
-			//Method to get Concept ID from Campaign service 
+			//Method to get ConsumerID from Campaign service 
 				@GET
 				@Path("/consumer/{ConceptID}")
 				@Produces(MediaType.TEXT_HTML)
-				public String getResearcherID(@PathParam("ConceptID") String ConceptID){
+				public String getbackerID(@PathParam("ConceptID") String ConceptID){
 					
 					//Path to get the Manufacturer Name
 					String path = "http://localhost:8080/Campaign_Management_Service/ConceptService/Concepts/getConsumerID/";
@@ -266,7 +221,7 @@ public class PaymentResource {
 			        //To check the response if working
 			        //ClientResponse response = target.queryParam("ConceptID", ConceptID).accept("application/xml").get(ClientResponse.class);
 			       
-			        //Get the response String and save to a String(Response is a userID)
+			        //Get the response String and save to a String(Response is a ConsumerID)
 			        String response = target.queryParam("ConceptID", ConceptID).accept("application/xml").get(String.class);
 			        
 			        //According to the conceptName get backer details
@@ -275,8 +230,73 @@ public class PaymentResource {
 			    	return response.toString();
 			    	
 				}
+				
+				
+	/*########################################END OF CLIENT PAYMENT - SERVER CONCEPT SERVICE#####################*/
+				
+				
+	/*########################################CLIENT PAYMENT - SERVER PRODUCT SERVICE#####################*/			
 		
-	
+				//Method to get Product ID from Product service 
+				@GET
+				@Path("/buyer/{ProductName}")
+				@Produces(MediaType.TEXT_HTML)
+				public String getProductID(@PathParam("ProductName") String ProductName){
+					
+					//Path to get the Product Name
+					String path = "http://localhost:8080/ProductService/ProductService/Product/productCheck/";
+				       
+				    //Create a client r to act as a client for another Server
+			        Client client = Client.create();
+			        
+			        //Creating the web resource
+			        WebResource target = client.resource(path);
+			       
+			        //To check the response if working
+			        //ClientResponse response = target.queryParam("ProductName", ProductName).accept("application/xml").get(ClientResponse.class);
+			       
+			        //Get the response String and save to a String(Response is a productID)
+			        String response = target.queryParam("ProductName", ProductName).accept("application/xml").get(String.class);
+			        
+			        //According to the conceptName get backer details
+			    	//return response.toString();	
+			    	
+			    	return response.toString();
+			    	
+				}
+				
+				
+				/**************************Client method to recieve consumerID  from product service*********************************************************/
+				
+				
+				//Method to get ConsumerID from Campaign service 
+					@GET
+					@Path("/buyconsumer/{ProductID}")
+					@Produces(MediaType.TEXT_HTML)
+					public String getConsumerID(@PathParam("ProductID") String ProductID){
+						
+						//Path to get the Product Name
+						String path = "http://localhost:8080/ProductService/ProductService/Product/getConsumerID/";
+					       
+					    //Create a client r to act as a client for another Server
+				        Client client = Client.create();
+				        
+				        //Creating the web resource
+				        WebResource target = client.resource(path);
+				       
+				        //To check the response if working
+				        //ClientResponse response = target.queryParam("ProductID", ProductID).accept("application/xml").get(ClientResponse.class);
+				       
+				        //Get the response String and save to a String(Response is a ConsumerID)
+				        String response = target.queryParam("ProductID", ProductID).accept("application/xml").get(String.class);
+				        
+				        //According to the conceptName get backer details
+				    	//return response.toString();	
+				    	
+				    	return response.toString();
+				    	
+					}			
+				
 	
 	
 }
