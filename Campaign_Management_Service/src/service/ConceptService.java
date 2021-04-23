@@ -9,7 +9,9 @@ import javax.ws.rs.core.MediaType;
 
 //For JSON
 import com.google.gson.*;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 //For XML
 import org.jsoup.*;
@@ -37,19 +39,21 @@ public class ConceptService {
 	
 	/*** Insert Function(HTTP Verb : POST) by getting the input values through forms and produces a plain text as output ***/
 	@POST
-	@Path("/")
+	@Path("/insert/{researcherName}/{manufactName}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertConcept(@FormParam("conceptName") String conceptName,
+	public String insertConcept(@PathParam("researcherName") String researcherName,
+							 @PathParam("manufactName") String manufactName,
+							 @FormParam("conceptName") String conceptName,
 							 @FormParam("conceptDesc") String conceptDesc,
 						     @FormParam("startDate") String startDate,
 						     @FormParam("deadline") String deadline,
 						     @FormParam("pledgeGoal") String pledgeGoal,
 						     @FormParam("reward") String reward,
-						     @FormParam("workUpdt") String workUpdt,
-						     @FormParam("researcherID") String researcherID,
-						     @FormParam("manufactID") String manufactID)
+						     @FormParam("workUpdt") String workUpdt)
 	{
+		String researcherID = getResearcherID(researcherName);
+		String manufactID = getManufactID(manufactName);
 		String output = conceptObj.insertConcept(conceptName, conceptDesc, startDate, deadline, pledgeGoal, reward, workUpdt, researcherID,manufactID );
 		return output;
 	}
@@ -106,6 +110,59 @@ public class ConceptService {
 	public String readAllConcepts()
 	{
 		return conceptObj.readAllConcepts();
+	}
+	
+	
+	/************************* GETTING THE RESEARCHER ID FROM USER SERVICE *****************************/
+	@GET
+	@Path("/getResearcherDetails/{username}")
+	@Produces(MediaType.TEXT_HTML)
+	public String getResearcherID(@PathParam("username") String username){
+		
+		//Path to get the Researcher Name
+		String path = "http://localhost:8083/gadget_badget/UserService/Users/getResearcherID/";
+	       
+	    //Create a client in Server to act as a client to another Server
+        Client client = Client.create();
+        
+        //Creating the web resource
+        WebResource target = client.resource(path);
+       
+        /*************** Testing the inter-service communication *******************************/
+        //ClientResponse response = target.queryParam("username", username).accept("application/xml").get(ClientResponse.class);
+        
+        //Get the response String and save to a String(Response is a userID)
+        String response = target.queryParam("username", username).accept("application/xml").get(String.class);
+        
+        //return readResearcherID(response.toString());
+        return response.toString();	
+	}
+	
+
+	
+	/************************* GETTING THE MANUFACTURER ID FROM USER SERVICE *****************************/
+	@GET
+	@Path("/getManufactDetails/{username}")
+	@Produces(MediaType.TEXT_HTML)
+	public String getManufactID(@PathParam("username") String username){
+		
+		//Path to get the Researcher Name
+		String path = "http://localhost:8083/gadget_badget/UserService/Users/getManufactID/";
+	       
+	    //Create a client in Server to act as a client to another Server
+        Client client = Client.create();
+        
+        //Creating the web resource
+        WebResource target = client.resource(path);
+       
+        /*************** Testing the inter-service communication *******************************/
+        //ClientResponse response = target.queryParam("username", username).accept("application/xml").get(ClientResponse.class);
+        
+        //Get the response String and save to a String(Response is a userID)
+        String response = target.queryParam("username", username).accept("application/xml").get(String.class);
+        
+        //return readResearcherID(response.toString());
+        return response.toString();	
 	}
 	
 
