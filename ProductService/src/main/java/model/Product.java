@@ -1,7 +1,6 @@
 package model;
 
 import java.sql.*;
-import security.ProductSecurity;
 
 public class Product {
 	
@@ -33,7 +32,7 @@ public class Product {
 	
 	
 	/**********************Insert Product*****************************/
-	public String insertProduct(String productCode, String productName, String productPrice, String productDesc,String productCat, String productQty){
+	public String insertProduct(String productName, String productPrice, String productDesc,String productCat, String productQty){
 		String output = "";
 		
 	 try{
@@ -44,13 +43,21 @@ public class Product {
 			 return "Error while connecting to the database for inserting."; 
 		 }
 	 
+		 
+			//Preparing a CallableStatement to call a function
+			 CallableStatement cstmt = con.prepareCall("{? = call getProductCode()}");
+			 //Registering the out parameter of the function (return type)
+			 cstmt.registerOutParameter(1, Types.CHAR);
+			 //Executing the statement
+			 cstmt.execute();
+			 String productCode = cstmt.getString(1);
+			 
+			 
 		 	// create a prepared statement
 		 	String query = "insert into product (`productId`,`productCode`,`productName`,`productPrice`,`productDesc`,`productCat`,`productQty`)"
 		 			+ " values (?, ?, ?, ?, ?, ?, ?)";
 		 	
-		 	//Creating new hashing security object
-		 	ProductSecurity ps = new ProductSecurity();
-	
+		 	
 		 	PreparedStatement preparedStmt = con.prepareStatement(query);
 		
 		 	// binding values
@@ -103,8 +110,7 @@ public class Product {
 						"<th>Product Price</th>" +
 						"<th>Product Description</th>" +
 						"<th>Product Category</th>" +
-						"<th>Product Quantity</th>" +
-						"<th>Update</th><th>Remove</th></tr>";
+						"<th>Product Quantity</th></tr>";
 
 					 String query = "select * from product";
 					 

@@ -30,7 +30,7 @@ public class Buys {
 	
 	
 	/**********************Insert Buying*****************************/
-	public String insertProductConsumer(int consumerID,int productID, int qty ){
+	public String insertProductConsumer(String consumerID,String productID, String qty ){
 		String output = "";
 		
 	 try{
@@ -48,9 +48,9 @@ public class Buys {
 		 	PreparedStatement preparedStmt = con.prepareStatement(query);
 		
 		 	// binding values
-		 	preparedStmt.setInt(1, consumerID);
-		 	preparedStmt.setInt(2, productID);
-		 	preparedStmt.setInt(3, qty);
+		 	preparedStmt.setString(1, consumerID);
+		 	preparedStmt.setString(2, productID);
+			preparedStmt.setInt(3, Integer.parseInt(qty));
 		 	
 		 	// execute the statement
 		 	preparedStmt.execute();
@@ -98,8 +98,8 @@ public class Buys {
 					 // iterate through the rows in the result set
 					 while (rs.next())
 					 {
-						 String consumerID = Integer.toString(rs.getInt("consumerID"));
-						 String productID = Integer.toString(rs.getInt("productID"));
+						 String consumerID = rs.getString("consumerID");
+						 String productID = rs.getString("productID");
 						 String qty = Integer.toString(rs.getInt("qty"));
 
 						 

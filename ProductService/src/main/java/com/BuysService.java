@@ -31,4 +31,22 @@ public class BuysService {
 	
 	
 	
+	//POST method of ProductService	
+	@POST
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String insertProductConsumer(@FormParam("consumerID") String consumerID,
+	 @FormParam("productID") String productID,
+	 @FormParam("qty") String qty)
+	
+	{
+		String output = BuysObj.insertProductConsumer(consumerID, productID, qty);
+	 
+	 	return output;
+	}
+	
+	
+	
+	
 }

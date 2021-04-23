@@ -44,7 +44,7 @@ public class ProductService {
 	 @FormParam("productQty") String productQty)
 	
 	{
-		String output = ProductObj.insertProduct(productCode, productName, productPrice, productDesc,productCat,productQty);
+		String output = ProductObj.insertProduct(productName, productPrice, productDesc,productCat,productQty);
 	 
 	 	return output;
 	}
