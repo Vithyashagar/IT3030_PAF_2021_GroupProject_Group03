@@ -27,8 +27,8 @@ public class PledgeAPI {
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			
 			// binding values
-			preparedStmt.setInt(1, Integer.parseInt(conceptID));
-			preparedStmt.setInt(2, Integer.parseInt(backerID));
+			preparedStmt.setString(1, conceptID);
+			preparedStmt.setString(2, backerID);
 			preparedStmt.setDouble(3, Double.parseDouble(pledgedAmnt));
 			
 			//execute the statement
@@ -72,8 +72,8 @@ public class PledgeAPI {
 				// iterate through the rows in the result set
 				while (rs.next())
 				{
-					String conceptID = Integer.toString(rs.getInt("conceptID"));
-					String backerID = Integer.toString(rs.getInt("backerID"));
+					String conceptID = rs.getString("conceptID");
+					String backerID = rs.getString("backerID");
 					String pledgedAmnt = Double.toString(rs.getDouble("pledgedAmnt"));
 					
 					// Add a row into the HTML table
@@ -113,7 +113,7 @@ public class PledgeAPI {
 				+"<th>Pledged Amount</th></tr>";
 				
 				// Retrieving all the pledge details
-				String query = "select * from backs where backerID = "+backerID;
+				String query = "select * from backs where backerID = '"+backerID+"' ";
 				Statement stmt = con.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				
@@ -121,7 +121,7 @@ public class PledgeAPI {
 				// iterate through the rows in the result set
 				while (rs.next())
 				{
-					String conceptID = Integer.toString(rs.getInt("conceptID"));
+					String conceptID = rs.getString("conceptID");
 					String pledgedAmnt = Double.toString(rs.getDouble("pledgedAmnt"));
 					
 					// Add a row into the HTML table
