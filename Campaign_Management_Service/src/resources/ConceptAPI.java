@@ -33,7 +33,7 @@ public class ConceptAPI {
 			+ "<th>Update</th><th>Remove</th></tr>";
 			
 			// Retrieving the concepts launched by a particular researcher
-			String query = "select c.conceptID, c.conceptCode, hn.nKey as conceptName, hd.nKey as conceptDesc, c.startDate, c.deadline, c.pledgeGoal, c.reward, c.status, c.workUpdt from concept c, hconceptname hn, hconceptdesc hd where c.conceptName = hn.Value and c.conceptDesc = hd.Value and c.researcherID = "+researcherID;
+			String query = "select c.conceptID, c.conceptCode, hn.nKey as conceptName, hd.nKey as conceptDesc, c.startDate, c.deadline, c.pledgeGoal, c.reward, c.status, c.workUpdt from concept c, hconceptname hn, hconceptdesc hd where c.conceptName = hn.Value and c.conceptDesc = hd.Value and c.researcherID = '"+researcherID+"' ";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			
@@ -83,38 +83,8 @@ public class ConceptAPI {
 				output += "<td>" + reward + "</td>";
 				output += "<td>" + pledgedAmount + "</td>";
 				output += "<td>" + status + "</td>";
-				output += "<td>" + workUpdt + "</td>";
+				output += "<td>" + workUpdt + "</td></tr>";
 				
-				// buttons for update and delete
-				output += "<td><form method='post' action='updateConcept.jsp'>"
-				+ "<input name='btnUpdate' "
-				+ " type='submit' value='Update' class='btn btn-secondary'>"
-				+ "<input name='conceptID' type='hidden' "
-				+ " value=' " + conceptID + "'>"
-				+ "<input name='conceptName' type='hidden' "
-				+ " value=' " + conceptName + "'>"
-				+ "<input name='conceptDesc' type='hidden' "
-				+ " value=' " + conceptDesc + "'>"
-				+ "<input name='startDate' type='hidden' "
-				+ " value=' " + startDate + "'>"
-				+ "<input name='deadline' type='hidden' "
-				+ " value=' " + deadline + "'>"
-				+ "<input name='pledgeGoal' type='hidden' "
-				+ " value=' " + pledgeGoal + "'>"
-				+ "<input name='reward' type='hidden' "
-				+ " value=' " + reward + "'>"
-				+ "<input name='pledgedAmount' type='hidden' "
-				+ " value=' " + pledgedAmount + "'>"
-				+ "<input name='status' type='hidden' "
-				+ " value=' " + status + "'>"
-				+ "<input name='workUpdt' type='hidden' "
-				+ " value=' " + workUpdt + "'>"
-				+ "</form></td>"
-				+ "<td><form method='post' action='Concept.jsp'>"
-				+ "<input name='btnRemove' "
-				+ " type='submit' value='Remove' class='btn btn-danger'>"
-				+ "<input name='conceptID' type='hidden' "
-				+ " value=' " + conceptID + "'>" + "</form></td></tr>";
 				}
 				con.close();
 				
@@ -347,7 +317,7 @@ public class ConceptAPI {
 				String reward = rs.getString("reward");
 				String status = rs.getString("status");
 				String workUpdt = rs.getString("workUpdt");
-				String researcherID = Integer.toString(rs.getInt("researcherID"));
+				String researcherID = rs.getString("researcherID");
 				
 				// -- Calling the stored function to retrieve the total pledged amount for concept --
 				//Preparing a CallableStatement to call a function

@@ -52,8 +52,13 @@ public class ConceptService {
 						     @FormParam("reward") String reward,
 						     @FormParam("workUpdt") String workUpdt)
 	{
+		//Getting the researcher ID by calling the client method
 		String researcherID = getResearcherID(researcherName);
+		
+		//Getting manufacturer ID by calling the client method
 		String manufactID = getManufactID(manufactName);
+		
+		//Calling the insert method
 		String output = conceptObj.insertConcept(conceptName, conceptDesc, startDate, deadline, pledgeGoal, reward, workUpdt, researcherID,manufactID );
 		return output;
 	}
