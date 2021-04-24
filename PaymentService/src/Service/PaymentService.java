@@ -38,6 +38,17 @@ public class PaymentService {
 			}
 			
 			
+	/*****************************Hashing details*********************************************/		
+		
+	 Hashing paymentHash = new Hashing();
+	 
+	 String hcardNo = paymentHash.hashPassword(cardNo);
+	 String hCardName = paymentHash.hashPassword(nameOnCard);
+	 String hcvv = paymentHash.hashPassword(cvv);
+	 
+	 
+			
+			
 /********************************Detail validation************************************************************/
 			
 			/*********Invoke cardNumber validator from model class********************/
@@ -80,9 +91,9 @@ public class PaymentService {
 			preparedStmt.setString(3, paymentType);
 			preparedStmt.setString(4, bank);
 			preparedStmt.setString(5, paymentDate);
-			preparedStmt.setString(6, cardNo);
-			preparedStmt.setString(7,nameOnCard);
-			preparedStmt.setString(8, cvv);
+			preparedStmt.setString(6, hcardNo);
+			preparedStmt.setString(7,hCardName);
+			preparedStmt.setString(8, hcvv);
 			preparedStmt.setDouble(9,0);
 			preparedStmt.setString(10, "NA");
 			preparedStmt.setString(11, consumerID);
@@ -94,9 +105,17 @@ public class PaymentService {
 			//execute the statement
 			preparedStmt.execute();
 			
+			
+			//Table or hash values
+			
+			insertcardNumberforkey(cardNo,hcardNo);
+			insertcardholderNameforkey(nameOnCard,hCardName);
+			insertCvvForKey(cvv,hcvv);
+			
+			
 			con.close();
 			
-			output = "Backer payment Inserted successfully";
+			output = "Backer payment Inserted successfully" + "\n Your payment ID is: " +  PaymentCode;
 		}
 		
 	else
@@ -132,6 +151,15 @@ public class PaymentService {
 			{
 				return "Error while connecting to the database";
 			}
+			
+			/*****************************Hashing details*********************************************/		
+			
+			 Hashing paymentHash = new Hashing();
+			 
+			 String hcardNo = paymentHash.hashPassword(cardNo);
+			 String hCardName = paymentHash.hashPassword(NameOnCard);
+			 String hcvv = paymentHash.hashPassword(cvv);
+			
 			
 			
 /********************************Detail validation************************************************************/
@@ -195,9 +223,9 @@ public class PaymentService {
 			preparedStmt.setString(3, paymentType);
 			preparedStmt.setString(4, bank);
 			preparedStmt.setString(5, paymentDate);
-			preparedStmt.setString(6, cardNo);
-			preparedStmt.setString(7,NameOnCard);
-			preparedStmt.setString(8, cvv);
+			preparedStmt.setString(6, hcardNo);
+			preparedStmt.setString(7,hCardName);
+			preparedStmt.setString(8, hcvv);
 			preparedStmt.setDouble(9,totalBuyingAmt);
 			preparedStmt.setString(10, ProductID);
 			preparedStmt.setString(11, ConsumerID);
@@ -209,9 +237,17 @@ public class PaymentService {
 			//execute the statement
 			preparedStmt.execute();
 			
+				//Table or hash values
+			
+			insertcardNumberforkey(cardNo,hcardNo);
+			insertcardholderNameforkey(NameOnCard,hCardName);
+			insertCvvForKey(cvv,hcvv);
+			
 			con.close();
 			
-			output = "Buyer payment Inserted successfully";
+			output = "Buyer payment Inserted successfully" + "\n Your payment ID is: "  + PaymentCode;
+			
+			
 			}
 			else {
 				 output = "Please enter valid details";
@@ -253,7 +289,7 @@ public class PaymentService {
 				+ "<th>ProductID</th>";
 				
 				
-				String query = "select * from gb_payments ";
+				String query = "select p.PaymentType , p.bank , p.paymentDate , hn.nKey AS NameOnCard , p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardname hn , hcardno ho , hcvv hv where p.NameOnCard = hn.nvalue AND p.cardNo = ho.nvalue AND p.cvv = hv.nvalue ";
 				
 				Statement stmt = con.createStatement();
 				
@@ -309,6 +345,96 @@ public class PaymentService {
 	}
 	
 	
+	/*****************************************Method to read specific user payment details********************************/
+	public String readSpecificUserPayments(String name)
+	{
+		String output = "";
+		
+	try
+		{
+		Connection con = dbConnect.connect();
+			
+			if (con == null)
+			{
+				return "Error while connecting to the database for reading.";
+			}
+			
+			// Prepare the html table to be displayed
+			
+				output = "<table border=‘1’><tr><th>Payment Type</th>"
+				+"<th>Bank Name</th>"
+				+ "<th>Payment Date</th>"
+				+ "<th>Card Number</th>"
+				+ "<th>Name On Card</th>"
+				+ "<th>CVV</th>"
+				+ "<th>BuyerPayment</th>"
+				+ "<th>ConsumerID</th>"
+				+ "<th>ConceptID</th>"
+				+ "<th>ProductID</th>";
+				
+				
+				String query = "select p.PaymentType , p.bank , p.paymentDate , ho.nKey AS cardNo ,  hn.nKey AS NameOnCard , hv.nKey AS cvv, p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardname hn , hcardno ho , hcvv hv where p.NameOnCard = hn.nvalue AND p.cardNo = ho.nvalue AND p.cvv = hv.nvalue AND hn.nKey = '"+name+"'";
+				
+				
+				//String query = "select * from gb_payments where  NameOnCard = '"+name+"'";
+				Statement stmt = con.createStatement();
+				
+				ResultSet rs = stmt.executeQuery(query);
+				
+				// iterate through the rows in the result set
+				
+				while (rs.next())
+				{
+					//String PaymentID = Integer.toString(rs.getInt("PaymentID"));
+					String PaymentType = rs.getString("PaymentType");
+					String BankName = rs.getString("bank");
+					String paymentDate = rs.getString("paymentDate");
+					String cardNumber = rs.getNString("cardNo");
+					String CardName= rs.getString("NameOnCard");
+					String cvv = rs.getString("cvv");
+					double buyerAmt = rs.getDouble("Buyerpayment");
+					String productID =  rs.getString("ProductID");
+					String consumerID =  rs.getString("ConsumerID");
+					String conceptID =  rs.getString("ConceptID");
+					//String cardExpMonth =  Integer.toString(rs.getInt("cardExpMonth"));
+					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
+					System.out.println(cardNumber);
+					
+					// Add into the html table
+					
+					output += "<tr><td>" + PaymentType + "</td>";
+					output += "<td>" + BankName + "</td>";
+					output += "<td>" + paymentDate + "</td>";
+					output += "<td>" + cardNumber + "</td>";
+					output += "<td>" + CardName + "</td>";
+					output += "<td>" + cvv + "</td>";
+					output += "<td>" + buyerAmt + "</td>";
+					output += "<td>" + consumerID + "</td>";
+					output += "<td>" + conceptID + "</td>";
+					output += "<td>" + productID + "</td>";
+					
+					
+						
+					}
+				
+				con.close();
+				
+				
+				// Complete the html table
+					output += "</table>";
+		}
+		catch (Exception e)
+		{
+				output = "Error while reading the payments.";
+				System.err.println(e.getMessage());
+		}
+	
+		return output;
+	}
+	
+	
+	
+	
 	
 	
 	/**************************Method to handle payment status depending on pledegAmount summation**********************/
@@ -355,7 +481,7 @@ public class PaymentService {
 	
 	/***************************Method to update user payment details****************************/
 	
-	public String updatePaymentDetails(String paymentID,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
+	public String updatePaymentDetails(String paymentCode,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
 	{
 		String output = "";
 		
@@ -369,19 +495,20 @@ public class PaymentService {
 				return "Error while connecting to the database for updating.";
 			}
 			
+			//Hashing
+			Hashing hs = new Hashing();
+			
+			String hcardNumber = hs.hashPassword(cardNo);
+			String hCardHolderName = hs.hashPassword(NameOnCard);
+			String hcvvNo = hs.hashPassword(cvv);
 			
 			// create a prepared statement
 			
-		String query = "UPDATE gb_payments SET PaymentType=?,bank=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=? WHERE PaymentID=?";
+		String query = "UPDATE gb_payments SET PaymentType=?,bank=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=? WHERE paymentCode=?";
 		
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		
-		//Hashing
-		Hashing hs = new Hashing();
 		
-		String hcardNumber = hs.hashPassword(cardNo);
-		String hCardHolderName = hs.hashPassword(NameOnCard);
-		String hcvvNo = hs.hashPassword(cvv);
 		
 		// binding values
 		
@@ -392,7 +519,7 @@ public class PaymentService {
 		preparedStmt.setString(5, hcvvNo);
 		preparedStmt.setString(6, cardExpMonth);
 		preparedStmt.setString(7, cardExpYear);
-		preparedStmt.setString(8, paymentID);
+		preparedStmt.setString(8, paymentCode);
 		
 		/***********Table for hash values*******************/
 		

@@ -41,6 +41,15 @@ public class PaymentResource {
 		return payObj.readPayments();
 	}
 	
+	/*****************Reading specific user data representing it as an HTML table************************/
+	
+	@GET
+	@Path("/specificUser/{NameOnCard}")
+	@Produces(MediaType.TEXT_HTML)
+	public String readSpecificUserPayments(@PathParam("NameOnCard") String NameOnCard)
+	{
+		return payObj.readSpecificUserPayments(NameOnCard);
+	}
 	
 	/*************Handling backer payment insert via a form and producing final output as plain text message***********************/
 	
@@ -138,17 +147,18 @@ public class PaymentResource {
 	/********************Updating data via JSON format and representing success as a plain text message****************/
 	
 	@PUT
-	@Path("/")
+	@Path("/paymentDetailUpdate/{paymentCode}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String updatePaymentDetails(String paymentData)
+	public String updatePaymentDetails(@PathParam("paymentCode") String paymentCode , String paymentData)
 	{
 	
 		//Convert the input string to a JSON object
 		JsonObject paymentObject = new JsonParser().parse(paymentData).getAsJsonObject();
 		
 		//Read the values from the JSON object
-		String paymentID = paymentObject.get("paymentID").getAsString();
+		//String paymentID = paymentObject.get("paymentID").getAsString();
+		//String paymentCode = paymentObject.get("paymentCode").getAsString();
 		String paymentType = paymentObject.get("paymentType").getAsString();
 		String bank = paymentObject.get("bank").getAsString();
 		String cardNo = paymentObject.get("cardNo").getAsString();
@@ -159,7 +169,7 @@ public class PaymentResource {
 		
 		//invoke deletePaymentMethod from service class
 		
-		String output = payObj.updatePaymentDetails(paymentID, paymentType, bank, cardNo, NameOnCard,cvv,cardExpMonth,cardExpYear);
+		String output = payObj.updatePaymentDetails(paymentCode, paymentType, bank, cardNo, NameOnCard,cvv,cardExpMonth,cardExpYear);
 	
 		return output;
 	}
