@@ -54,7 +54,7 @@ public class PaymentService {
 	 
 	 /****************Payment details entered by user is hashed. ******************************************/
 	 String hcardNo = paymentHash.hashPassword(cardNo);
-	 String hCardName = paymentHash.hashPassword(nameOnCard);
+	 //String hCardName = paymentHash.hashPassword(nameOnCard);
 	 String hcvv = paymentHash.hashPassword(cvv);
 	 
 	 
@@ -103,7 +103,7 @@ public class PaymentService {
 			preparedStmt.setString(4, bank);
 			preparedStmt.setString(5, paymentDate);
 			preparedStmt.setString(6, hcardNo);
-			preparedStmt.setString(7,hCardName);
+			preparedStmt.setString(7,nameOnCard);
 			preparedStmt.setString(8, hcvv);
 			preparedStmt.setDouble(9,0);
 			preparedStmt.setString(10, "NA");
@@ -120,7 +120,7 @@ public class PaymentService {
 			//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
-			insertcardholderNameforkey(nameOnCard,hCardName);
+			//insertcardholderNameforkey(nameOnCard,hCardName);
 			insertCvvForKey(cvv,hcvv);
 			
 			
@@ -174,7 +174,7 @@ public class PaymentService {
 			 Hashing paymentHash = new Hashing();
 			 
 			 String hcardNo = paymentHash.hashPassword(cardNo);
-			 String hCardName = paymentHash.hashPassword(NameOnCard);
+			// String hCardName = paymentHash.hashPassword(NameOnCard);
 			 String hcvv = paymentHash.hashPassword(cvv);
 			
 			
@@ -241,7 +241,7 @@ public class PaymentService {
 			preparedStmt.setString(4, bank);
 			preparedStmt.setString(5, paymentDate);
 			preparedStmt.setString(6, hcardNo);
-			preparedStmt.setString(7,hCardName);
+			preparedStmt.setString(7,NameOnCard);
 			preparedStmt.setString(8, hcvv);
 			preparedStmt.setDouble(9,totalBuyingAmt);
 			preparedStmt.setString(10, ProductID);
@@ -257,7 +257,7 @@ public class PaymentService {
 				//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
-			insertcardholderNameforkey(NameOnCard,hCardName);
+			//insertcardholderNameforkey(NameOnCard,hCardName);
 			insertCvvForKey(cvv,hcvv);
 			
 			con.close();
@@ -314,7 +314,7 @@ public class PaymentService {
 				+ "<th>ProductID</th>";
 				
 				
-				String query = "select p.PaymentType , p.bank , p.paymentDate , hn.nKey AS NameOnCard , p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardname hn , hcardno ho , hcvv hv where p.NameOnCard = hn.nvalue AND p.cardNo = ho.nvalue AND p.cvv = hv.nvalue ";
+				String query = "select p.PaymentType , p.bank , p.paymentDate , p.NameOnCard , p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardno ho , hcvv hv where  p.cardNo = ho.nvalue AND p.cvv = hv.nvalue ";
 				
 				Statement stmt = con.createStatement();
 				
@@ -403,7 +403,7 @@ public class PaymentService {
 				+ "<th>ProductID</th>";
 				
 				
-				String query = "select p.PaymentType , p.bank , p.paymentDate , ho.nKey AS cardNo ,  hn.nKey AS NameOnCard , hv.nKey AS cvv, p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardname hn , hcardno ho , hcvv hv where p.NameOnCard = hn.nvalue AND p.cardNo = ho.nvalue AND p.cvv = hv.nvalue AND hn.nKey = '"+name+"'";
+				String query = "select p.PaymentType , p.bank , p.paymentDate , ho.nKey AS cardNo ,   p.NameOnCard , hv.nKey AS cvv, p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p ,  hcardno ho , hcvv hv where  p.cardNo = ho.nvalue AND p.cvv = hv.nvalue AND p.NameOnCard = '"+name+"'";
 				
 				
 			
@@ -536,7 +536,6 @@ public class PaymentService {
 			Hashing hs = new Hashing();
 			
 			String hcardNumber = hs.hashPassword(cardNo);
-			String hCardHolderName = hs.hashPassword(NameOnCard);
 			String hcvvNo = hs.hashPassword(cvv);
 			
 			// create a prepared statement.
@@ -552,7 +551,7 @@ public class PaymentService {
 		preparedStmt.setString(1, paymentType);
 		preparedStmt.setString(2, bank);
 		preparedStmt.setString(3, hcardNumber);
-		preparedStmt.setString(4, hCardHolderName);
+		preparedStmt.setString(4, NameOnCard);
 		preparedStmt.setString(5, hcvvNo);
 		preparedStmt.setString(6, cardExpMonth);
 		preparedStmt.setString(7, cardExpYear);
@@ -561,7 +560,7 @@ public class PaymentService {
 		/***********Table for hash values.*******************/
 		
 		insertcardNumberforkey(cardNo, hcardNumber);
-		insertcardholderNameforkey(NameOnCard, hCardHolderName);
+		//insertcardholderNameforkey(NameOnCard, hCardHolderName);
 		insertCvvForKey(cvv,hcvvNo);
 		
 		// execute the statement.
