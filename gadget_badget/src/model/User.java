@@ -6,6 +6,8 @@ import security.Hashing;
 
 public class User {
 	
+	
+	 /******************************Establish Connection method****************************************/
 	private Connection connect()
 	 {
 	 Connection con = null;
@@ -20,25 +22,32 @@ public class User {
 	 {e.printStackTrace();}
 	 return con;
 	 }
+	 /*********************end of method***********************/
 	
 	
+	
+
+	 /******************************Read all users according to user type****************************************/
 	public String readUsers(String type)
 	 {
 	 String output = "";
 	 try
 	 {
-	 Connection con = connect();
-	 if (con == null)
+	
+		 Connection con = connect();
+	
+	 if (con == null) 
 	 {return "Error while connecting to the database for reading."; }
-	 // Prepare the html table to be displayed
+	
 	 
-	 if (type.equals("consumer") || type.equals("Consumer")) {
-	 
+	 /*********************Prepare the html table for the consumer to be displayed***********************/
+	 if (type.equals("consumer") || type.equals("Consumer")) { 
 	 output = "<table border='1'><tr><th>Consumer ID</th><th>Consumer Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
 
 	 String query = "select * from consumer";
 	 Statement stmt = con.createStatement();
 	 ResultSet rs = stmt.executeQuery(query);
+	
 	 // iterate through the rows in the result set
 	 while (rs.next())
 	 {
@@ -60,6 +69,8 @@ public class User {
 	 output += "<td>" + address + "</td>";
 	 output += "<td>" + dob + "</td>";
 	 output += "<td>" + phone + "</td>";
+	
+	 
 	 // buttons
 	 output += "<td><input name='btnUpdate' type='button' value='Update'class='btn btn-secondary'></td>"
 	 + "<td><form method='post' action='items.jsp'>"+ "<input name='btnRemove' type='submit' value='Remove'class='btn btn-danger'>"
@@ -71,13 +82,16 @@ public class User {
 	 output += "</table>";
 	 }
 	 
+	 /*********************Prepare the html table for the manufacturer to be displayed***********************/
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
+		// Prepare the html table to be displayed
 		 output = "<table border='1'><tr><th>Manufacture ID</th><th>Manufacture Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>Description</th>"+"<th>update</th>" + "<th>Delete</th></tr>";
 
 		 String query = "select * from manufacturer";
 		 Statement stmt = con.createStatement();
 		 ResultSet rs = stmt.executeQuery(query);
+		
 		 // iterate through the rows in the result set
 		 while (rs.next())
 		 {
@@ -113,13 +127,16 @@ public class User {
 		 }
 	  
 	 
- if (type.equals("researcher") || type.equals("Researcher")) {
+	 /*********************Prepare the html table for the researcher to be displayed***********************/
+       if (type.equals("researcher") || type.equals("Researcher")) {
 		 
-		 output = "<table border='1'><tr><th>Researcher ID</th><th>Researcher Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>profileInfo</th>"+"<th>update</th>" + "<th>Delete</th></tr>";
+	 	// Prepare the html table to be displayed
+	 	output = "<table border='1'><tr><th>Researcher ID</th><th>Researcher Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>profileInfo</th>"+"<th>update</th>" + "<th>Delete</th></tr>";
 
 		 String query = "select * from researcher";
 		 Statement stmt = con.createStatement();
 		 ResultSet rs = stmt.executeQuery(query);
+		
 		 // iterate through the rows in the result set
 		 while (rs.next())
 		 {
@@ -155,9 +172,6 @@ public class User {
 		 }
 	  
 	 
-	 
-	 
-	 
 	 }
 	 catch (Exception e)
 	 {
@@ -167,13 +181,13 @@ public class User {
 	 return output;
 	 }
 	
+	 /*********************end of read users method***********************/
 	
 	
 	
 	
 	
-	
-	/*method to inert the user*/
+	 /*********************Method to insert users***********************/
 	public String insertUser(String usercode ,String username, String password, String email, String address,String dob ,String phone, String type,String desc , String profileInfo)
 	 {
 	 String output = "";
@@ -183,7 +197,7 @@ public class User {
 	 if (con == null)
 	 {return "Error while connecting to the database for inserting."; }
 	 
-	 // create a prepared statement
+	 /*********************insert consumer details***********************/
 	 if (type.equals("consumer") || type.equals("Consumer")  ) {
 		 
 		 
@@ -197,62 +211,60 @@ public class User {
 		 
 		 
 		 
-		 if(username != "" && password != "") {
+		    if(username != "" && password != "") {
 		 
-		 //Preparing a CallableStatement to call a function
-		 CallableStatement cstmt = con.prepareCall("{? = call getConsumerID()}");
+		    //Preparing a CallableStatement to call a function
+		    CallableStatement cstmt = con.prepareCall("{? = call getConsumerID()}");
 		 
-		 //Registering the out parameter of the function (return type)
-		 cstmt.registerOutParameter(1, Types.CHAR);
+		    //Registering the out parameter of the function (return type)
+		    cstmt.registerOutParameter(1, Types.CHAR);
 		
-		 //Executing the statement
-		 cstmt.execute();
-		 String conceptCode = cstmt.getString(1);
+		    //Executing the statement
+		    cstmt.execute();
+		    String conceptCode = cstmt.getString(1);
 		 
 		 
-		 boolean emailValidate = validateEmail(email);
+		    //call email validation method
+		    boolean emailValidate = validateEmail(email);
 		 
 		 
 		 
-	 if(emailValidate == true ) {
-	 String query = " insert into user_service.consumer(`userID`,`userCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
-	 + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+		    if(emailValidate == true ) {
+		    	String query = " insert into user_service.consumer(`userID`,`userCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
+		    	+ " values (?, ?, ?, ?, ?, ?, ?, ?)";
 	 
-	 PreparedStatement preparedStmt = con.prepareStatement(query);
-	 // binding values
-	 preparedStmt.setInt(1, 0);
-	 preparedStmt.setString(2, conceptCode);
-	 preparedStmt.setString(3, h_userName);
-	 preparedStmt.setString(4, h_password);
-	 preparedStmt.setString(5, email);
-	 preparedStmt.setString(6, address);
-	 preparedStmt.setString(7, dob);
-	 preparedStmt.setString(8, phone);
-	// execute the statement
+			 PreparedStatement preparedStmt = con.prepareStatement(query);
+			 // binding values
+			 preparedStmt.setInt(1, 0);
+			 preparedStmt.setString(2, conceptCode);
+			 preparedStmt.setString(3, h_userName);
+			 preparedStmt.setString(4, h_password);
+			 preparedStmt.setString(5, email);
+			 preparedStmt.setString(6, address);
+			 preparedStmt.setString(7, dob);
+			 preparedStmt.setString(8, phone);
+			// execute the statement
 	
-	 preparedStmt.execute();
+			 preparedStmt.execute();
+			 
+			 insertuserNameforkey(username, h_userName);
+			 insertPasswordforkey(password, h_password);
 	 
-	 insertuserNameforkey(username, h_userName);
-	 insertPasswordforkey(password, h_password);
 	 
-	 
-	 con.close();
-	 output = " User Inserted successfully";
-	
-	 }
-	 
-	 else {
-		 output = " invalid email";
-				 
-	 }
-		 }
+			 con.close();
+			 output = " User Inserted successfully";
+			
+	 } else {
+		 output = " invalid email";}
+    }
 		 
-		 else {
+    else {
 			 
 			 output = " User Name or password cannot be null ";
 		 }
-	 }
+}
 	 
+ /***************************insert manufacturer details********************************/
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
 		 
@@ -263,110 +275,106 @@ public class User {
 			String h_userName = hs.hashPassword(username);
 			String h_password = hs.hashPassword(password);
 		 
-		 if(username != "" && password != "") {
+				if(username != "" && password != "") {
 		 
+					//Preparing a CallableStatement to call a function
+					CallableStatement cstmt = con.prepareCall("{? = call getManufacturerID()}");
 		 
-		//Preparing a CallableStatement to call a function
-		 CallableStatement cstmt = con.prepareCall("{? = call getManufacturerID()}");
-		 
-		 //Registering the out parameter of the function (return type)
-		 cstmt.registerOutParameter(1, Types.CHAR);
+					//Registering the out parameter of the function (return type)
+					cstmt.registerOutParameter(1, Types.CHAR);
 		
-		 //Executing the statement
-		 cstmt.execute();
-		 String conceptCode = cstmt.getString(1);
+					//Executing the statement
+					cstmt.execute();
+					String conceptCode = cstmt.getString(1);
 		 
-		 boolean emailValidate = validateEmail(email);
+					boolean emailValidate = validateEmail(email);
 
 		 
-		 if(emailValidate == true ) {
+					if(emailValidate == true ) {
 		 
-		 String query = " insert into user_service.manufacturer(`manufacturerID`,`manufacturerCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
-				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+						String query = " insert into user_service.manufacturer(`manufacturerID`,`manufacturerCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
+						+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
-				 PreparedStatement preparedStmt = con.prepareStatement(query);
-				 // binding values
-				 preparedStmt.setInt(1, 0);
-				 preparedStmt.setString(2, conceptCode);
-				 preparedStmt.setString(3, h_userName);
-				 preparedStmt.setString(4, h_password);
-				 preparedStmt.setString(5, email);
-				 preparedStmt.setString(6, address);
-				 preparedStmt.setString(7, dob);
-				 preparedStmt.setString(8, phone);
-				 preparedStmt.setString(9, desc);
-				// execute the statement
-				
-				 preparedStmt.execute();
-				 
-				 insertuserNameforkey(username, h_userName);
-				 insertPasswordforkey(password, h_password);
-				 
-				 con.close();
-				 output = "User Inserted successfully";
-				 
-		 }
+							PreparedStatement preparedStmt = con.prepareStatement(query);
+							// binding values
+							 preparedStmt.setInt(1, 0);
+							 preparedStmt.setString(2, conceptCode);
+							 preparedStmt.setString(3, h_userName);
+							 preparedStmt.setString(4, h_password);
+							 preparedStmt.setString(5, email);
+							 preparedStmt.setString(6, address);
+							 preparedStmt.setString(7, dob);
+							 preparedStmt.setString(8, phone);
+							 preparedStmt.setString(9, desc);
+							// execute the statement
+							
+							 preparedStmt.execute();
+							 
+							 insertuserNameforkey(username, h_userName);
+							 insertPasswordforkey(password, h_password);
+							 
+							 con.close();
+							 output = "User Inserted successfully";}
 		 
-		 else {
+					else {
 			 
-			 output = " invalid email";
-		 }
-	 }
-		 
-		 else {
+						output = " invalid email";
+					}
+				} else {
 			 
-			 output = " User Name or password cannot be null ";
-		 }
+					output = " User Name or password cannot be null ";
+				}
 		 
 	 }
 	 
-if (type.equals("researcher") || type.equals("Researcher")) {
+	 /*********************insert researcher detials***********************/
+	 if (type.equals("researcher") || type.equals("Researcher")) {
 	
-	 /******************************data hashing process********************************************************************/
+		 /******************************data hashing process********************************************************************/
 	
-	Hashing hs = new Hashing();
+		 	Hashing hs = new Hashing();
 	
-	String h_userName = hs.hashPassword(username);
-	String h_password = hs.hashPassword(password);
+		 	String h_userName = hs.hashPassword(username);
+		 	String h_password = hs.hashPassword(password);
 		 
-	if(username != "" && password != "") {
+		 	if(username != "" && password != "") {
 	
-	//Preparing a CallableStatement to call a function
-	 CallableStatement cstmt = con.prepareCall("{? = call getResearcherID()}");
+		 		//Preparing a CallableStatement to call a function
+		 		CallableStatement cstmt = con.prepareCall("{? = call getResearcherID()}");
 	 
-	 //Registering the out parameter of the function (return type)
-	 cstmt.registerOutParameter(1, Types.CHAR);
+		 		//Registering the out parameter of the function (return type)
+		 		cstmt.registerOutParameter(1, Types.CHAR);
 	
-	 //Executing the statement
-	 cstmt.execute();
-	 String conceptCode = cstmt.getString(1);
+		 		//Executing the statement
+		 		cstmt.execute();
+		 		String conceptCode = cstmt.getString(1);
 	 
-	 boolean emailValidate = validateEmail(email);
+		 		boolean emailValidate = validateEmail(email);
 		 
-	 if(emailValidate == true ) {
-		 String query = " insert into user_service.researcher(`researcherID`,`researcherCode` ,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
-				 + " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		 		if(emailValidate == true ) {
+		 			String query = " insert into user_service.researcher(`researcherID`,`researcherCode` ,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
+		 			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
-				 PreparedStatement preparedStmt = con.prepareStatement(query);
-				 // binding values
-				 preparedStmt.setInt(1, 0);
-				 preparedStmt.setString(2, conceptCode);
-				 preparedStmt.setString(3, h_userName);
-				 preparedStmt.setString(4, h_password);
-				 preparedStmt.setString(5, email);
-				 preparedStmt.setString(6, address);
-				 preparedStmt.setString(7, dob);
-				 preparedStmt.setString(8, phone);
-				 preparedStmt.setString(9, profileInfo);
-				// execute the statement
-				
-				 preparedStmt.execute();
-				 
-				 insertuserNameforkey(username, h_userName);
-				 insertPasswordforkey(password, h_password);
-				 
-				 con.close();
-				 output = "User Inserted successfully";
+		 			PreparedStatement preparedStmt = con.prepareStatement(query);
+			 			// binding values
+			 		 preparedStmt.setInt(1, 0);
+			 		 preparedStmt.setString(2, conceptCode);
+					 preparedStmt.setString(3, h_userName);
+					 preparedStmt.setString(4, h_password);
+					 preparedStmt.setString(5, email);
+					 preparedStmt.setString(6, address);
+					 preparedStmt.setString(7, dob);
+					 preparedStmt.setString(8, phone);
+					 preparedStmt.setString(9, profileInfo);
+					// execute the statement
+					
+					 preparedStmt.execute();
+					 
+					 insertuserNameforkey(username, h_userName);
+					 insertPasswordforkey(password, h_password);
+					 
+					 con.close();
+					 output = "User Inserted successfully";
 	} else {
 		 
 		 output = " Invalid email";
@@ -384,21 +392,25 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 
 	 
 	 }
-	 catch (Exception e)
-	 {
-	 output = "Error while inserting the user.";
-	 System.err.println(e.getMessage());
+	 	catch (Exception e)
+	 	{
+	 		output = "Error while inserting the user.";
+	 		System.err.println(e.getMessage());
 	
-	 }
+	     }
 	
 	 return output;
-	 
-	
-	 
+
 	 }
 	
+	 /*********************end of insert user method***********************/
+	
+	
+	
+	
+	
 
-    /*method to update the user*/
+	 /*********************update user method ***********************/
 	public String updateUser(String type , String userID, String userName, String password, String email, String address,String dob,String phone,String desc,String profileInfo)
 	 { 
 	 String output = ""; 
@@ -408,8 +420,8 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 if (con == null) 
 	 {return "Error while connecting to the database for updating."; } 
 	
-	 // create a prepared statement
-	 
+
+	 /*********************update consumer  ***********************/
 	 if (type.equals("consumer") || type.equals("Consumer")) {
 		 
 		 /******************************datahashing process********************************************************************/
@@ -421,31 +433,32 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 			
 		 
 		 
-	 if(userName != "" && password != ""  ) {
-	 String query = "UPDATE user_service.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
-	 PreparedStatement preparedStmt = con.prepareStatement(query); 
-	
-	 preparedStmt.setString(1, h_userName); 
-	 preparedStmt.setString(2, h_password); 
-	 preparedStmt.setString(3, email); 
-	 preparedStmt.setString(4, address); 
-	 preparedStmt.setString(5, dob); 
-	 preparedStmt.setString(6, phone); 
-	 preparedStmt.setInt(7, Integer.parseInt(userID));
-	 // execute the statement
-	 preparedStmt.execute(); 
-	 
-	 insertuserNameforkey(userName, h_userName);
-	 insertPasswordforkey(password, h_password);
-	 
-	 con.close(); 
-	 output = "Updated successfully"; 
-	 }else {
+				 if(userName != "" && password != ""  ) {
+				 String query = "UPDATE user_service.consumer SET userName=?,password=?,email=?,address=?,dob=?,phone=?where userID=?"; 
+				 PreparedStatement preparedStmt = con.prepareStatement(query); 
+				
+				 preparedStmt.setString(1, h_userName); 
+				 preparedStmt.setString(2, h_password); 
+				 preparedStmt.setString(3, email); 
+				 preparedStmt.setString(4, address); 
+				 preparedStmt.setString(5, dob); 
+				 preparedStmt.setString(6, phone); 
+				 preparedStmt.setInt(7, Integer.parseInt(userID));
+				 // execute the statement
+				 preparedStmt.execute(); 
+				 
+				 insertuserNameforkey(userName, h_userName);
+				 insertPasswordforkey(password, h_password);
+				 
+				 con.close(); 
+				 output = "Updated successfully"; 
+				 }else {
 		 
-		 output = "Error !! field should not be empty"; 
-	 }
-	 } 
+				 output = "Error !! field should not be empty"; 
+				 }
+	 		} 
 	 
+	 /*********************update manufacturer ***********************/
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
 		 /******************************datahashing process********************************************************************/
@@ -455,33 +468,36 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 			String h_userName = hs.hashPassword(userName);
 			String h_password = hs.hashPassword(password);
 		 
-		 if(userName != "" && password != "" &&  desc != ""  ) {
+					 if(userName != "" && password != "" &&  desc != ""  ) {
+					 
+					 String query = "UPDATE manufacturer SET userName=?,password=?,email=?,address=?,dob=?,phone=?,manufacturer.desc=? WHERE manufacturerID=?"; 
+					 PreparedStatement preparedStmt = con.prepareStatement(query); 
+					
+					 preparedStmt.setString(1, h_userName); 
+					 preparedStmt.setString(2, h_password); 
+					 preparedStmt.setString(3, email); 
+					 preparedStmt.setString(4, address); 
+					 preparedStmt.setString(5, dob); 
+					 preparedStmt.setString(6, phone); 
+					 preparedStmt.setString(7, desc);
+					 preparedStmt.setInt(8, Integer.parseInt(userID));
+					 // execute the statement
+					 preparedStmt.execute(); 
+					 
+					 insertuserNameforkey(userName, h_userName);
+					 insertPasswordforkey(password, h_password);
+					 
+					 con.close(); 
+					 output = "Updated successfully"; 
+			 }else {
+					 
+					 output = "Error !! field should not be empty"; 
+				 }
 		 
-		 String query = "UPDATE manufacturer SET userName=?,password=?,email=?,address=?,dob=?,phone=?,manufacturer.desc=? WHERE manufacturerID=?"; 
-		 PreparedStatement preparedStmt = con.prepareStatement(query); 
-		
-		 preparedStmt.setString(1, h_userName); 
-		 preparedStmt.setString(2, h_password); 
-		 preparedStmt.setString(3, email); 
-		 preparedStmt.setString(4, address); 
-		 preparedStmt.setString(5, dob); 
-		 preparedStmt.setString(6, phone); 
-		 preparedStmt.setString(7, desc);
-		 preparedStmt.setInt(8, Integer.parseInt(userID));
-		 // execute the statement
-		 preparedStmt.execute(); 
-		 
-		 insertuserNameforkey(userName, h_userName);
-		 insertPasswordforkey(password, h_password);
-		 
-		 con.close(); 
-		 output = "Updated successfully"; 
- }else {
-		 
-		 output = "Error !! field should not be empty"; 
-	 }
-		 
-	}
+	       }
+	 
+	 
+	 /*********************update researcher ***********************/
 	if (type.equals("researcher") || type.equals("Researcher")) {
 		
 		 /******************************datahashing process********************************************************************/
@@ -491,34 +507,32 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		String h_userName = hs.hashPassword(userName);
 		String h_password = hs.hashPassword(password);
 		 
-		if(userName != "" && password != "" &&  profileInfo != "" ) {
-		 String query = "UPDATE user_service.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
-		 PreparedStatement preparedStmt = con.prepareStatement(query); 
-		
-		 preparedStmt.setString(1, h_userName); 
-		 preparedStmt.setString(2, h_password); 
-		 preparedStmt.setString(3, email); 
-		 preparedStmt.setString(4, address); 
-		 preparedStmt.setString(5, dob); 
-		 preparedStmt.setString(6, phone); 
-		 preparedStmt.setString(7, profileInfo);
-		 preparedStmt.setInt(8, Integer.parseInt(userID));
-		 // execute the statement
-		 preparedStmt.execute(); 
+					if(userName != "" && password != "" &&  profileInfo != "" ) {
+					 String query = "UPDATE user_service.researcher SET userName=?,password=?,email=?,address=?,dob=?,phone=?,profileInfo=?where researcherID=?"; 
+					 PreparedStatement preparedStmt = con.prepareStatement(query); 
+					
+					 preparedStmt.setString(1, h_userName); 
+					 preparedStmt.setString(2, h_password); 
+					 preparedStmt.setString(3, email); 
+					 preparedStmt.setString(4, address); 
+					 preparedStmt.setString(5, dob); 
+					 preparedStmt.setString(6, phone); 
+					 preparedStmt.setString(7, profileInfo);
+					 preparedStmt.setInt(8, Integer.parseInt(userID));
+					 // execute the statement
+					 preparedStmt.execute(); 
+					 
+					 insertuserNameforkey(userName, h_userName);
+					 insertPasswordforkey(password, h_password);
+					 
+					 con.close(); 
+					 output = "Updated successfully"; 
+				}else {
+					 
+					 output = "Error !! field should not be empty"; 
+				 }
 		 
-		 insertuserNameforkey(userName, h_userName);
-		 insertPasswordforkey(password, h_password);
-		 
-		 con.close(); 
-		 output = "Updated successfully"; 
-	}else {
-		 
-		 output = "Error !! field should not be empty"; 
-	 }
-		 
-	 }
-	 
-	 
+	       }
 	 
 	 
 	 }
@@ -530,8 +544,13 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 return output; 
 	 }
 	
+	 /*********************update user method ***********************/
 	
-	/*method to delete the user*/
+	
+	
+	
+	
+	 /*********************delete user method ***********************/
 	public String deleteUser(String type,String userID)
 	 {
 	 String output = "";
@@ -541,6 +560,8 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 if (con == null)
 	 {return "Error while connecting to the database for deleting."; }
 	 
+	 
+	 /*********************delete consumer  ***********************/
 	 if (type.equals("consumer") || type.equals("Consumer")) {
 		 
 		 // create a prepared statement
@@ -553,6 +574,7 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 con.close();
 		 output = "Consumer deleted successfully";
 	 }
+	 /*********************delete manufacturer  ***********************/
 	 if (type.equals("manufacturer") || type.equals("Manufacturer")) {
 		 
 		 // create a prepared statement
@@ -565,6 +587,7 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 		 con.close();
 		 output = "Manufacturer deleted successfully";
 	 }
+	 /*********************delete researcher  ***********************/
 	 if (type.equals("researcher") || type.equals("Researcher")) {
 		 
 		 // create a prepared statement
@@ -586,7 +609,9 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	 return output;
 	 }
 	
-/********************methods to manage hashing tables**********************************************************/
+/*********************delete user method ***********************/	
+	
+/*******************************methods to manage hashing tables**********************************************************/
 	
 	
     public int insertuserNameforkey(String userName, String h_userName) throws SQLException {
@@ -635,7 +660,213 @@ if (type.equals("researcher") || type.equals("Researcher")) {
 	      String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
 	      return email.matches(regex);
    }
+   
+   /********************* end of methods ***********************/
+   
+   
+   /****************************** ISC Communication ***********************************/
+   //Method to read researcher ID
+   public String readResearcherID(String username) {
+       //String output = "";
+       String researcherID = "";
+      
+       try
+       {
+           Connection con = connect();
+           if (con == null)
+           {
+               return "Database Connection failed!!";
+           }
+          
+           String query = "select * from researcher where userName = '"+username+"' ";
+           Statement stmt = con.createStatement();
+           ResultSet rs = stmt.executeQuery(query);
+          
+           // iterate through the rows in the result set
+           while (rs.next())
+           {
+               //researcherID = Integer.toString(rs.getInt("researcherID"));
+               researcherID = rs.getString("researcherCode");
+               //System.out.println(researcherID);
+           }
+               con.close();
+               //output += researcherID;
+              
+           }
+           catch (Exception e)
+           {
+               System.err.println(e.getMessage());
+           }
+           return researcherID;
+   }
+  
+  
+   //Method to read manufacturer ID
+   public String readManufactID(String username) {
+      
+       String manufactID = "";
+      
+       try
+       {
+           Connection con = connect();
+           if (con == null)
+           {
+               return "Database Connection failed!!";
+           }
+          
+           String query = "select * from manufacturer where userName = '"+username+"' ";
+           Statement stmt = con.createStatement();
+           ResultSet rs = stmt.executeQuery(query);
+          
+           // iterate through the rows in the result set
+           while (rs.next())
+           {
+               manufactID = rs.getString("manufacturerCode");
+              
+           }
+               con.close();
+              
+           }
+           catch (Exception e)
+           {
+               System.err.println(e.getMessage());
+           }
+           return manufactID;
+   }
+  
+  
+   //Method to read consumer ID
+   public String readConsumerID(String username) {
+          
+           String consumerID = "";
+          
+           try
+           {
+               Connection con = connect();
+               if (con == null)
+               {
+                   return "Database Connection failed!!";
+               }
+              
+               String query = "select * from consumer where userName = '"+username+"' ";
+               Statement stmt = con.createStatement();
+               ResultSet rs = stmt.executeQuery(query);
+              
+               // iterate through the rows in the result set
+               while (rs.next())
+               {
+                   consumerID = rs.getString("userCode");
+                  
+               }
+                   con.close();
+                  
+               }
+               catch (Exception e)
+               {
+                   System.err.println(e.getMessage());
+               }
+               return consumerID;
+       }
 	
+   
+   
+ 
+   
+   
+   
+   //read userID by userName
+   public String readSUser(String uCode) {
+
+   String output = "";
+
+   try {
+   Connection con = connect();
+
+   if (con == null){
+   return "Error while connecting to the database for reading.";
+   }
+
+   String query = "select * from manufacturer where userName = '"+uCode+"' ";
+   Statement stmt = con.createStatement();
+
+   ResultSet rs = stmt.executeQuery(query);
+   String ID = null;
+
+
+
+
+   while (rs.next()){
+
+   ID = rs.getString("manufacturerCode");
+
+   }
+
+
+
+   con.close();
+
+   output += ID;
+
+   } catch (SQLException e) {
+   // TODO Auto-generated catch block
+   e.printStackTrace();
+   }
+
+
+
+   return output;
+
+   }
+
+
+
+   //read Address by userName
+   public String readAddress(String iD) {
+   String output = "";
+
+   try {
+   Connection con = connect();
+
+   if (con == null){
+   return "Error while connecting to the database for reading.";
+   }
+
+   String query = "select * from researcher where userName = '"+iD+"' ";
+   Statement stmt = con.createStatement();
+
+   ResultSet rs = stmt.executeQuery(query);
+   String ID = null;
+
+
+
+   String address = null;
+
+   while (rs.next()){
+
+   address = rs.getString("address");
+
+   }
+
+
+
+   con.close();
+
+   output += address;
+
+   } catch (SQLException e) {
+   // TODO Auto-generated catch block
+   e.printStackTrace();
+   }
+
+
+
+   return output;
+
+
+
+   }
+   
+   
 	
 }
 	 

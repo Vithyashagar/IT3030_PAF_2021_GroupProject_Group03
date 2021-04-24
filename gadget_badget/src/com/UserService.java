@@ -4,6 +4,9 @@ package com;
 //For REST Service
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+
 //For JSON
 import com.google.gson.*;
 //For XML
@@ -98,7 +101,7 @@ public class UserService {
 	
 	
 
-	@GET
+/*	@GET
 	@Path("/{username}/{password}/{type}")
 	@Produces(MediaType.TEXT_HTML)
 	public String userLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
@@ -107,7 +110,94 @@ public class UserService {
 		return output;
 		
 		//user details for selected user
-	}
+	}*/
+	
+	 //When log in to the system
+    //System will create a cookie on their name 
+    @GET
+    @Path("/{username}/{password}/{type}")
+    @Produces(MediaType.TEXT_HTML)
+    public String userCLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
+        
+        NewCookie cookie = new NewCookie("UName", username );
+        Response.ok("Ok").cookie(cookie).build();
+        
+        return loginObj.userLogin(username,password,type);
+    }
+    
 
+ 
+
+
+	
+	
+	/************************************* ISC Communication ********************************************/
+    //Get researcher id by passing user name
+    @GET
+    @Path("/getResearcherID/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readResearcherID(@QueryParam("username")String username) {
+       
+        String output = userObj.readResearcherID(username);
+        return output;
+       
+    }
+   
+   
+    //get manufacturer id by passing manufacturer user name
+    @GET
+    @Path("/getManufactID/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readManufactID(@QueryParam("username")String username) {
+       
+        String output = userObj.readManufactID(username);
+        return output;
+       
+    }
+   
+   
+    //get consumer id by passing consumer user name
+        @GET
+        @Path("/getConsumerID/")
+        @Produces(MediaType.APPLICATION_XML)
+        public String readConsumerID(@QueryParam("username")String username) {
+           
+            String output = userObj.readConsumerID(username);
+            return output;
+           
+        }
+        
+        
+        
+     
+        
+        //Method to send data  to other services
+        @GET
+        //@Path("/sUserS/")
+        @Produces(MediaType.APPLICATION_XML)
+        public String readSpecificUserS(@QueryParam("ID")String ID){
+            
+            String uID =userObj.readSUser(ID);            
+            return uID;
+
+     
+
+        } 
+        
+        @GET
+        @Path("/address/")
+        @Produces(MediaType.APPLICATION_XML)
+        public String readAddress(@QueryParam("ID")String ID){
+            
+            String uID =userObj.readAddress(ID);            
+            return uID;
+
+     
+
+        }
+        
+        
+
+    	/************************************* ISC Communication ********************************************/
 
 }
