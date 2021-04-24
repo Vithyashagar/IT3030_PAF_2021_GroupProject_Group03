@@ -8,7 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 //For JSON
-import com.google.gson.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
@@ -23,22 +22,34 @@ public class PledgeService {
 	
 	
 	PledgeAPI pledgeObj = new PledgeAPI();
-
 	
 	/** Inserting Pledge Amount to Backs table **/
 	@POST
-	@Path("/insert/{consumername}/{conceptName}/")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("/insertPledge/{consumername}/{conceptName}/")
+	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String insertPledge(@PathParam("consumername") String consumername,
-			@PathParam("conceptName") String conceptName,
-							 @FormParam("pledgedAmnt") String pledgedAmnt)
+	public String insertPledgeTransact(@PathParam("consumername") String consumername,
+									   @PathParam("conceptName") String conceptName,
+									   String pledgeData)
 	{
+		//Convert the input string to an XML document
+		Document doc = Jsoup.parse(pledgeData, "", Parser.xmlParser());
+				
+		//Read the value from the element <pledged amount>
+		String pledgedAmnt = doc.select("pledgedAmnt").text();
+		//String output = conceptObj.deleteConcept(conceptID);
+		
+		//Call the method to get consumer ID from user service
 		String backerID = getConsumerID(consumername);
+		
+		//Get the concept ID
 		String conceptID = pledgeObj.getConceptID(conceptName);
+		
+		//Call insert method
 		String output = pledgeObj.insertPledge(conceptID,backerID,pledgedAmnt);
 		return output;
 	}
+
 	
 	/** Viewing all pledged details **/
 	@GET
@@ -61,13 +72,14 @@ public class PledgeService {
 	
 	
 	
-	/************************* GETTING THE CONSUMER ID FROM USER SERVICE *****************************/
+	/************************************ INTER SERVICE COMMUNICATION  ***********************************/
+	//Method to get consumer ID from user service
 	@GET
 	@Path("/getConsumerDetails/{username}")
 	@Produces(MediaType.TEXT_HTML)
 	public String getConsumerID(@PathParam("username") String username){
 		
-		//Path to get the Researcher Name
+		//Path to get the Consumer ID
 		String path = "http://localhost:8083/gadget_badget/UserService/Users/getConsumerID/";
 	       
 	    //Create a client in Server to act as a client to another Server
@@ -82,8 +94,20 @@ public class PledgeService {
         //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("username", username).accept("application/xml").get(String.class);
         
-        //return readResearcherID(response.toString());
+        //return readConsumerID(response.toString());
         return response.toString();	
 	}
+	
+	
+	/******************* CAMPAIGN SERVICE AS A SERVER FOR INTER SERVICE COMMUNICATION *****************************/
+	//method to send researcherID to paymentService
+    @GET
+    @Path("/getConsumerID/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readSpecificConceptResearcher(@QueryParam("ConceptID")String ConceptID){
+       
+       return pledgeObj.readSpecificConsumerForConcept(ConceptID);           
+      
+    }
 
 }

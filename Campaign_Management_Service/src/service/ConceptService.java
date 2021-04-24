@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 //For JSON
 import com.google.gson.*;
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
+//import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 //For XML
@@ -64,44 +64,41 @@ public class ConceptService {
 	}
 	
 	
-	
 	/*** Update Function(HTTP Verb : PUT) Using JSON and produces a plain text as output result***/
 	@PUT
-	@Path("/")
+	@Path("/update/{conceptCode}/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String updateConcept(String conceptData)
+	public String updateConceptDetails(@PathParam ("conceptCode") String conceptCode,
+			String conceptData)
 	{
 		//Convert the input string to a JSON object
 		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
 		
 		//Read the values from the JSON object
-		String conceptID = conceptObject.get("conceptID").getAsString();
+		//String conceptID = conceptObject.get("conceptID").getAsString();
 		String conceptName = conceptObject.get("conceptName").getAsString();
 		String conceptDesc = conceptObject.get("conceptDesc").getAsString();
 		String pledgeGoal = conceptObject.get("pledgeGoal").getAsString();
 		String reward = conceptObject.get("reward").getAsString();
 		String workUpdt = conceptObject.get("workUpdt").getAsString();
 		
-		String output = conceptObj.updateConcept(conceptID, conceptName, conceptDesc, pledgeGoal, reward, workUpdt);
+		//calling the update method
+		String output = conceptObj.updateConcept(conceptCode, conceptName, conceptDesc, pledgeGoal, reward, workUpdt);
 		
 		return output;
 	}
 	
 	
+	
 	/*** DELETE FUNCTION (HTTP Verb : DELETE) using XML and produces plain text as output results ***/
 	@DELETE
-	@Path("/")
-	@Consumes(MediaType.APPLICATION_XML)
+	@Path("/delete/{conceptCode}/")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteConcept(String conceptData)
+	public String deleteConceptDetails(@PathParam ("conceptCode") String conceptCode)
 	{
-		//Convert the input string to an XML document
-		Document doc = Jsoup.parse(conceptData, "", Parser.xmlParser());
-		
-		//Read the value from the element <itemID>
-		String conceptID = doc.select("conceptID").text();
-		String output = conceptObj.deleteConcept(conceptID);
+		//Calling the delete method
+		String output = conceptObj.deleteConcept(conceptCode);
 		
 		return output;
 	}
@@ -118,13 +115,14 @@ public class ConceptService {
 	}
 	
 	
-	/************************* GETTING THE RESEARCHER ID FROM USER SERVICE *****************************/
+   /************************************** INTER SERVICE COMMUNICATION ********************************************/
+	//Method to get the researcher ID from user service
 	@GET
 	@Path("/getResearcherDetails/{username}")
 	@Produces(MediaType.TEXT_HTML)
 	public String getResearcherID(@PathParam("username") String username){
 		
-		//Path to get the Researcher Name
+		//Path to get the Researcher ID
 		String path = "http://localhost:8083/gadget_badget/UserService/Users/getResearcherID/";
 	       
 	    //Create a client in Server to act as a client to another Server
@@ -144,14 +142,13 @@ public class ConceptService {
 	}
 	
 
-	
-	/************************* GETTING THE MANUFACTURER ID FROM USER SERVICE *****************************/
+	//Method to get the manufacturer ID from user service
 	@GET
 	@Path("/getManufactDetails/{username}")
 	@Produces(MediaType.TEXT_HTML)
 	public String getManufactID(@PathParam("username") String username){
 		
-		//Path to get the Researcher Name
+		//Path to get the Manufacturer ID
 		String path = "http://localhost:8083/gadget_badget/UserService/Users/getManufactID/";
 	       
 	    //Create a client in Server to act as a client to another Server
@@ -166,9 +163,22 @@ public class ConceptService {
         //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("username", username).accept("application/xml").get(String.class);
         
-        //return readResearcherID(response.toString());
+        //return readManufacturerID(response.toString());
         return response.toString();	
 	}
 	
+	
+	/***************************** CAMPAIGN SERVICE AS SERVER FOR INTER SERVICE COMMUNICATION **********************************/
+	
+	//Method to send conceptID  to paymentService
+    @GET 
+    @Path("/conceptCheck/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readSpecificBackerPayment(@QueryParam("ConceptName")String ConceptName){
+       
+       return conceptObj.readSpecificConceptIDForPayment(ConceptName);           
+      
+    }
+   
 
 }

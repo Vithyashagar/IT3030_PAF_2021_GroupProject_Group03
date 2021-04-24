@@ -29,8 +29,7 @@ public class ConceptAPI {
 			+ "<th>Start Date</th><th>Deadline</th>"
 			+ "<th>Pledge Goal</th><th>Reward</th>"
 			+ "<th>Pledged Amount</th>"
-			+ "<th>Status</th><th>Work Update</th>"
-			+ "<th>Update</th><th>Remove</th></tr>";
+			+ "<th>Status</th><th>Work Update</th></tr>";
 			
 			// Retrieving the concepts launched by a particular researcher
 			String query = "select c.conceptID, c.conceptCode, hn.nKey as conceptName, hd.nKey as conceptDesc, c.startDate, c.deadline, c.pledgeGoal, c.reward, c.status, c.workUpdt from concept c, hconceptname hn, hconceptdesc hd where c.conceptName = hn.Value and c.conceptDesc = hd.Value and c.researcherID = '"+researcherID+"' ";
@@ -41,7 +40,6 @@ public class ConceptAPI {
 			// iterate through the rows in the result set
 			while (rs.next())
 			{
-				String conceptID = Integer.toString(rs.getInt("conceptID"));
 				String conceptCode = rs.getString("conceptCode");
 				String conceptName = rs.getString("conceptName");
 				String conceptDesc = rs.getString("conceptDesc");
@@ -60,7 +58,7 @@ public class ConceptAPI {
 			    cstmt.registerOutParameter(1, Types.DOUBLE);
 			    
 			    //Setting the input parameters of the function
-			    cstmt.setString(2, Integer.toString(Integer.parseInt(conceptID)));
+			    cstmt.setString(2, conceptCode);
 			    
 			    //Executing the statement
 			    cstmt.execute();
@@ -114,11 +112,12 @@ public class ConceptAPI {
 				return "Database Connection failed!!";
 			}
 			
+			//Hashing the concept name and description
 			ConceptHashing conceptHash = new ConceptHashing();
 			String hName = conceptHash.hashPassword(conceptName);
 			String hDesc = conceptHash.hashPassword(conceptDesc);
 			
-			// -- Calling a function in the database to auto generate a sequential concept ID --
+			/*** -- Calling a stored function created in database to auto generate a sequential concept code -- ***/
 			//Preparing a CallableStatement to call a function
 		    CallableStatement cstmt = con.prepareCall("{? = call getCustomID()}");
 		    
@@ -130,7 +129,8 @@ public class ConceptAPI {
 		    
 		    //Get the value returned by function and set it to a variable
 		    String conceptCode = cstmt.getString(1);
-			
+			/*** End of execution of stored function ***/
+		   
 			// create a prepared statement
 			String query = " insert into concept(`conceptID`,`conceptCode`,`conceptName`,`conceptDesc`,`startDate`,`deadline`,`pledgeGoal`,`reward`,`workUpdt`,`researcherID`,`manufactID`)"
 			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -158,7 +158,7 @@ public class ConceptAPI {
 			
 			con.close();
 			
-			output = "Concept Details Inserted Successfully";
+			output = "Concept "+conceptName+" Inserted Successfully with code : "+conceptCode;
 		}
 		catch (Exception e)
 		{
@@ -180,23 +180,25 @@ public class ConceptAPI {
 				return "Database Connection failed!!"; 
 			}
 			
+			//Hashing the concept name and description
 			ConceptHashing conceptHash = new ConceptHashing();
 			String hName = conceptHash.hashPassword(conceptName);
 			String hDesc = conceptHash.hashPassword(conceptDesc);
 			
-			
-			String sqlQuery = "select status from concept where conceptID = "+conceptID;
+			//Create statement to get the conept status
+			String sqlQuery = "select status from concept where conceptCode = '"+conceptID+"' ";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sqlQuery);
 			
 			if(rs.next()) {
 				String conceptStatus = rs.getString("status");
 				
+				//if completed display cannot update, esle update it
 				if(conceptStatus.equals("Completed")) {
 					output = "Concept cannot be updated!!";
 				}else {
 					// create a prepared statement
-					String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptID=?";
+					String query = "UPDATE concept SET conceptName=?,conceptDesc=?,pledgeGoal=?,reward=?,workUpdt=? WHERE conceptCode=?";
 					PreparedStatement preparedStmt = con.prepareStatement(query);
 					
 					// binding values
@@ -205,7 +207,7 @@ public class ConceptAPI {
 					preparedStmt.setDouble(3, Double.parseDouble(pledgeGoal));
 					preparedStmt.setString(4, reward);
 					preparedStmt.setString(5, workUpdt);
-					preparedStmt.setInt(6, Integer.parseInt(conceptID));
+					preparedStmt.setString(6, conceptID);
 					
 					// execute the statement
 					preparedStmt.execute();
@@ -241,7 +243,7 @@ public class ConceptAPI {
 			}
 			
 			//Retrieving status to check if the pledge goal is reached
-			String sqlQuery = "select status from concept where conceptID = "+conceptID;
+			String sqlQuery = "select status from concept where conceptCode = '"+conceptID+"' ";
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sqlQuery);
 			
@@ -250,17 +252,16 @@ public class ConceptAPI {
 				//get the status value
 				String conceptStatus = rs.getString("status");
 				
-				//if status completed do not delete
+				//if status completed do not delete, else delete 
 				if(conceptStatus.equals("Completed")) {
 					output = "Concept cannot be deleted!!";
 				}else {
-					
 					// create a prepared statement
-					String query = "delete from concept where conceptID=?";
+					String query = "delete from concept where conceptCode=?";
 					PreparedStatement preparedStmt = con.prepareStatement(query);
 					
 					// binding values
-					preparedStmt.setInt(1, Integer.parseInt(conceptID));
+					preparedStmt.setString(1, conceptID);
 					
 					// execute the statement
 					preparedStmt.execute();
@@ -319,7 +320,7 @@ public class ConceptAPI {
 				String workUpdt = rs.getString("workUpdt");
 				String researcherID = rs.getString("researcherID");
 				
-				// -- Calling the stored function to retrieve the total pledged amount for concept --
+				/** -- Calling the stored function to retrieve the total pledged amount for concept -- **/
 				//Preparing a CallableStatement to call a function
 			    CallableStatement cstmt = con.prepareCall("{? = call funcGetAmount(?)}");
 			    
@@ -327,13 +328,14 @@ public class ConceptAPI {
 			    cstmt.registerOutParameter(1, Types.DOUBLE);
 			    
 			    //Setting the input parameters of the function
-			    cstmt.setString(2, Integer.toString(Integer.parseInt(conceptID)));
+			    cstmt.setString(2, conceptCode);
 			    
 			    //Executing the statement
 			    cstmt.execute();
 			    
 			    //Set the value returned by function to a variable
 			    String pledgedAmount = cstmt.getString(1); 
+			    /*** End of function execution ***/
 			    
 			    //If no values returned set the total as 0.00
 			    if(pledgedAmount == null) {
@@ -377,7 +379,8 @@ public class ConceptAPI {
 	}
 	
 	
-	
+	/******************************* HASHING METHODS ******************************/
+	//Method to Hash during insert
 	public int insertDescForKey(String conceptDesc, String hDesc)throws SQLException {
 			
 			Connection con = dbConnect.connect();
@@ -397,7 +400,7 @@ public class ConceptAPI {
 			return 0;
 		}
 	
-	
+	//Method to Hash during update
 	public int insertNameForKey(String conceptName, String hName) throws SQLException {
 		
 		Connection con = dbConnect.connect();
@@ -416,6 +419,43 @@ public class ConceptAPI {
 		
 		return 0;
 	}
+	
+	
+	/**************************** METHODS REQUIRED AS A SERVER FOR INTER SERVICE COMMUNICATION ************************/
+	//Retrieve concept ID for payment
+	public String readSpecificConceptIDForPayment(String conceptName ) {
+        String output = "";
+        
+        try { 
+             Connection con =dbConnect.connect();
+             
+             if (con == null){
+                 return "Error while connecting to the database for reading."; 
+             }
+        
+             String query = "select * from concept  where conceptName = '"+conceptName+"'";
+             Statement stmt = con.createStatement();
+         
+             ResultSet rs = stmt.executeQuery(query);
+             String ConceptCode = null;
+             
+             while (rs.next()){
+                ConceptCode =  rs.getString("conceptCode");
+             }
+
+            con.close();
+           
+            output += ConceptCode;
+            
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+         return output;
+    }
+    
+	
 	
 
 }

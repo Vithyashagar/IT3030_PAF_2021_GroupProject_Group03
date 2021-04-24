@@ -175,7 +175,42 @@ public class PledgeAPI {
 						}
 						return conceptID;
 				}
+				
+				
+				
+	/******************* METHDODS AS A SERVER FOR INTER SERVICE COMMUNICATION *******************************/
+     //Retrieve Consumer ID for payment
+	public String readSpecificConsumerForConcept(String ConceptID ) {
 		
+	    String output = "";
+			        
+		 try { 
+			 Connection con =dbConnect.connect();
+			             
+             if (con == null){
+			     return "Error while connecting to the database for reading."; 
+			 }
+			        
+			 String query = "select * from backs  where conceptID = '"+ConceptID+"'";
+			 Statement stmt = con.createStatement();
+			         
+			 ResultSet rs = stmt.executeQuery(query);
+			 String ConsumerID = null;
+			            
+			 while (rs.next()){
+			       ConsumerID = rs.getString("backerID");
+			 }
+
+			 con.close();
+			 output += ConsumerID;
+			            
+			 } catch (SQLException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			 }
+
+			 return output;
+		}
 		
 		
 
