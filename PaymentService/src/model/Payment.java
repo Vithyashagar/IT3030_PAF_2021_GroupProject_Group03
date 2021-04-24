@@ -1,8 +1,8 @@
 package model;
-
+/*******Model class of Payment resource.***********************/
 public class Payment {
 
-	//private attribute declaration
+	//private attribute declaration.
 	
 	private int PaymentID;
 	private String paymentCode;
@@ -21,12 +21,12 @@ public class Payment {
 	private int consumerID;
 	private int conceptID;
 	
-	//default constructor
+	//default constructor.
 	public Payment() {
 		super();
 	}
 
-	//Class getter methods
+	//Class getter methods.
 	public int getPaymentID() {
 		return PaymentID;
 	}
@@ -92,7 +92,7 @@ public class Payment {
 	}
 
 	
-	//Class setter methods
+	//Class setter methods.
 	
 	public void setPaymentID(int paymentID) {
 		PaymentID = paymentID;
@@ -159,11 +159,12 @@ public class Payment {
 	}
 	
 	
+	//Method to validate digits in User card.
 	public int validateCardNumber(String cardNumber) {
 		
 		int count = 0;
 		
-		//Counts each character except space    
+		//Counts each character except space .   
         for(int i = 0; i < cardNumber.length(); i++) {    
             if(cardNumber.charAt(i) != ' ')    
                 count++;    
@@ -172,6 +173,7 @@ public class Payment {
         return count;
 	}
 	
+	//Methdo to validate cvv of user card.
 	public int cvvValidator(String cardNumber , String cvv) {
 		
 		String extractedPortion = cardNumber.substring(13);

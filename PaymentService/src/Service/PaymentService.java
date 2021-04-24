@@ -1,5 +1,6 @@
 package Service;
 
+//import statements.
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,36 +13,46 @@ import Security.Hashing;
 import model.Payment;
 import util.DBConnection;
 
+/****************************SERVER MODEL CLASS IMPEMENTING SERVICE BUSINESS LOGIC.****************************************/
+
 public class PaymentService {
 
-	/*****************************************Checking for database connectivity.***************************************/
 	
 	
+	//Connection object creation.
 	DBConnection dbConnect = new DBConnection();
 	
 	
-	/*****Inserting backer payment********/
+	/*****Inserting backer payment.********/
 	public String insertBackerPayment(String consumerID,String conceptID,String paymentType, String bank, String paymentDate, String cardNo, 
 			String nameOnCard, String cvv , 
 			String cardExpMonth , String cardExpYear 
 			)
 	{
+		//declaring variable to capture output message.
+		
 		String output = "";
 		
 		
 		try
 		{
+			
+			/*****************************************Checking for database connectivity.********/
+			
+			
 			Connection con = dbConnect.connect();
+			
 			if (con == null)
 			{
-				return "Error while connecting to the database";
+				return "Error while connecting to the database.";
 			}
 			
 			
-	/*****************************Hashing details*********************************************/		
+	/*****************************Hashing details.*********************************************/		
 		
 	 Hashing paymentHash = new Hashing();
 	 
+	 /****************Payment details entered by user is hashed. ******************************************/
 	 String hcardNo = paymentHash.hashPassword(cardNo);
 	 String hCardName = paymentHash.hashPassword(nameOnCard);
 	 String hcvv = paymentHash.hashPassword(cvv);
@@ -49,9 +60,9 @@ public class PaymentService {
 	 
 			
 			
-/********************************Detail validation************************************************************/
+/********************************Detail validation.************************************************************/
 			
-			/*********Invoke cardNumber validator from model class********************/
+			/*********Invoke cardNumber validator from model class.********************/
 			Payment p = new Payment();
 			
 			int cardNumberCount = p.validateCardNumber(cardNo);
@@ -61,21 +72,21 @@ public class PaymentService {
 			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
 			
 			
-			/*************Executing logic for Auto-generating payment id******************************************************/	
+			/*************Executing logic for Auto-generating payment id.******************************************************/	
 			
-			//Preparing a CallableStatement to call the implemented function
+			//Preparing a CallableStatement to call the implemented function.
             CallableStatement cstmt = con.prepareCall("{? = call getPaymentID()}");
             
-            //Registering the out parameter of the function (return type)
+            //Registering the out parameter of the function (return type).
            cstmt.registerOutParameter(1, Types.CHAR);
             
-            //Executing the statement
+            //Executing the statement.
             cstmt.execute();
             
-            //obtaining returned value of function(getPaymentID())
+            //obtaining returned value of function(getPaymentID()).
             String PaymentCode = cstmt.getString(1);
 			
-			// create a prepared statement
+			// create a prepared statement.
 			
 			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
 			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -84,7 +95,7 @@ public class PaymentService {
 			
 			
 			
-				// binding values
+				// binding values.
 			
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, PaymentCode);
@@ -102,11 +113,11 @@ public class PaymentService {
 			preparedStmt.setString(14, cardExpYear);
 			
 			
-			//execute the statement
+			//execute the statement.
 			preparedStmt.execute();
 			
 			
-			//Table or hash values
+			//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
 			insertcardholderNameforkey(nameOnCard,hCardName);
@@ -120,12 +131,13 @@ public class PaymentService {
 		
 	else
 	{
-			output = "Please enter valid details";
+			output = "Please enter valid details!";
 	}
 	}	
 	catch (Exception e)
 	{
-		output = "Error while inserting";
+		output = "Error while inserting!";
+		
 		System.err.println(e.getMessage());
 	}
 		
@@ -140,19 +152,24 @@ public class PaymentService {
 			String cardExpMonth , String cardExpYear 
 			)
 	{
+		//declare variable to hold output message.
 		String output = "";
 		
+		//declaring variable to capture total payment amount.
 		double totalBuyingAmt = 0.00;
 		
 		try
 		{
+			//checking for connectivity.
+			
 			Connection con = dbConnect.connect();
+			
 			if (con == null)
 			{
-				return "Error while connecting to the database";
+				return "Error while connecting to the database!";
 			}
 			
-			/*****************************Hashing details*********************************************/		
+			/*****************************Hashing details.*********************************************/		
 			
 			 Hashing paymentHash = new Hashing();
 			 
@@ -162,9 +179,9 @@ public class PaymentService {
 			
 			
 			
-/********************************Detail validation************************************************************/
+/********************************Detail validation.************************************************************/
 			
-			/*********Invoke cardNumber validator from model class********************/
+			/*********Invoke cardNumber validator from model class.********************/
 			Payment p = new Payment();
 			
 			int cardNumberCount = p.validateCardNumber(cardNo);
@@ -174,40 +191,40 @@ public class PaymentService {
 			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
 				
 			
-			/*************Executing logic for Auto-generating payment id******************************************************/	
+			/*************Executing logic for Auto-generating payment id.******************************************************/	
 			
-			//Preparing a CallableStatement to call the implemented function
+			//Preparing a CallableStatement to call the implemented function.
             CallableStatement cstmt = con.prepareCall("{? = call getPaymentID()}");
             
-            //Registering the out parameter of the function (return type)
+            //Registering the out parameter of the function (return type).
            cstmt.registerOutParameter(1, Types.CHAR);
             
-            //Executing the statement
+            //Executing the statement.
             cstmt.execute();
             
-            //obtaining returned value of function(getPaymentID())
+            //obtaining returned value of function(getPaymentID()).
             String PaymentCode = cstmt.getString(1);
             
             
             
-   /******************************BUYER PAYMENT CALCULATION**************************************************************/         
-          //contains implemented business logic to calculate total buying amount of buyer
+   /******************************BUYER PAYMENT CALCULATION.**************************************************************/         
+          //contains implemented business logic to calculate total buying amount of buyer.
 			 CallableStatement  cs = con.prepareCall("{? = call insertProductAmount(?,?)}");	
 			
-			//setting parameter to function
+			//setting parameter to function.
 			
 			 cs.registerOutParameter(1, Types.DOUBLE);
 			 cs.setString(2,ProductID);
 			 cs.setString(3, ConsumerID);
 		
 			
-			//call function
+			//call function.
 			 cs.execute();
 			
-			//obtained returned value of function(insertProductAmount())
+			//obtained returned value of function(insertProductAmount()).
 		     totalBuyingAmt = cs.getDouble(1);
 			
-			// create a prepared statement
+			// create a prepared statement.
 			
 			String query = " insert into gb_payments(`PaymentID`,`paymentCode`,`PaymentType`,`bank`,`paymentDate`,`cardNo`,`NameOnCard`,`cvv`,`Buyerpayment`,`ProductID`,`ConsumerID`,`ConceptID`,`cardExpMonth`,`cardExpYear`)"
 			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -216,7 +233,7 @@ public class PaymentService {
 			
 			
 			
-				// binding values
+				// binding values.
 			
 			preparedStmt.setInt(1, 0);
 			preparedStmt.setString(2, PaymentCode);
@@ -234,10 +251,10 @@ public class PaymentService {
 			preparedStmt.setString(14, cardExpYear);
 			
 			
-			//execute the statement
+			//execute the statement.
 			preparedStmt.execute();
 			
-				//Table or hash values
+				//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
 			insertcardholderNameforkey(NameOnCard,hCardName);
@@ -250,12 +267,14 @@ public class PaymentService {
 			
 			}
 			else {
-				 output = "Please enter valid details";
+				
+				 output = "Please enter valid details!";
 			}
 	}
 	catch (Exception e)
 	{
-		output = "Error while inserting";
+		output = "Error while inserting!";
+		
 		System.err.println(e.getMessage());
 	}
 		
@@ -263,21 +282,27 @@ public class PaymentService {
 	}
 	
 	
-	/*****************************************Method to read relevant payment details********************************/
+	/*****************************************Method to read all payment details.********************************/
 	public String readPayments()
 	{
+		//declare variable to capture output message.
+		
 		String output = "";
 		
 	try
 		{
+		
+		//invoking connection object.
 		Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
-				return "Error while connecting to the database for reading.";
+				return "Error while connecting to the database for reading!";
 			}
 			
-			// Prepare the html table to be displayed
+			// Prepare the html table to be displayed.
+			
+			//Cannot view personal payment details.
 			
 				output = "<table border=‘1’><tr><th>Payment Type</th>"
 				+"<th>Bank Name</th>"
@@ -295,7 +320,7 @@ public class PaymentService {
 				
 				ResultSet rs = stmt.executeQuery(query);
 				
-				// iterate through the rows in the result set
+				// iterate through the rows in the result set.
 				
 				while (rs.next())
 				{
@@ -314,7 +339,7 @@ public class PaymentService {
 					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
 					
 					
-					// Add into the html table
+					// Add into the html table.
 					
 					output += "<tr><td>" + PaymentType + "</td>";
 					output += "<td>" + BankName + "</td>";
@@ -332,12 +357,13 @@ public class PaymentService {
 				con.close();
 				
 				
-				// Complete the html table
+				// Complete the html table.
 					output += "</table>";
 		}
 		catch (Exception e)
 		{
-				output = "Error while reading the payments.";
+				output = "Error while reading the payments!";
+				
 				System.err.println(e.getMessage());
 		}
 	
@@ -348,19 +374,23 @@ public class PaymentService {
 	/*****************************************Method to read specific user payment details********************************/
 	public String readSpecificUserPayments(String name)
 	{
+		//Declare variable to capture output message.
+		
 		String output = "";
 		
 	try
 		{
+		//check for connectivity.
 		Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
-				return "Error while connecting to the database for reading.";
+				return "Error while connecting to the database for reading!";
 			}
 			
-			// Prepare the html table to be displayed
+			// Prepare the html table to be displayed.
 			
+			//All user details visible to user.
 				output = "<table border=‘1’><tr><th>Payment Type</th>"
 				+"<th>Bank Name</th>"
 				+ "<th>Payment Date</th>"
@@ -376,12 +406,12 @@ public class PaymentService {
 				String query = "select p.PaymentType , p.bank , p.paymentDate , ho.nKey AS cardNo ,  hn.nKey AS NameOnCard , hv.nKey AS cvv, p.Buyerpayment , p.ProductID , p.ConsumerID , p.ConceptID from gb_payments p , hcardname hn , hcardno ho , hcvv hv where p.NameOnCard = hn.nvalue AND p.cardNo = ho.nvalue AND p.cvv = hv.nvalue AND hn.nKey = '"+name+"'";
 				
 				
-				//String query = "select * from gb_payments where  NameOnCard = '"+name+"'";
+			
 				Statement stmt = con.createStatement();
 				
 				ResultSet rs = stmt.executeQuery(query);
 				
-				// iterate through the rows in the result set
+				// iterate through the rows in the result set.
 				
 				while (rs.next())
 				{
@@ -400,7 +430,9 @@ public class PaymentService {
 					//String cardExpYear = Integer.toString(rs.getInt("cardExpYear"));
 					System.out.println(cardNumber);
 					
-					// Add into the html table
+					
+					
+					// Add into the html table.
 					
 					output += "<tr><td>" + PaymentType + "</td>";
 					output += "<td>" + BankName + "</td>";
@@ -420,12 +452,13 @@ public class PaymentService {
 				con.close();
 				
 				
-				// Complete the html table
+				// Complete the html table.
 					output += "</table>";
 		}
 		catch (Exception e)
 		{
-				output = "Error while reading the payments.";
+				output = "Error while reading the payments!";
+				
 				System.err.println(e.getMessage());
 		}
 	
@@ -440,20 +473,22 @@ public class PaymentService {
 	/**************************Method to handle payment status depending on pledegAmount summation**********************/
 	public String updatePaymentStatus(String ConceptID)
 	{
+		//Declare variable to capture output message.
 		String output = "";
 		
 		try
 		{
+			//check for connectivity.
 			Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
-				return "Error while connecting to the database for updating."; 
+				return "Error while connecting to the database for updating!"; 
 			}
 			
-			//Preparing a CallableStatement to call a stored procedure containing business logic
+			//Preparing a CallableStatement to call a stored procedure containing business logic.
 			
-			//contains  business logic implemented to update concept status as pledgeAmount sums up
+			//contains  business logic implemented to update concept status as pledgeAmount sums up.
 			CallableStatement  cs = con.prepareCall("{call updateStatus(?)}");	
 			
 			//setting parameter to procedure
@@ -467,11 +502,12 @@ public class PaymentService {
 			//verify procedure execution success
 			System.out.println("Stored procedure called successfully!");
 		
-			output = "Concept payment status Updated successfully";
+			output = "Concept payment status Updated successfully!";
 		}
 		catch (Exception e)
 		{
-			output = "Error while updating the concept payment status.";
+			output = "Error while updating the concept payment status!";
+			
 			System.err.println(e.getMessage());
 		}
 		
@@ -479,30 +515,31 @@ public class PaymentService {
 		
 		}
 	
-	/***************************Method to update user payment details****************************/
+	/***************************Method to update user payment details.****************************/
 	
 	public String updatePaymentDetails(String paymentCode,String paymentType,String bank , String cardNo , String NameOnCard ,String cvv, String cardExpMonth ,String cardExpYear)
 	{
+		//Declare variable to capture output message.
 		String output = "";
 		
 		try
 		{
-			
+			//check for connectivity.
 			Connection con = dbConnect.connect();
 			
 			if (con == null)
 			{
-				return "Error while connecting to the database for updating.";
+				return "Error while connecting to the database for updating!";
 			}
 			
-			//Hashing
+			//Hashing.
 			Hashing hs = new Hashing();
 			
 			String hcardNumber = hs.hashPassword(cardNo);
 			String hCardHolderName = hs.hashPassword(NameOnCard);
 			String hcvvNo = hs.hashPassword(cvv);
 			
-			// create a prepared statement
+			// create a prepared statement.
 			
 		String query = "UPDATE gb_payments SET PaymentType=?,bank=?,cardNo=?,NameOnCard=?,cvv=?,cardExpMonth=?,cardExpYear=? WHERE paymentCode=?";
 		
@@ -510,7 +547,7 @@ public class PaymentService {
 		
 		
 		
-		// binding values
+		// binding values.
 		
 		preparedStmt.setString(1, paymentType);
 		preparedStmt.setString(2, bank);
@@ -521,24 +558,24 @@ public class PaymentService {
 		preparedStmt.setString(7, cardExpYear);
 		preparedStmt.setString(8, paymentCode);
 		
-		/***********Table for hash values*******************/
+		/***********Table for hash values.*******************/
 		
 		insertcardNumberforkey(cardNo, hcardNumber);
 		insertcardholderNameforkey(NameOnCard, hCardHolderName);
 		insertCvvForKey(cvv,hcvvNo);
 		
-		// execute the statement
+		// execute the statement.
 		preparedStmt.execute();
 		
 		
 		con.close();
 		
-		output = "Payment details Updated successfully";
+		output = "Payment details for " + paymentCode + "Updated successfully!";
 		
 		}
 		catch (Exception e)
 		{
-			output = "Error while Updating the payment details.";
+			output = "Error while Updating the payment details!";
 		
 			System.err.println(e.getMessage());
 		}
@@ -549,12 +586,13 @@ public class PaymentService {
 	
 	
 	
-	/*Method to delete incomplete project backed funds*/
+	/*Method to delete  backed funds for incomplete projects.*/
 	public String deletePayment(String status) {
 		
+		//declare variabe to capure output message.
 		String output = "";
 		 
-		
+		//check for connectivity.
 		Connection con = dbConnect.connect();
 		
 		String sql = "delete from paymentdb.gb_payments p where p.PaymentID > 0 AND p.ConceptID IN (select c.conceptCode from concept_service.concept c where c.status = '"+status+"')" ;
@@ -565,11 +603,11 @@ public class PaymentService {
 
 			preparedStmt.executeUpdate();
 			
-			output = "Payment Deleted Successfully!!";
+			output = "Payments Deleted Successfully!!";
 		}
 		catch (Exception e) {
 			
-			output = "Error while deleting payment";
+			output = "Error while deleting payment!";
 			
 			e.printStackTrace();
 		}
@@ -581,21 +619,24 @@ public class PaymentService {
 	
 	/********************methods to manage hashing tables**********************************************************/
 	
+	/**********Separate table containing hashed values are maintained.********************/
 	
     public int insertcardNumberforkey(String cardNo, String hcardNumber) throws SQLException {
 		
 		Connection con = dbConnect.connect();
 		
-		//Making Key Value pairs
-		//Name
+		//Making Key Value pairs.
+		//Name.
 		String query1 = "INSERT INTO hCardNo(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
+		
 		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		//Binding values
+		
+		//Binding values.
 		preparedStmt.setInt(1, 0);
 		preparedStmt.setString(2, cardNo);
 		preparedStmt.setString(3, hcardNumber);
 		
-		//Execute the statement
+		//Execute the statement.
 		preparedStmt.execute();
 		
 		return 0;
@@ -605,16 +646,18 @@ public class PaymentService {
 		
 		Connection con = dbConnect.connect();
 		
-		//Making Key Value pairs
-		//Name
+		//Making Key Value pairs.
+		//Name.
+		
 		String query1 = "INSERT INTO hCardName(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
 		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		//Binding values
+		
+		//Binding values.
 		preparedStmt.setInt(1, 0);
 		preparedStmt.setString(2, nameOnCard);
 		preparedStmt.setString(3, hCardHolderName);
 		
-		//Execute the statement
+		//Execute the statement.
 		preparedStmt.execute();
 		
 		return 0;
@@ -624,16 +667,17 @@ public class PaymentService {
 		
 		Connection con = dbConnect.connect();
 		
-		//Making Key Value pairs
-		//Name
+		//Making Key Value pairs.
+		//Name.
 		String query1 = "INSERT INTO hCVV(`id`, `nKey`, `nvalue`) VALUES(?,?,?)" ;
 		PreparedStatement preparedStmt  = con.prepareStatement(query1);
-		//Binding values
+		
+		//Binding values.
 		preparedStmt.setInt(1, 0);
 		preparedStmt.setString(2, cvv);
 		preparedStmt.setString(3, hcvvNo);
 		
-		//Execute the statement
+		//Execute the statement.
 		preparedStmt.execute();
 		
 		return 0;

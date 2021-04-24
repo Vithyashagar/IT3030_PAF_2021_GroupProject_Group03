@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 public class Hashing {
 
 	// We need a bytesToHex method first. So, from -
-		// http://stackoverflow.com/a/9855338/2970947
+		// http://stackoverflow.com/a/9855338/2970947.
 		final protected static char[] hexArray = "0123456789ABCDEF"
 		    .toCharArray();
 

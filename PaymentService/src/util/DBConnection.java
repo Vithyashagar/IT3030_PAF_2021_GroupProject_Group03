@@ -15,7 +15,7 @@ public class DBConnection {
 			
 			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentdb","root", "1234");
 			
-			//Testing for connectivity
+			//Testing for connectivity.
 			
 			System.out.print("Successfully connected");
 		}
