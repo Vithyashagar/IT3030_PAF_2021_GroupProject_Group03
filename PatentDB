@@ -1,0 +1,117 @@
+-- MySQL dump 10.13  Distrib 8.0.23, for Win64 (x86_64)
+--
+-- Host: localhost    Database: patentservices
+-- ------------------------------------------------------
+-- Server version	8.0.23
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `hpatent`
+--
+
+DROP TABLE IF EXISTS `hpatent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `hpatent` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `Key` varchar(50) DEFAULT NULL,
+  `Value` varchar(65) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `hpatent`
+--
+
+LOCK TABLES `hpatent` WRITE;
+/*!40000 ALTER TABLE `hpatent` DISABLE KEYS */;
+INSERT INTO `hpatent` VALUES (11,'Jiggles Puzzle','C30B629D75DDBF6A5FDDA74CF3E67971F8B7C1A161C47B426D2AE27F19CCB37C'),(12,'Nimble nail polisher','9FB26936AD965135A95BF5B90C5533F10559CE942DEF9ED0628D18E326548AF7');
+/*!40000 ALTER TABLE `hpatent` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `patentapplication`
+--
+
+DROP TABLE IF EXISTS `patentapplication`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `patentapplication` (
+  `PID` int NOT NULL AUTO_INCREMENT,
+  `PatentID` varchar(9) DEFAULT NULL,
+  `Title` varchar(65) DEFAULT NULL,
+  `appDate` varchar(10) DEFAULT NULL,
+  `Researcher` varchar(20) DEFAULT NULL,
+  `ConceptID` varchar(9) DEFAULT NULL,
+  PRIMARY KEY (`PID`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `patentapplication`
+--
+
+LOCK TABLES `patentapplication` WRITE;
+/*!40000 ALTER TABLE `patentapplication` DISABLE KEYS */;
+INSERT INTO `patentapplication` VALUES (15,'PT0000015','C30B629D75DDBF6A5FDDA74CF3E67971F8B7C1A161C47B426D2AE27F19CCB37C','4/22/2020','ashwin','CP0000008');
+/*!40000 ALTER TABLE `patentapplication` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'patentservices'
+--
+/*!50003 DROP FUNCTION IF EXISTS `getPatID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `getPatID`() RETURNS varchar(9) CHARSET utf8mb4
+    DETERMINISTIC
+BEGIN
+
+ 
+
+    declare maxID int;
+    declare genID varchar(9);
+    declare stringID varchar(7);
+    
+    select max(PID) into maxID from patentapplication;
+    
+    set stringID := convert(maxID+1,char(7));
+    set stringID := lpad(stringID,7,0);
+    set genID := concat('PT',stringID);
+
+    RETURN genID;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-04-25 17:19:11
