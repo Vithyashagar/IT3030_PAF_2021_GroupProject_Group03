@@ -55,7 +55,7 @@ public class Buys {
 		 	// execute the statement
 		 	preparedStmt.execute();
 		 	con.close();
-		 	output = "Inserted successfully";
+		 	output = "Purchase Recoreded Successfully";
 		 	 
 	 }catch (Exception e){
 		 

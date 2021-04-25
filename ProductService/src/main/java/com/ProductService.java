@@ -101,5 +101,26 @@ public class ProductService {
 	 String output = ProductObj.deleteProduct(productId);
 	return output;
 	}
+	
+	/************************ISC method***************************************/
+    //Method to send productID  to paymentService
+    @GET /*Add a path for original concepts get method else therel be CONFUUUUUUUSSSSIIIOOOOONNNNN*/
+    @Path("/productCheck/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readSpecificBuyerPayment(@QueryParam("ProductName")String ProductName){
+       
+       return ProductObj.readSpecificProductIDForPayment(ProductName);           
+      
+    }
+   
+    //method to send consumerID to paymentService
+    @GET /*Add a path for original concepts get method else therel be CONFUUUUUUUSSSSIIIOOOOONNNNN*/
+    @Path("/getConsumerID/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readSpecificProductConsumer(@QueryParam("ProductID")String ProductID){
+       
+       return ProductObj.readSpecificBuyerForProduct(ProductID);           
+      
+    }
 
 }

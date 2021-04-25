@@ -276,6 +276,85 @@ public class Product {
 	    
 	
 	
+		/********************************ISC server methods****************************************************************/
+	    
+	    public String readSpecificProductIDForPayment(String ProductName ) {
+	        
+	        String output = "";
+	        
+	        try { 
+	            Connection con = connect();
+	             
+	             if (con == null){
+	                 return "Error while connecting to the database for reading."; 
+	             }
+	        
+	             String query = "select * from product  where productName = '"+ProductName+"'";
+	             Statement stmt = con.createStatement();
+	         
+	             ResultSet rs = stmt.executeQuery(query);
+	             String ProductCode = null;
+	             //String ConsumerID = null;
+
+	             while (rs.next()){
+	                
+	                ProductCode =  rs.getString("productCode");
+	                //ConsumerID = rs.getString("researcherID");
+	             
+	             }
+
+
+	            con.close();
+	            
+	            //output += "<Campaign><ConceptCode>"+ConceptCode+"</ConceptCode><ConsumerID>"+ConsumerID+"</ConsumerID></Campaign>";
+	        
+	            output += ProductCode;
+	            
+	        } catch (SQLException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	         return output;
+	    }
+	    
+	    public String readSpecificBuyerForProduct(String ProductID ) {
+	        
+	        String output = "";
+	        
+	        try { 
+	            Connection con = connect();
+	             
+	             if (con == null){
+	                 return "Error while connecting to the database for reading."; 
+	             }
+	        
+	             String query = "select * from buying where productID = '"+ProductID+"'";
+	             Statement stmt = con.createStatement();
+	         
+	             ResultSet rs = stmt.executeQuery(query);
+	             //String ConceptCode = null;
+	             String ConsumerID = null;
+
+	             while (rs.next()){
+	                
+	                //ConceptCode =  rs.getString("conceptCode");
+	                ConsumerID = rs.getString("consumerID");
+	             
+	             }
+
+	            con.close();
+	            
+	            //output += "<Campaign><ConceptCode>"+ConceptCode+"</ConceptCode><ConsumerID>"+ConsumerID+"</ConsumerID></Campaign>";
+	        
+	            output += ConsumerID;
+	        } catch (SQLException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	         return output;
+	    }
 
 	
 

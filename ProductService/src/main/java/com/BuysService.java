@@ -37,26 +37,18 @@ public class BuysService {
 	
 	/** Inserting Pledge Amount to Backs table **/
 	@POST
-	@Path("/insertConsumerProductBuys/{username}/")
-	@Consumes(MediaType.APPLICATION_XML)
+	@Path("/insertConsumerProductBuys/{username}")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String insertPledgeTransact(@PathParam("username") String username,
-			   String productCode,
-			   String buysData)
+			@FormParam("productCode") String productCode,
+			@FormParam("qty") String qty)
 	{
-		//Convert the input string to an XML document
-		Document doc = Jsoup.parse(buysData, "", Parser.xmlParser());
-
-		//Read the value from the element <pledged amount>
-		String buysDataQty = doc.select("pledgedAmnt").text();
-		//String output = conceptObj.deleteConcept(conceptID);
-
-		//Call the method to get consumer ID from user service
+		
+		//Call the method to get consumer Code from user service
 		String consumerCode = getConsumerID(username);
-
-		//Get the concept ID
-		String conceptID = BuysObj.getConceptID(username);
-
+		
+		
 		//Call insert method
 		String output = BuysObj.insertProductConsumer(consumerCode,productCode,qty);
 		return output;
@@ -92,64 +84,7 @@ public class BuysService {
 	}
 	
 	
-		/*
-		 * //POST method of ProductService
-		 * 
-		 * @POST
-		 * 
-		 * @Path("/")
-		 * 
-		 * @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-		 * 
-		 * @Produces(MediaType.TEXT_PLAIN) public String
-		 * insertProductConsumer(@FormParam("consumerID") String consumerID,
-		 * 
-		 * @FormParam("productID") String productID,
-		 * 
-		 * @FormParam("qty") String qty)
-		 * 
-		 * {
-		 * 
-		 * 
-		 * 
-		 * 
-		 * String output = BuysObj.insertProductConsumer(consumerID, productID, qty);
-		 * 
-		 * return output; }
-		 */
-	
-	/**********************ISC******************************/
-	/*
-	 * @POST
-	 * 
-	 * @Path("/{UName}")
-	 * 
-	 * @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	 * 
-	 * @Produces(MediaType.TEXT_HTML) public String
-	 * insertProductConsumer(@FormParam("UName") String UName,
-	 * 
-	 * @FormParam("productID") String productID,
-	 * 
-	 * @FormParam("qty") String qty) {
-	 * 
-	 * 
-	 * Client c = Client.create(); WebResource resource = c.resource(
-	 * "http://localhost:8001/gadget_badget/UserService/Users/getConsumerCode");
-	 * 
-	 * MultivaluedMap queryParams = new MultivaluedMapImpl();
-	 * queryParams.add(resource, queryParams)
-	 * 
-	 * 
-	 * String response = resource.get(String.class); System.out.println(response);
-	 * 
-	 * 
-	 * 
-	 * return response;
-	 * 
-	 * 
-	 * }
-	 */
+
 	
 	
 	
