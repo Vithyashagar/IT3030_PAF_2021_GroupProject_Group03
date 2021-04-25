@@ -20,16 +20,7 @@ public class ProductService {
 	
 	Product ProductObj = new Product();
 	
-	
-	/*****************************************/
-	@GET
-	@Path("/DEMO")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String printDEMO() {
-		return "Hi DEMO!!";
-	}
-	
-	/*****************************************/
+
 	
 	
 	//GET method of ProductService	
@@ -84,9 +75,7 @@ public class ProductService {
 	return output;
 	}
 	
-	
-	
-	
+	//Delete method product Service
 	@DELETE
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_XML)
