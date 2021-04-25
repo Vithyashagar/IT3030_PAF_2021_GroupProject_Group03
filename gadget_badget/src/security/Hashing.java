@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 		// We need a bytesToHex method first. So, from -
 			// http://stackoverflow.com/a/9855338/2970947
-			final protected static char[] hexArray = "0123456789ABCDEF"
+		  protected static final char[] hexArray = "0123456789ABCDEF"
 			    .toCharArray();
 
 			public static String bytesToHex(byte[] bytes) {
@@ -23,14 +23,14 @@ import java.security.NoSuchAlgorithmException;
 
 			// Change this to something else.
 			
-			private static String SALT = "$K@y2*T4men&t0A";
+			private static String salt = "$K@y2*T4men&t0A";
 
 			// A password hashing method.
 			public String hashPassword(String in) {
 			  try {
 			    MessageDigest md = MessageDigest
 			        .getInstance("SHA-256");
-			    md.update(SALT.getBytes());        // <-- Prepend SALT.
+			    md.update(salt.getBytes());        // <-- Prepend SALT.
 			    md.update(in.getBytes());
 			    // md.update(SALT.getBytes());     // <-- Or, append SALT.
 

@@ -16,7 +16,7 @@ public class User {
 	 Class.forName("com.mysql.jdbc.Driver");
 
 	 //Provide the correct details: DBServer/DBName, username, password
-	 con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user_service?useSSL=false", "root", "1234");
+	 con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user_service?useSSL=false&allowPublicKeyRetrieval=true", "root", "1234");
 	 }
 	 catch (Exception e)
 	 {e.printStackTrace();}
@@ -30,7 +30,8 @@ public class User {
 	 /******************************Read all users according to user type****************************************/
 	public String readUsers(String type)
 	 {
-	 String output = "";
+		String output = "";
+
 	 try
 	 {
 	
@@ -42,8 +43,8 @@ public class User {
 	 
 	 /*********************Prepare the html table for the consumer to be displayed***********************/
 	 if (type.equals("consumer") || type.equals("Consumer")) { 
-	 output = "<table border='1'><tr><th>Consumer ID</th><th>Consumer Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
-
+	output = "<table border='1'><tr><th>Consumer ID</th><th>Consumer Code</th><th>User Name</th>" +"<th>Password</th>" +"<th> Gmail</th>" +"<th>Address</th>"+"<th>DOB</th>" + "<th>phone</th>" +"<th>update</th>" + "<th>Delete</th></tr>";
+		 
 	 String query = "select * from consumer";
 	 Statement stmt = con.createStatement();
 	 ResultSet rs = stmt.executeQuery(query);
@@ -60,17 +61,22 @@ public class User {
 	 String dob = rs.getString("dob");
 	 String phone = rs.getString("phone");
 	 
-	 // Add into the html table
-	 output += "<tr><td>" + consumerID + "</td>";
-	 output += "<td>" + consumerCode + "</td>";
-	 output += "<td>" + userName + "</td>";
-	 output += "<td>" + password + "</td>";
-	 output += "<td>" + email + "</td>";
-	 output += "<td>" + address + "</td>";
-	 output += "<td>" + dob + "</td>";
-	 output += "<td>" + phone + "</td>";
-	
+	// final String col = "<td>";  // Compliant
+
+
+
 	 
+	 // Add into the html table
+
+	 		output += "<tr><td>" + consumerID + "</td>";
+			output += "<td>" + consumerCode + "</td>";	
+			output += "<td>" + userName + "</td>";	
+			output += "<td>" + password + "</td>";	 
+			output += "<td>" + email + "</td>";
+			output += "<td>" + address + "</td>";	 
+			output += "<td>" + dob + "</td>";
+			output += "<td>" + phone + "</td>";
+		 
 	 // buttons
 	 output += "<td><input name='btnUpdate' type='button' value='Update'class='btn btn-secondary'></td>"
 	 + "<td><form method='post' action='items.jsp'>"+ "<input name='btnRemove' type='submit' value='Remove'class='btn btn-danger'>"
@@ -205,7 +211,7 @@ public class User {
 			
 			Hashing hs = new Hashing();
 			
-			String h_userName = hs.hashPassword(username);
+			String UserName = hs.hashPassword(username);
 			String h_password = hs.hashPassword(password);
 			
 		 
@@ -229,7 +235,7 @@ public class User {
 		 
 		 
 		 
-		    if(emailValidate == true ) {
+		    if(emailValidate ) {
 		    	String query = " insert into user_service.consumer(`userID`,`userCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`)"
 		    	+ " values (?, ?, ?, ?, ?, ?, ?, ?)";
 	 
@@ -237,7 +243,7 @@ public class User {
 			 // binding values
 			 preparedStmt.setInt(1, 0);
 			 preparedStmt.setString(2, conceptCode);
-			 preparedStmt.setString(3, h_userName);
+			 preparedStmt.setString(3, UserName);
 			 preparedStmt.setString(4, h_password);
 			 preparedStmt.setString(5, email);
 			 preparedStmt.setString(6, address);
@@ -247,7 +253,7 @@ public class User {
 	
 			 preparedStmt.execute();
 			 
-			 insertuserNameforkey(username, h_userName);
+			 insertuserNameforkey(username, UserName);
 			 insertPasswordforkey(password, h_password);
 	 
 	 
@@ -290,7 +296,7 @@ public class User {
 					boolean emailValidate = validateEmail(email);
 
 		 
-					if(emailValidate == true ) {
+					if(emailValidate ) {
 		 
 						String query = " insert into user_service.manufacturer(`manufacturerID`,`manufacturerCode`,`userName`,`password`,`email`,`address`,`dob`,`phone`,`desc`)"
 						+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -351,7 +357,7 @@ public class User {
 	 
 		 		boolean emailValidate = validateEmail(email);
 		 
-		 		if(emailValidate == true ) {
+		 		if(emailValidate) {
 		 			String query = " insert into user_service.researcher(`researcherID`,`researcherCode` ,`userName`,`password`,`email`,`address`,`dob`,`phone`,`profileInfo`)"
 		 			+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				 
@@ -808,7 +814,7 @@ public class User {
    output += ID;
 
    } catch (SQLException e) {
-   // TODO Auto-generated catch block
+
    e.printStackTrace();
    }
 
@@ -835,8 +841,7 @@ public class User {
    Statement stmt = con.createStatement();
 
    ResultSet rs = stmt.executeQuery(query);
-   String ID = null;
-
+  
 
 
    String address = null;
@@ -854,7 +859,7 @@ public class User {
    output += address;
 
    } catch (SQLException e) {
-   // TODO Auto-generated catch block
+
    e.printStackTrace();
    }
 
@@ -865,6 +870,41 @@ public class User {
 
 
    }
+   
+   
+ //Method to read consumerCode for BuyerService Inter Service Communication
+   public String readConsumerCode(String username) {
+          
+	   String output = "";
+          
+           try
+           {
+               Connection con = connect();
+               if (con == null)
+               {
+                   return "Database Connection failed!!";
+               }
+              
+               String query = "select * from consumer where userName = '"+username+"' ";
+               Statement stmt = con.createStatement();
+               ResultSet rs = stmt.executeQuery(query);
+              
+               // iterate through the rows in the result set
+              String userCode = null;
+               while (rs.next())
+               {
+            	   userCode = rs.getString("userCode");
+                  
+               }
+                   con.close();
+                  output += userCode; 
+               }
+               catch (Exception e)
+               {
+                   System.err.println(e.getMessage());
+               }
+               return output;
+       }
    
    
 	

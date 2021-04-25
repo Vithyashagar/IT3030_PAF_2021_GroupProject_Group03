@@ -112,25 +112,33 @@ public class UserService {
 		//user details for selected user
 	}*/
 	
-	 //When log in to the system
+	//When log in to the system
     //System will create a cookie on their name 
     @GET
-    @Path("/{username}/{password}/{type}")
+    @Path("/login/{username}/{password}/{type}")
     @Produces(MediaType.TEXT_HTML)
-    public String userCLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
+    public Response userCLogin (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
         
+        //Cookie creation
         NewCookie cookie = new NewCookie("UName", username );
-        Response.ok("Ok").cookie(cookie).build();
-        
-        return loginObj.userLogin(username,password,type);
+                
+        return Response.ok("Login Success!").cookie(cookie).build(); 
     }
     
+    //Direct to user Profile
+    @GET
+    @Path("/profile/{username}/{password}/{type}")
+    @Produces(MediaType.TEXT_HTML)
+    public String userLoginRE (@PathParam("username")String username,@PathParam("password")String password,@PathParam("type")String type) {
 
  
 
+        return loginObj.userLogin(username,password,type) ;
+        
+         
+    }
+    
 
-	
-	
 	/************************************* ISC Communication ********************************************/
     //Get researcher id by passing user name
     @GET
@@ -194,6 +202,19 @@ public class UserService {
 
      
 
+        }
+        
+        
+      //get consumer id by passing consumer user name
+        @GET
+        @Path("/getConsumerCode/")
+        @Produces(MediaType.APPLICATION_XML)
+        public String readConsumerCode(@QueryParam("username")String username) {
+           
+            String output = userObj.readConsumerCode(username);
+            //System.out.println(output);
+            return output;
+           
         }
         
         

@@ -13,7 +13,7 @@ public class userLogin {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Provide the correct details: DBServer/DBName, username, password
-			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user_service?useSSL=false", "root", "1234");
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/user_service", "root", "1234");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
