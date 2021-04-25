@@ -13,7 +13,7 @@ public class DBConnection {
 		{
 			Class.forName("com.mysql.jdbc.Driver");
 			
-			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentdb","root", "1234");
+			con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/paymentservice","root", "1234");
 			
 			//Testing for connectivity.
 			
