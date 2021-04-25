@@ -180,7 +180,7 @@ public class PledgeAPI {
 				
 	/******************* METHDODS AS A SERVER FOR INTER SERVICE COMMUNICATION *******************************/
      //Retrieve Consumer ID for payment
-	public String readSpecificConsumerForConcept(String ConceptID ) {
+	public String readSpecificConsumerForConcept(String conceptID ) {
 		
 	    String output = "";
 			        
@@ -191,7 +191,7 @@ public class PledgeAPI {
 			     return "Error while connecting to the database for reading."; 
 			 }
 			        
-			 String query = "select * from backs  where conceptID = '"+ConceptID+"'";
+			 String query = "select * from backs  where conceptID = '"+conceptID+"'";
 			 Statement stmt = con.createStatement();
 			         
 			 ResultSet rs = stmt.executeQuery(query);
@@ -205,7 +205,6 @@ public class PledgeAPI {
 			 output += ConsumerID;
 			            
 			 } catch (SQLException e) {
-			    // TODO Auto-generated catch block
 			    e.printStackTrace();
 			 }
 

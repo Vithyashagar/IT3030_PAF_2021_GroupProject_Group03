@@ -10,6 +10,7 @@ public class ConceptAPI {
 	
 	//DBConnection object to connect to database
 	DBConnection dbConnect = new DBConnection();
+	String dbErrorMessage = "Database Connection failed!!";
 	
 	// ---Method to retrieve concept details of a researcher---
 	public String readMyConcepts(String researcherID)
@@ -20,7 +21,7 @@ public class ConceptAPI {
 			Connection con = dbConnect.connect();
 			if (con == null)
 			{
-				return "Database Connection failed!!";
+				return dbErrorMessage;
 			}
 			
 			// Displaying the read concepts
@@ -92,7 +93,7 @@ public class ConceptAPI {
 			catch (Exception e)
 			{
 				output = "Error while retrieving your concept details!!";
-				System.err.println(e.getMessage());
+				System.out.println(e.getMessage());
 			}
 			return output;
 	}
@@ -109,7 +110,7 @@ public class ConceptAPI {
 			Connection con = dbConnect.connect();
 			if (con == null)
 			{
-				return "Database Connection failed!!";
+				return dbErrorMessage;
 			}
 			
 			//Hashing the concept name and description
@@ -177,7 +178,7 @@ public class ConceptAPI {
 		{
 			Connection con = dbConnect.connect();
 			if (con == null){
-				return "Database Connection failed!!"; 
+				return dbErrorMessage; 
 			}
 			
 			//Hashing the concept name and description
@@ -239,7 +240,7 @@ public class ConceptAPI {
 		{
 			Connection con = dbConnect.connect();
 			if (con == null) {
-				return "Database Connection failed!!"; 
+				return dbErrorMessage; 
 			}
 			
 			//Retrieving status to check if the pledge goal is reached
@@ -288,7 +289,7 @@ public class ConceptAPI {
 			Connection con = dbConnect.connect();
 			if (con == null)
 			{
-				return "Database Connection failed!!";
+				return dbErrorMessage;
 			}
 			
 			// Displaying the read concepts
@@ -437,23 +438,105 @@ public class ConceptAPI {
              Statement stmt = con.createStatement();
          
              ResultSet rs = stmt.executeQuery(query);
-             String ConceptCode = null;
+             String conceptCode = null;
              
              while (rs.next()){
-                ConceptCode =  rs.getString("conceptCode");
+                conceptCode =  rs.getString("conceptCode");
              }
 
             con.close();
            
-            output += ConceptCode;
+            output += conceptCode;
             
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
          return output;
     }
+	
+	
+	
+	//Method to get Product description when giving the title
+	public String getprodDesc(String conceptName) {
+
+		String output = "";
+		try{
+	
+			Connection con = dbConnect.connect();
+		
+			if (con == null){
+				return dbErrorMessage;
+			}
+		
+			// Retrieving the concepts launched by a particular researcher
+			String query = "SELECT d.nKey as conceptDesc "
+			+ "FROM concept c, hconceptname n, hconceptdesc d "
+			+ "WHERE c.conceptName = n.Value AND "
+			+ "c.conceptDesc = d.Value AND "
+			+ "n.nKey = '"+conceptName+"' ";
+		
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+		
+			String conceptDescription = null;
+		
+			// iterate through the rows in the result set
+			while (rs.next()){
+			conceptDescription = rs.getString("conceptDesc");
+			}
+		
+			con.close();
+		
+			output += conceptDescription;
+
+		}catch (Exception e){
+			output = "Error while retrieving your concept details!!";
+			System.err.println(e.getMessage());
+		}
+			return output;
+
+	}
+
+	//Method to get Product ID when giving the title
+	public String getprodID(String conceptName) {
+
+		String output = "";
+		try{
+	
+			Connection con = dbConnect.connect();
+		
+			if (con == null){
+				return dbErrorMessage;
+			}
+		
+			// Retrieving the concepts launched by a particular researcher
+			String query = "SELECT c.conceptCode "
+			+ "FROM concept c, hconceptname n "
+			+ "WHERE c.conceptName = n.Value AND "
+			+ "n.nKey = '"+conceptName+"' ";
+		
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+		
+			String conceptCode = null;
+		
+			// iterate through the rows in the result set
+			while (rs.next()){
+			conceptCode = rs.getString("conceptCode");
+			}
+		
+			con.close();
+		
+			output += conceptCode;
+	
+		}
+		catch (Exception e){
+			output = "Error while retrieving your concept details!!";
+			System.err.println(e.getMessage());
+	}
+		return output;
+	}
     
 	
 	

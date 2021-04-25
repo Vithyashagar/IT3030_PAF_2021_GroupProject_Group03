@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 //For JSON
 import com.google.gson.*;
 import com.sun.jersey.api.client.Client;
-//import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 //For XML
@@ -76,7 +76,6 @@ public class ConceptService {
 		JsonObject conceptObject = new JsonParser().parse(conceptData).getAsJsonObject();
 		
 		//Read the values from the JSON object
-		//String conceptID = conceptObject.get("conceptID").getAsString();
 		String conceptName = conceptObject.get("conceptName").getAsString();
 		String conceptDesc = conceptObject.get("conceptDesc").getAsString();
 		String pledgeGoal = conceptObject.get("pledgeGoal").getAsString();
@@ -97,10 +96,8 @@ public class ConceptService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String deleteConceptDetails(@PathParam ("conceptCode") String conceptCode)
 	{
-		//Calling the delete method
-		String output = conceptObj.deleteConcept(conceptCode);
-		
-		return output;
+		//Calling the delete method and returning
+		return conceptObj.deleteConcept(conceptCode);
 	}
 	
 	
@@ -137,8 +134,8 @@ public class ConceptService {
         //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("username", username).accept("application/xml").get(String.class);
         
-        //return readResearcherID(response.toString());
-        return response.toString();	
+        //return readResearcherID();
+        return response;	
 	}
 	
 
@@ -163,8 +160,8 @@ public class ConceptService {
         //Get the response String and save to a String(Response is a userID)
         String response = target.queryParam("username", username).accept("application/xml").get(String.class);
         
-        //return readManufacturerID(response.toString());
-        return response.toString();	
+        //return readManufacturerID();
+        return response;	
 	}
 	
 	
@@ -178,6 +175,25 @@ public class ConceptService {
        
        return conceptObj.readSpecificConceptIDForPayment(ConceptName);           
       
+    }
+    
+    
+    //Method to send concept ID to manufacturer  service 
+    @GET
+    @Path("/conceptID/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readConceptID(@QueryParam("conceptName")String conceptName) {
+
+	    return conceptObj.getprodID(conceptName);
+    }
+    
+    //Method to view concept Description by manufacturer service
+    @GET
+    @Path("/conceptDescription/")
+    @Produces(MediaType.APPLICATION_XML)
+    public String readConceptDesc(@QueryParam("conceptName")String conceptName) {
+	
+	    return conceptObj.getprodDesc(conceptName);
     }
    
 
