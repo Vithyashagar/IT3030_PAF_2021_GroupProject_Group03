@@ -72,7 +72,7 @@ public class Product {
 		 	// execute the statement
 		 	preparedStmt.execute();
 		 	con.close();
-		 	output = "Inserted successfully";
+		 	output = "Product details Inserted successfully";
 		 	 
 	 }catch (Exception e){
 		 
@@ -188,11 +188,11 @@ public class Product {
 				 // execute the statement
 				 preparedStmt.execute();
 				 con.close();
-				 output = "Updated successfully";
+				 output = "Product details Updated successfully";
 		 
 		 }catch (Exception e){
 			 
-			 output = "Error while updating the item.";
+			 output = "Error while updating the product";
 			 System.err.println(e.getMessage());
 		 
 		 }
@@ -226,7 +226,7 @@ public class Product {
 			 preparedStmt.execute();
 			 con.close();
 			 
-			 output = "Deleted successfully";
+			 output = "Product Deleted successfully";
 		
 		}catch (Exception e){
 			
@@ -237,6 +237,44 @@ public class Product {
 		
 			return output;
 	 }
+	
+	
+	
+	
+		//Retrieve productCode by passing productName for buys InterServiceComunication
+		public String readProductCode(String productName ) {
+	        String output = "";
+	        
+	        try { 
+	        	 Connection con = connect();
+	             
+	             if (con == null){
+	                 return "Error while connecting to the database for reading."; 
+	             }
+	        
+	             String query = "select * from product  where productName = '"+productName+"'";
+	             Statement stmt = con.createStatement();
+	         
+	             ResultSet rs = stmt.executeQuery(query);
+	             String productCode = null;
+	             
+	             while (rs.next()){
+	            	 productCode =  rs.getString("productCode");
+	             }
+
+	            con.close();
+	           
+	            output += productCode;
+	            
+	        } catch (SQLException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	         return output;
+	    }
+	    
+	
 	
 
 	

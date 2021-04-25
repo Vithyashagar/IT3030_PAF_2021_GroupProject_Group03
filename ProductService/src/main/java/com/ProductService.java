@@ -20,6 +20,18 @@ public class ProductService {
 	
 	Product ProductObj = new Product();
 	
+	
+	/*****************************************/
+	@GET
+	@Path("/DEMO")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String printDEMO() {
+		return "Hi DEMO!!";
+	}
+	
+	/*****************************************/
+	
+	
 	//GET method of ProductService	
 	@GET
 	@Path("/")
