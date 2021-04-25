@@ -67,7 +67,7 @@ public class PaymentService {
 			
 			int cardNumberCount = p.validateCardNumber(cardNo);
 			
-			//int cvvValidation = p.cvvValidator(cardNo, cvv);
+			
 			
 			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
 			
@@ -120,7 +120,6 @@ public class PaymentService {
 			//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
-			//insertcardholderNameforkey(nameOnCard,hCardName);
 			insertCvvForKey(cvv,hcvv);
 			
 			
@@ -174,7 +173,6 @@ public class PaymentService {
 			 Hashing paymentHash = new Hashing();
 			 
 			 String hcardNo = paymentHash.hashPassword(cardNo);
-			// String hCardName = paymentHash.hashPassword(NameOnCard);
 			 String hcvv = paymentHash.hashPassword(cvv);
 			
 			
@@ -186,7 +184,7 @@ public class PaymentService {
 			
 			int cardNumberCount = p.validateCardNumber(cardNo);
 			
-			//int cvvValidation = p.cvvValidator(cardNo, cvv);
+			
 			
 			if((paymentType.equals("Debit")) || (paymentType.equals("debit")) || (paymentType.equals("credit")) || (paymentType.equals("Credit"))  && (cardNumberCount == 16) )  {
 				
@@ -257,7 +255,6 @@ public class PaymentService {
 				//Table or hash values.
 			
 			insertcardNumberforkey(cardNo,hcardNo);
-			//insertcardholderNameforkey(NameOnCard,hCardName);
 			insertCvvForKey(cvv,hcvv);
 			
 			con.close();
@@ -324,13 +321,11 @@ public class PaymentService {
 				
 				while (rs.next())
 				{
-					//String PaymentID = Integer.toString(rs.getInt("PaymentID"));
+					
 					String PaymentType = rs.getString("PaymentType");
 					String BankName = rs.getString("bank");
 					String paymentDate = rs.getString("paymentDate");
-					//String cardNumber = rs.getNString("cardNo");
 					String CardName= rs.getString("NameOnCard");
-					//String cvv = rs.getString("cvv");
 					double buyerAmt = rs.getDouble("Buyerpayment");
 					String productID =  rs.getString("ProductID");
 					String consumerID =  rs.getString("ConsumerID");
@@ -415,7 +410,7 @@ public class PaymentService {
 				
 				while (rs.next())
 				{
-					//String PaymentID = Integer.toString(rs.getInt("PaymentID"));
+					
 					String PaymentType = rs.getString("PaymentType");
 					String BankName = rs.getString("bank");
 					String paymentDate = rs.getString("paymentDate");
@@ -560,7 +555,6 @@ public class PaymentService {
 		/***********Table for hash values.*******************/
 		
 		insertcardNumberforkey(cardNo, hcardNumber);
-		//insertcardholderNameforkey(NameOnCard, hCardHolderName);
 		insertCvvForKey(cvv,hcvvNo);
 		
 		// execute the statement.

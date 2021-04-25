@@ -173,7 +173,7 @@ public class Payment {
         return count;
 	}
 	
-	//Methdo to validate cvv of user card.
+	//Method to validate cvv of user card.
 	public int cvvValidator(String cardNumber , String cvv) {
 		
 		String extractedPortion = cardNumber.substring(13);
